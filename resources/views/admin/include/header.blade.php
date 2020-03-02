@@ -30,3 +30,9 @@
     <!-- Custom Theme Style -->
     <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
   </head>
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <!-- Left Naviagtion-->
+        @include('admin.include.leftnav')
+        @include('admin.include.topnav')

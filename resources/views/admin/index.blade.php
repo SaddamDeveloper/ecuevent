@@ -60,19 +60,6 @@
               </div>
 
               <div class="clearfix"></div>
-
-              <div class="separator">
-
-                <div class="clearfix"></div>
-                <br />
-
-                <div>
-                  <h1>ECU EVENT
-                    {{-- <img src="{{ asset('admin/src_files/logo/logo.png')}}" height="150"> --}}
-                  </h1>
-                  <p>©2016 All Rights Reserved. Gentelella Alela! is a Bootstrap 3 template. Privacy and Terms</p>
-                </div>
-              </div>
             {{ Form::close() }}
           </section>
         </div>

@@ -2,13 +2,6 @@
 @extends('admin.template.admin_master')
 
 @section('content')
-  <body class="nav-md">
-    <div class="container body">
-      <div class="main_container">
-
-        <!-- Left Naviagtion-->
-        @include('admin.include.leftnav')
-        @include('admin.include.topnav')
 
         <!-- page content -->
         <div class="right_col" role="main">

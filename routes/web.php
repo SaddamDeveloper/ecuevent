@@ -17,4 +17,10 @@ Route::post('/admin/logout', 'Admin\AdminLoginController@logout')->name('admin.l
 
 Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin'],function(){
     Route::get('/dashboard', 'AdminDashboardController@index')->name('admin.dashboard');
+
+    Route::group(['prefix'  =>  'member'], function(){
+        Route::get('/product', 'MemberProductController@memProductList')->name('admin.mem_product_list');
+        Route::get('/add/product', 'MemberProductController@memAddProductForm')->name('admin.mem_add_product_form');
+        Route::post('/add/new/product', 'MemberProductController@memAddNewProduct')->name('admin.mem_add_new_product');
+    }); 
 });
