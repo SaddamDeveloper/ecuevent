@@ -26,6 +26,47 @@
                         <div>
                             <div class="x_content">
                                 <a href="{{route('admin.mem_add_product_form')}}" class="btn btn-primary">Add Product</a>
+                                <div class="table-responsive">
+                                    <table class="table table-striped jambo_table bulk_action">
+                                        <thead>
+                                            <tr class="headings">                
+                                                <th class="column-title">Sl No. </th>
+                                                <th class="column-title">Name</th>
+                                                <th class="column-title">Price</th>
+                                                <th class="column-title">Image1</th>
+                                                <th class="column-title">Image2</th>
+                                                <th class="column-title">Action</th>
+                                            </tr>
+                                        </thead>
+            
+                                        <tbody>
+                                            @if(isset($tabledatas) && !empty($tabledatas) && count($tabledatas) > 0)
+                                            @php
+                                                $count = 1;
+                                            @endphp
+
+                                            @foreach($tabledatas as $tabledata)
+                                                <tr class="even pointer">
+                                                    <td class=" ">{{ $count++ }}</td>
+                                                    <td class=" ">{{ $tabledata->name }}</td>
+                                                    <td>{{ number_format($tabledata->price, 2)}}</td>
+                                                    <td><img src="{{ asset('member/product/thumb/'.$tabledata->image1.'') }}" height="80px"></td>
+                                                    <td><img src="{{ asset('member/product/thumb/'.$tabledata->image2.'') }}" height="80px"></td>
+                                                    <td class=" ">
+                                                        <a href="{{route('admin.edit_member_product',['id' => encrypt($tabledata->id)])}}" class="btn btn-warning">Edit</a>
+                                                        <a href="{{ route('admin.delete_member_product',['id' => encrypt($tabledata->id)]) }}" class="btn btn-danger">Delete</a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                            @else
+                                            <tr>
+                                                <td colspan="4" style="text-align: center">Sorry No Data Found</td>
+                                            </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                    {{ $tabledatas->links() }}
+                                </div>
                             </div>
                         </div>
                     </div>

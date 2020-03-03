@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Admin Panel</title>
+    <title>Member Panel</title>
 
     <!-- Bootstrap -->
     <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -29,7 +29,7 @@
           <section class="login_content">
             {{ Form::open(array('url' => 'admin/login', 'method' => 'post')) }}
 
-              <h1>Admin Login Form</h1>
+              <h1>Member Login Form</h1>
               <div>
                 @if ($message = Session::get('login_error'))
                   <span class="invalid-feedback text-danger" role="alert">

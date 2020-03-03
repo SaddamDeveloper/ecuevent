@@ -29,7 +29,8 @@
             </li>
             <li><a><i class="fa fa-edit"></i> Member Product <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
-              <li><a href="{{route('admin.mem_product_list')}}">Product List</a></li>
+                <li><a href="{{route('admin.mem_product_list')}}">Product List</a></li>
+                <li><a href="{{route('admin.mem_epin')}}">Generate EPIN</a></li>
               </ul>
             </li>
           </ul>

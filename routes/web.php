@@ -11,16 +11,39 @@
 |
 */
 
+/***
+ * Admin Login Control
+ */
 Route::get('/admin/login', 'Admin\AdminLoginController@showAdminLoginForm')->name('admin.login');
 Route::post('/admin/login', 'Admin\AdminLoginController@adminLogin');
 Route::post('/admin/logout', 'Admin\AdminLoginController@logout')->name('admin.logout');
 
+/***
+ * Member Login Control
+ */
+Route::get('/member/login', 'Member\MemberLoginController@showMemberLoginForm')->name('member.login');
+Route::post('/member/login', 'Member\MemberLoginController@memberLogin');
+Route::post('/member/logout', 'Member\MemberLoginController@logout')->name('member.logout');
+
 Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin'],function(){
     Route::get('/dashboard', 'AdminDashboardController@index')->name('admin.dashboard');
-
+    /***
+     * Epin GENERATE Control
+     */
+    Route::get('/epin', 'EpinController@memEpinList')->name('admin.mem_epin');
+    Route::get('/add/epin', 'EpinController@memAddEpinForm')->name('admin.mem_add_epin_form');
+    Route::post('/add/new/epin', 'EpinController@memAddGenerateEpin')->name('admin.mem_add_generate_epin');
+    /***
+     * Member Prdouct Control
+     */
     Route::group(['prefix'  =>  'member'], function(){
         Route::get('/product', 'MemberProductController@memProductList')->name('admin.mem_product_list');
         Route::get('/add/product', 'MemberProductController@memAddProductForm')->name('admin.mem_add_product_form');
         Route::post('/add/new/product', 'MemberProductController@memAddNewProduct')->name('admin.mem_add_new_product');
+        Route::get('/edit/product/{id}', 'MemberProductController@editMemberProduct')->name('admin.edit_member_product');
+        Route::post('/update/product/', 'MemberProductController@updateMemberProduct')->name('admin.mem_update_new_product');
+        Route::get('/delete/product/{id}', 'MemberProductController@deleteMemberProduct')->name('admin.delete_member_product');
+
+
     }); 
 });
