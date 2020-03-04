@@ -26,7 +26,7 @@ class MemberLoginController extends Controller
 
             return redirect()->intended('/member/dashboard');
         }
-        return back()->withInput($request->only('email', 'remember'))->with('login_error','Phone or password is incorrect');
+        return back()->withInput($request->only('email', 'remember'))->with('login_error','Email or password is incorrect');
     }
 
     public function logout()

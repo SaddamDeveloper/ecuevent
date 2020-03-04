@@ -46,13 +46,13 @@
                 {{-- <input type="text" class="form-control" placeholder="Username" required="" /> --}}
               </div>
               <div>
-                {{ Form::password('password',array('class' => 'form-control','placeholder'=>'Enter Password')) }}
-                
                 @error('password')
-                    <span class="invalid-feedback" role="alert">
+                    <span class="invalid-feedback text-danger" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
+                {{ Form::password('password',array('class' => 'form-control','placeholder'=>'Enter Password')) }}
+                
               </div>
               <div>
                 {{ Form::submit('Log In', array('class'=>'btn btn-warning btn-block')) }}
