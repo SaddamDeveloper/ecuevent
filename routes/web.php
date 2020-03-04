@@ -27,12 +27,26 @@ Route::post('/member/logout', 'Member\MemberLoginController@logout')->name('memb
 
 Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin'],function(){
     Route::get('/dashboard', 'AdminDashboardController@index')->name('admin.dashboard');
+
     /***
      * Epin GENERATE Control
      */
     Route::get('/epin', 'EpinController@memEpinList')->name('admin.mem_epin');
     Route::get('/add/epin', 'EpinController@memAddEpinForm')->name('admin.mem_add_epin_form');
     Route::post('/add/new/epin', 'EpinController@memAddGenerateEpin')->name('admin.mem_add_generate_epin');
+    Route::get('/ajax/get/epin/','EpinController@ajaxGetEpinList')->name('admin.ajax.get_epin_list');
+    
+    /***
+     * Epin Allot Control
+     */
+    Route::get('/allot/epin', 'EpinAllotController@memAllotEpinForm')->name('admin.mem_allot_epin_form');
+    
+    /***
+     * Member Macthing Income Control
+     */
+    Route::get('/matching/income', 'MatchingIncomeController@memMatchingIncomeForm')->name('admin.mem_matching_income');
+    Route::post('/add/matching/income', 'MatchingIncomeController@memAddMatchingIncome')->name('admin.mem_add_matching_income');
+
     /***
      * Member Prdouct Control
      */

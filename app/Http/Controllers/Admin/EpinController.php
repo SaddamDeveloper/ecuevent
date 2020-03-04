@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use DB;
+use Carbon\Carbon;
+use DataTables;
 class EpinController extends Controller
 {
     public function memEpinList(){
@@ -21,16 +23,63 @@ class EpinController extends Controller
             'epin' => 'required',
         ]); 
 
-        // Available alpha caracters
-        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+       for ($i=0; $i < $request->input('epin'); $i++) { 
+            $epin_insert = DB::table('epin')
+                ->insertGetId([
+                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                ]);
+    
+            if($epin_insert){
+                
+                $epin = $this->randomNum($epin_insert);
+                $epin_insert = DB::table('epin')
+                    ->where('id', '=', $epin_insert)
+                    ->update([
+                        'epin' => $epin,
+                    ]);
+            }
+       } 
+        return redirect()->back()->with('message','Epin Generated Successfully');
+    }
 
-        // generate a pin based on 2 * 7 digits + a random character
-        $string = $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters)- 1)] ;
-        $last_id = DB::table('epin')->orderBy('id', 'desc')->first()->id;
-        // return $string;
-        $pin = $string . mt_rand(1000000, 9999999)
-            . $last_id;
-        return $pin;
+    public function ajaxGetEpinList()
+    {    
+        $query = DB::table('epin');
+       
+            return datatables()->of($query->get())
+            ->addIndexColumn()
+            // ->addColumn('action', function($row){
+            //        $btn = '
+            //        <a href="" class="btn btn-info btn-sm" target="_blank">View</a>
+            //        <a href="" class="btn btn-warning btn-sm">Edit</a>                   
+            //        ';
+            //         return $btn;
+            // })
+            // ->rawColumns(['action'])
+            ->make(true);
+    }
 
+    function randomNum($epin_insert){
+           // Available alpha caracters
+           $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+           // generate a pin based on 2 * 7 digits + a random character
+           $string = $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters)- 1)] ;
+
+           $id_length = strlen((string)$epin_insert);
+           $length = 6 - $id_length;
+           $from_num = NULL;
+           $to_num = NULL;
+           $random_num = NULL;
+           for ($i=0; $i < $length; $i++) { 
+               $from_num .="1";
+               $to_num .= "9";
+           }
+           if (!empty($from_num) && !empty($to_num)) {
+               $random_num = rand($from_num, $to_num);
+           }
+
+           $epin = $string . $random_num . $epin_insert;
+           return $epin;
     }
 }
