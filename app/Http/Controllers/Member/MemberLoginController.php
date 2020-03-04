@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Auth;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 class MemberLoginController extends Controller
 {
     public function __construct()
@@ -21,12 +22,11 @@ class MemberLoginController extends Controller
             'email'   => 'required|email',
             'password' => 'required|min:6'
         ]);
-
         if (Auth::guard('member')->attempt(['email' => $request->email, 'password' => $request->password])) {
 
             return redirect()->intended('/member/dashboard');
         }
-        return back()->withInput($request->only('email', 'remember'))->with('login_error','Email or password is incorrect');
+        return back()->withInput($request->only('email', 'remember'))->with('login_error','Phone or password is incorrect');
     }
 
     public function logout()

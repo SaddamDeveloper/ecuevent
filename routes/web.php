@@ -60,4 +60,12 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
 
 
     }); 
+
 });
+
+/***
+ * Member Dashboard Routes
+ */
+Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Member'],function(){
+    Route::get('/dashboard', 'MemberDashboardController@index')->name('member.dashboard');
+}); 

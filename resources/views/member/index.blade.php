@@ -27,7 +27,7 @@
       <div class="login_wrapper">
         <div class="animate form login_form">
           <section class="login_content">
-            {{ Form::open(array('url' => 'admin/login', 'method' => 'post')) }}
+            {{ Form::open(array('url' => 'member/login', 'method' => 'post')) }}
 
               <h1>Member Login Form</h1>
               <div>
