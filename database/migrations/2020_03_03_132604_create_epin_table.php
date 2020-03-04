@@ -16,7 +16,9 @@ class CreateEpinTable extends Migration
         Schema::create('epin', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('epin');
-            $table->enum('status', ['']);
+            $table->enum('status', ['used', 'not_used']);
+            $table->string('alloted_to');
+            $table->string('used_by');
             $table->timestamps();
         });
     }

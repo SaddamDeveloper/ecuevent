@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use DB;
 class EpinController extends Controller
 {
     public function memEpinList(){
@@ -20,18 +21,16 @@ class EpinController extends Controller
             'epin' => 'required',
         ]); 
 
-                // Available alpha caracters
+        // Available alpha caracters
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
         // generate a pin based on 2 * 7 digits + a random character
         $string = $characters[rand(0, strlen($characters) - 1)] . $characters[rand(0, strlen($characters)- 1)] ;
-        
-        $pin = $string . slice(mt_rand(1000000, 9999999))
-            . mt_rand(1000000, 9999999);
-
-            return $pin;
-        // shuffle the result   
-        // $string = str_shuffle($pin);
+        $last_id = DB::table('epin')->orderBy('id', 'desc')->first()->id;
+        // return $string;
+        $pin = $string . mt_rand(1000000, 9999999)
+            . $last_id;
+        return $pin;
 
     }
 }
