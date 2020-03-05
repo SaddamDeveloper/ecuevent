@@ -58,7 +58,6 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
         Route::post('/update/product/', 'MemberProductController@updateMemberProduct')->name('admin.mem_update_new_product');
         Route::get('/delete/product/{id}', 'MemberProductController@deleteMemberProduct')->name('admin.delete_member_product');
 
-
     }); 
 
 });
@@ -68,4 +67,12 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
  */
 Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Member'],function(){
     Route::get('/dashboard', 'MemberDashboardController@index')->name('member.dashboard');
+    Route::get('/profile', 'MemberDashboardController@profile')->name('member.profile');
+    Route::get('/member/list', 'MemberDashboardController@memberList')->name('member.member_list');
+    Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member');
+
+    /***
+     * Sponsor ID Search
+     */
+    Route::get('/search/sponsorID', 'SponsorIDController@searchSponsorID')->name('member.search_sponsor_id');
 }); 

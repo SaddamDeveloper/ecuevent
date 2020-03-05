@@ -28,9 +28,10 @@
           <li><a href="{{route('member.dashboard')}}"><i class="fa fa-home"></i> Home </a>
             </li>
            
-            <li><a><i class="fa fa-gear"></i> Configuration <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-user-plus"></i> Member Registration <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
-               
+                <li><a href="{{route('member.member_list')}}"> Members List</a></li>
+                <li><a href="{{route('member.add_new_member')}}"> Add New Member</a></li>
               </ul>
             </li>
           </ul>
