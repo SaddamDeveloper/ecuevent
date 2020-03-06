@@ -35,6 +35,7 @@
 
     <!-- Custom Theme Style -->
     <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
+    <link href="{{asset('production/css/jquery-ui.css')}}" rel="stylesheet">
     @yield('css')
   </head>
   <body class="nav-md">

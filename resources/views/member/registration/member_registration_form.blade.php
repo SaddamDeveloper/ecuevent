@@ -25,48 +25,78 @@
                     <div>
                         <div class="x_content">
                        
-                            {{-- {{ Form::open(['method' => 'post','route'=>'admin.add_new_product' , 'enctype'=>'multipart/form-data']) }} --}}
+                            {{ Form::open(['method' => 'post','route'=>'member.add_new_member']) }}
                             <div class="well" style="overflow: auto">
 
                                 <div class="form-row mb-10 mb-2">
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                     </div>
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
-                                        <label for="gender">Sponsor ID</label>
+                                        <label for="search_sponsor_id">Sponsor ID</label>
                                         <input type="text" name="search_sponsor_id" id="search_sponsor_id" class="form-control" placeholder="Sponsor ID">
-                                        @if($errors->has('search_sponsor_id'))
-                                            <span class="invalid-feedback search_sponsor_id_error" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('search_sponsor_id') }}</strong>
-                                            </span>
-                                        @enderror
+                                        <div id="myDiv">
+                                            <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
+                                        </div>
+                                        <div id="member_data"></div><br>
                                     </div> 
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                     </div>
                                 </div>
-
+                                <div class="form-row mb-10 mb-2">
+                                    <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
+                                        
+                                    </div>
+                                </div>
                             </div>
                             <div class="well" style="overflow: auto">
                                 <div class="form-row mb-3">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                      <label for="name">Name*</label>
-                                      <input type="text" class="form-control" name="name"  placeholder="Enter Member Name" >
-                                        @if($errors->has('name'))
+                                      <label for="f_name">First Name*</label>
+                                      <input type="text" class="form-control" name="f_name"  placeholder="Enter First Name" >
+                                        @if($errors->has('f_name'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('name') }}</strong>
+                                                <strong>{{ $errors->first('f_name') }}</strong>
                                             </span>
                                         @enderror
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
+                                      <label for="m_name">Middle Name</label>
+                                      <input type="text" class="form-control" name="m_name"  placeholder="Enter Middle Name" >
+                                        @if($errors->has('m_name'))
+                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                                <strong>{{ $errors->first('m_name') }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
+                                      <label for="l_name">Last Name*</label>
+                                      <input type="text" class="form-control" name="l_name"  placeholder="Enter Last Name" >
+                                        @if($errors->has('l_name'))
+                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                                <strong>{{ $errors->first('l_name') }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-row mb-3">
+                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="email">Email*</label>
                                       <input type="email" class="form-control" name="email"  placeholder="Enter Email" >
+                                      @if($errors->has('email'))
+                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                                <strong>{{ $errors->first('email') }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="mobile">Mobile*</label>
                                       <input type="text" class="form-control" name="mobile"  placeholder="Enter Mobile No" >
+                                      @if($errors->has('mobile'))
+                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                                <strong>{{ $errors->first('mobile') }}</strong>
+                                            </span>
+                                        @enderror
                                     </div> 
-                                </div>
-    
-                                <div class="form-row mb-3">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="gender">Gender*</label>
                                       <select class="form-control" name="gender" id="gender">
@@ -74,100 +104,28 @@
                                         <option value="1">Male</option>
                                         <option value="2">Female</option>
                                     </select>
+                                    @if($errors->has('gender'))
+                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                                <strong>{{ $errors->first('gender') }}</strong>
+                                            </span>
+                                        @enderror
                                     </div>
+                                </div>
+    
+                                <div class="form-row mb-3">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                         <label for="dob">DOB</label>
-                                        <input type="date" name="dob" id="dob" class="form-control" min="2000-06-02">
+                                        <input type="text" name="dob" id="dob" class="form-control"/>
                                         @if($errors->has('dob'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('dob') }}</strong>
                                             </span>
                                         @enderror
                                     </div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                        <label for="sponsor_id">Sponsor ID</label>
-                                        <input type="text" name="sponsor_id" id="sponsor_id" class="form-control" placeholder="Sponsor ID">
-                                        @if($errors->has('sponsor_id'))
-                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('sponsor_id') }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div> 
-                                </div>
-    
-                                <div class="form-row mb-3">
-                                    <div class="col-md-12 col-sm-12 col-xs-12 mb-3">
-                                        <label for="address">Address</label>
-                                        <textarea class="form-control" name="address"  placeholder="Enter Address"></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                        <label for="city">City</label>
-                                        <input type="text" class="form-control" name="city"  placeholder="Enter City">
-                                    </div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                        <label for="state">State</label>
-                                        <input type="text" class="form-control" name="state"  placeholder="Enter State">
-                                    </div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                        <label for="pin">Pin</label>
-                                        <input type="text" class="form-control" name="pin"  placeholder="Enter Pin No">
-                                    </div>
                                 </div>
                             </div>
-
-                            <div class="well" style="overflow: auto" id="image_div">
-                                <div class="form-row mb-10">
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                        <label for="address_proof">Address Proof</label>
-                                        <input type="file" name="address_proof" class="form-control">
-                                    </div>
-
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                        <label for="address_proof_no">Address Proof No</label>
-                                        <input type="text" name="address_proof" class="form-control" placeholder="Enter Address Proof No">
-                                    </div>
-
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                        <label for="photo_proof">Photo Identity Proof</label>
-                                        <input type="file" name="photo_proof" class="form-control">
-                                    </div>
-                                </div>
-                                @if($errors->has('image'))
-                                    <span class="invalid-feedback" role="alert" style="color:red">
-                                        <strong>{{ $errors->first('image') }}</strong>
-                                    </span>
-                                @enderror
-                           </div>
-
-                            <div class="well" style="overflow: auto">
-                                <div id="color_div">
-                                    <div class="form-row mb-3" >
-                                        <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                            <label for="nom_relation">Nominee Relation</label>
-                                            <input type="text" name="nom_relation" id="nom_relation" class="form-control" placeholder="Enter Nominee Relation">
-                                        </div>    
-                                        <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                            <label for="nom_name">Nominee Name</label>
-                                            <input type="text" name="nom_name" id="nom_name" class="form-control" placeholder="Enter Nominee Name">
-                                        </div>                     
-                                        <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                            <label for="nom_mobile">Nominee Mobile</label>
-                                            <input type="text" name="nom_mobile" id="nom_mobile" class="form-control" placeholder="Enter Nominee Mobile">
-                                        </div>                     
-                                    </div>
-                                    <div class="form-row mb-3" >
-                                        <div class="col-md-12 col-sm-12 col-xs-12 mb-3">
-                                            <label for="nom_address">Nominee Address</label>
-                                            <textarea name="nom_address" id="nom_address" class="form-control" placeholder="Enter Nominee Address"></textarea>
-                                        </div>    
-                                    </div>
-                                </div>
-                            </div>
-    
                             <div class="form-group">    	            	
-                                    {{ Form::submit('Submit', array('class'=>'btn btn-success pull-right')) }}  
+                                {{ Form::submit('Next', array('class'=>'btn btn-success pull-right')) }}  
                             </div>
                             {{ Form::close() }}
     
@@ -185,8 +143,8 @@
     <script>
         $(document).ready(function(){
             // $('.member_data').hide();
-            fetch_member_data();
-            function fetch_member_data(query = ''){
+            // fetch_member_data();
+            function fetch_member_data(query){
                 $.ajaxSetup({
 	                headers: {
 	                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -196,23 +154,35 @@
                     url: "{{route('member.search_sponsor_id')}}",
                     method: "GET",
                     data: {query:query},
-                    dataType: 'JSON',
+                    beforeSend: function() {
+                        $("#loading-image").show();
+                    },
                     success: function(data){
-                        $('#member_data').html(data.table_data);
-                        // if(data.total_data == 0){
-                        //     $('.search_sponsor_id_error').text("Give a valid sponsor ID");
-                        // }
+                        if(data == 5){
+                            $('#member_data').html("<font color='red'>All lags are full! Try with another Sponsor ID</font>").fadeIn( "slow" );
+                            $("#loading-image").hide();
+                        }else if(data == 1){
+                            $('#member_data').html("<font color='red'>Invalid Sponsor ID!</font>").fadeIn( "slow" );
+                            $("#loading-image").hide();
+                        }else{
+                            $('#member_data').html(data);
+                            $("#loading-image").hide();
+                        }
                     }
                 });
             }
-
             $(document).on('blur', '#search_sponsor_id', function(){
                 var query = $(this).val();
                 if(query){
                     fetch_member_data(query);
                 }
             });
-          
+
+            $( "#dob" ).datepicker({
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "-50:+0",
+            });
         });
 
         /***

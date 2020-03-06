@@ -46,7 +46,7 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
      */
     Route::get('/matching/income', 'MatchingIncomeController@memMatchingIncomeForm')->name('admin.mem_matching_income');
     Route::post('/add/matching/income', 'MatchingIncomeController@memAddMatchingIncome')->name('admin.mem_add_matching_income');
-
+    
     /***
      * Member Prdouct Control
      */
@@ -57,9 +57,9 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
         Route::get('/edit/product/{id}', 'MemberProductController@editMemberProduct')->name('admin.edit_member_product');
         Route::post('/update/product/', 'MemberProductController@updateMemberProduct')->name('admin.mem_update_new_product');
         Route::get('/delete/product/{id}', 'MemberProductController@deleteMemberProduct')->name('admin.delete_member_product');
-
+        
     }); 
-
+    
 });
 
 /***
@@ -69,10 +69,17 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/dashboard', 'MemberDashboardController@index')->name('member.dashboard');
     Route::get('/profile', 'MemberDashboardController@profile')->name('member.profile');
     Route::get('/member/list', 'MemberDashboardController@memberList')->name('member.member_list');
-    Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member');
-
+    Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member_form');
+    Route::get('/add/epin/{epin_page_token}', 'MemberDashboardController@addEpinForm')->name('member.add_epin_form');
+    
     /***
      * Sponsor ID Search
      */
     Route::get('/search/sponsorID', 'SponsorIDController@searchSponsorID')->name('member.search_sponsor_id');
+
+    /***
+     * Member Registration Controller
+     */
+    Route::post('/add', 'MemberRegistrationController@addNewMember')->name('member.add_new_member');
+    Route::post('/final/data', 'MemberRegistrationController@finalSubmit')->name('member.final_submit');
 }); 

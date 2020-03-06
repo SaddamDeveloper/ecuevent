@@ -25,7 +25,7 @@
                     </div>
                         <div>
                             <div class="x_content">
-                                <a href="{{route('member.add_new_member')}}" class="btn btn-primary">Add Member</a>
+                                <a href="{{route('member.add_new_member_form')}}" class="btn btn-primary">Add Member</a>
                             </div>
                         </div>
                     </div>
