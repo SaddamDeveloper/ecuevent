@@ -32,14 +32,17 @@
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                     </div>
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
-                                        <label for="search_sponsor_id">Sponsor ID</label>
-                                        <input type="text" name="search_sponsor_id" id="search_sponsor_id" class="form-control" placeholder="Sponsor ID">
                                         <div id="myDiv">
                                             <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
                                         </div>
+                                        <label for="search_sponsor_id">Sponsor ID</label>
+                                        <input type="text" name="search_sponsor_id" id="search_sponsor_id" class="form-control" placeholder="Sponsor ID">
                                         <div id="member_data"></div><br>
+                                        
                                     </div> 
+                                    
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
+                                        
                                     </div>
                                 </div>
                                 <div class="form-row mb-10 mb-2">

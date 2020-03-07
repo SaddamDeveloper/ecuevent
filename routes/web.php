@@ -40,6 +40,8 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
      * Epin Allot Control
      */
     Route::get('/allot/epin', 'EpinAllotController@memAllotEpinForm')->name('admin.mem_allot_epin_form');
+    Route::get('/search/memberID', 'EpinAllotController@searchMemberID')->name('member.search_member_id');
+    Route::post('/add/new/allot/epin', 'EpinAllotController@memAllotEpin')->name('admin.mem_allot_epin');
     
     /***
      * Member Macthing Income Control

@@ -35,6 +35,8 @@
 
     <!-- Custom Theme Style -->
     <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
+
+    @yield('css')
   </head>
   <body class="nav-md">
     <div class="container body">
