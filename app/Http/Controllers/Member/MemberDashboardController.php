@@ -29,7 +29,6 @@ class MemberDashboardController extends Controller
         try{
             $token = decrypt($token);
         }catch(DecryptException $e) {
-            // return redirect()->back();
             abort(404);
         }
 
@@ -37,6 +36,26 @@ class MemberDashboardController extends Controller
             $session_token = Session::get('epin_page_token');
             if ( $session_token == $token) {
                 return view('member.registration.add_epin_form');
+            } else {
+                abort(404);
+            }
+        }else{
+            abort(404);
+        }
+       
+    }
+
+    public function addTermsForm($token){
+        try{
+            $token = decrypt($token);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+
+        if (Session::has('terms_page_token') && !empty(Session::get('terms_page_token'))) {
+            $session_token = Session::get('terms_page_token');
+            if ( $session_token == $token) {
+                return view('member.registration.add_terms_form');
             } else {
                 abort(404);
             }

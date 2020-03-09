@@ -44,18 +44,11 @@ class EpinController extends Controller
 
     public function ajaxGetEpinList()
     {    
-        $query = DB::table('epin');
-       
+        $query = DB::table('epin')
+                ->leftjoin('members', 'epin.alloted_to', '=', 'members.id')
+                ->select('epin.*', 'members.name');
             return datatables()->of($query->get())
             ->addIndexColumn()
-            // ->addColumn('action', function($row){
-            //        $btn = '
-            //        <a href="" class="btn btn-info btn-sm" target="_blank">View</a>
-            //        <a href="" class="btn btn-warning btn-sm">Edit</a>                   
-            //        ';
-            //         return $btn;
-            // })
-            // ->rawColumns(['action'])
             ->make(true);
     }
 

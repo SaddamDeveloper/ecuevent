@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Session;
+use DB;
+use Auth;
+use Hash;
+use Carbon\Carbon;
+
 class MemberRegistrationController extends Controller
 {
     public function addNewMember(Request $request){
@@ -28,14 +33,13 @@ class MemberRegistrationController extends Controller
         $dob = $request->input('dob');
 
         $member_data = [
-            $sponsorID => [
                 'full_name' => $fullName,
                 'email' => $email,
                 'mobile' => $mobile,
                 'gender' => $gender,
-                'dob' => $dob
-            ],
-            "lag" => $lag
+                'dob' => $dob,
+                'sponsorID' => $sponsorID,
+                "lag" => $lag
         ];
 
         Session::put('member_data', $member_data);
@@ -46,26 +50,105 @@ class MemberRegistrationController extends Controller
         return redirect()->route('member.add_epin_form',['epin_page_token'=>encrypt($token)]);
     }
 
-    public function finalSubmit(Request $request){
+    public function epinSubmit(Request $request){
         $validatedData = $request->validate([
-            'epin' => 'required',
+            'epin' => 'required|exists:epin',
         ]);
 
-        if(Session::has('member_data') && !empty(Session::get('member_data'))) {
-            $members = Session::get('member_data');
-            $member_data =[];
-            
-            if(count($member) > 0){
-                foreach ($member as $member_id => $value) {
-                    $members = DB::table('products')->where('id',$member_id)
-                        ->whereNull('deleted_at')
-                        ->where('status',1)
-                        ->first();
-                }
+        if(!DB::table('epin')->where('epin', '=', $request->input('epin'))->where('status', 1)->count() > 0){
+            if(Session::has('member_data') && !empty(Session::get('member_data'))) {
+                $members = Session::get('member_data');
+                $members['epin'] = $request->input('epin');
+                Session::put('member_data_epin', $members);
+                Session::save();
+                $token = rand(111111,999999);
+                Session::put('terms_page_token', $token);
+                Session::save();
+                return redirect()->route('member.add_terms_form',['terms_page_token'=>encrypt($token)]);
             }
         }
         else{
-            $cart = false;
+            return redirect()->back()->with('error','EPIN is already been used! Try Different one!');
         }
+        
+        
+        /*if(Session::has('member_data') && !empty(Session::get('member_data'))) {
+            $members = Session::get('member_data');
+            $member_data =[];
+            if(count($members) > 0){
+                $member_data[] = [
+                    'member_id' => ++$members['sponsorID'],
+                    'name' => $members['full_name'],
+                    'email' => $members['email'],
+                    'mobile' => $members['mobile'],
+                    'gender' => $members['gender'],
+                    'dob' => $members['dob'],
+                    'lag' => $members['lag']
+                    ];
+                    return $member_data;
+            }
+        }*/
+    }
+
+    public function termsSubmit(Request $request){
+        $validatedData = $request->validate([
+            'terms' => 'required',
+        ]);
+
+        if(Session::has('member_data_epin') && !empty(Session::get('member_data_epin'))) {
+            $members = Session::get('member_data_epin');
+            $fullName = $members['full_name'];
+            $generatedID = $this->memberIDGeneration($fullName);
+            $email = $members['email'];
+            $password = Hash::make(123456);
+            $mobile = $members['mobile'];
+            $gender = $members['gender'];
+            $dob = $members['dob'];
+            $status = 1;
+            $epin = $members['epin'];
+            $members['terms'] = $request->input('terms');
+
+            $member_insert = DB::table('members')
+            ->insert([
+                   'member_id' =>  $generatedID,
+                   'name' => $fullName,
+                   'email' => $email,
+                   'password' => $password,
+                   'mobile' => $mobile,
+                   'gender' => $gender,
+                   'dob' => $dob,
+                   'status' => $status,
+                   'epin' => $epin,
+                   'policy_is_agree' => $members['terms'],
+                   'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+               ]);
+
+        }
+
+    }
+
+    function memberIDGeneration($fullName){
+
+        $splitName = explode(' ', $fullName, 3); 
+
+        $first_name = $splitName[0];
+        $last_name = $splitName[2];
+
+        $title_id = $first_name[0].$last_name[0];
+        
+        $sql = DB::table('members')->select(DB::raw('max(substring(member_id, 8-LENGTH("'.$title_id.'"))) as max_val'))->get();
+            foreach($sql as $row_data){
+                $postfix =  $row_data->max_val;
+            }
+            $count = DB::table('members')->select(DB::raw('max(substring(member_id, 8-LENGTH("'.$title_id.'"))) as max_val'))->get()->count();
+            if($count == 0){
+                $title_id = $title_id.'000001';
+            }
+            else{
+                $postfix = $postfix + 1;
+                $addVal=str_pad($postfix, 8-strlen($title_id), '0', STR_PAD_LEFT);
+                $title_id=$title_id.$addVal;
+            }
+        return $title_id;
     }
 }

@@ -73,6 +73,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/member/list', 'MemberDashboardController@memberList')->name('member.member_list');
     Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member_form');
     Route::get('/add/epin/{epin_page_token}', 'MemberDashboardController@addEpinForm')->name('member.add_epin_form');
+    Route::get('/add/terms/{terms_page_token}', 'MemberDashboardController@addTermsForm')->name('member.add_terms_form');
     
     /***
      * Sponsor ID Search
@@ -83,5 +84,12 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
      * Member Registration Controller
      */
     Route::post('/add', 'MemberRegistrationController@addNewMember')->name('member.add_new_member');
-    Route::post('/final/data', 'MemberRegistrationController@finalSubmit')->name('member.final_submit');
+    Route::post('/epin/data', 'MemberRegistrationController@epinSubmit')->name('member.epin_submit');
+    Route::post('/terms/data', 'MemberRegistrationController@termsSubmit')->name('member.terms_submit');
+
+    /***
+     * Member Epin Control
+     */
+    Route::get('/my/epin/', 'MemberEpinController@memberEpinListForm')->name('member.mem_epin_list_form');
+    Route::get('/my/epin/list', 'MemberEpinController@memberGetEpinList')->name('member.ajax.my_epin_list');
 }); 

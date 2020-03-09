@@ -25,7 +25,7 @@
                     <div>
                         <div class="x_content">
 
-                            {{ Form::open(['method' => 'post','route'=>'member.final_submit']) }}
+                            {{ Form::open(['method' => 'post','route'=>'member.epin_submit']) }}
                             <div class="well" style="overflow: auto">
 
                                 <div class="form-row mb-10 mb-2">
@@ -46,7 +46,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                {{ Form::submit('Submit', array('class'=>'btn btn-success pull-right')) }}  
+                                {{ Form::submit('Next', array('class'=>'btn btn-success pull-right')) }}  
                             </div>
                             {{ Form::close() }}
     

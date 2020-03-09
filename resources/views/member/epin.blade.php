@@ -1,5 +1,5 @@
 
-@extends('admin.template.admin_master')
+@extends('member.template.member_master')
 
 @section('content')
 
@@ -11,7 +11,7 @@
                     <div class="x_panel">
     
                         <div class="x_title">
-                            <h2>Add New EPIN</h2>
+                            <h2>My EPIN</h2>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -25,8 +25,8 @@
                     </div>
                         <div>
                             <div class="x_content">
-                                <a href="{{route('admin.mem_add_epin_form')}}" class="btn btn-primary">Add New EPIN</a>
-                                <a href="{{route('admin.mem_allot_epin_form')}}" class="btn btn-primary">Allot EPIN</a>
+                                {{-- <a href="{{route('admin.mem_add_epin_form')}}" class="btn btn-primary">Add New EPIN</a> --}}
+                                {{-- <a href="{{route('admin.mem_allot_epin_form')}}" class="btn btn-primary">Allot EPIN</a> --}}
                             </div>
                         </div>
                         <div>
@@ -61,7 +61,7 @@
             var table = $('#epin_list').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.ajax.get_epin_list') }}",
+                ajax: "{{ route('member.ajax.my_epin_list') }}",
                 columns: [
                     {data: 'id', name: 'id',searchable: true},
                     {data: 'epin', name: 'epin',searchable: true},
