@@ -1,15 +1,16 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="icon" href="images/favicon.ico" type="image/ico" />
 
-    <title>ECU EVENT</title>
+    <title>{{ __('ECU EVENT') }}</title>
 
     <!-- Bootstrap -->
     <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -38,7 +39,7 @@
 
     @yield('css')
   </head>
-  <body class="nav-md">
+  <body class="{{ $class='nav-md' ?? '' }}">
     <div class="container body">
       <div class="main_container">
         <!-- Left Naviagtion-->
