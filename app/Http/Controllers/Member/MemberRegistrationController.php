@@ -33,13 +33,13 @@ class MemberRegistrationController extends Controller
         $dob = $request->input('dob');
 
         $member_data = [
-                'full_name' => $fullName,
-                'email' => $email,
-                'mobile' => $mobile,
-                'gender' => $gender,
-                'dob' => $dob,
-                'sponsorID' => $sponsorID,
-                "lag" => $lag
+            'full_name' => $fullName,
+            'email' => $email,
+            'mobile' => $mobile,
+            'gender' => $gender,
+            'dob' => $dob,
+            'sponsorID' => $sponsorID,
+            "lag" => $lag
         ];
 
         Session::put('member_data', $member_data);
@@ -70,24 +70,6 @@ class MemberRegistrationController extends Controller
         else{
             return redirect()->back()->with('error','EPIN is already been used! Try Different one!');
         }
-        
-        
-        /*if(Session::has('member_data') && !empty(Session::get('member_data'))) {
-            $members = Session::get('member_data');
-            $member_data =[];
-            if(count($members) > 0){
-                $member_data[] = [
-                    'member_id' => ++$members['sponsorID'],
-                    'name' => $members['full_name'],
-                    'email' => $members['email'],
-                    'mobile' => $members['mobile'],
-                    'gender' => $members['gender'],
-                    'dob' => $members['dob'],
-                    'lag' => $members['lag']
-                    ];
-                    return $member_data;
-            }
-        }*/
     }
 
     public function termsSubmit(Request $request){
@@ -109,7 +91,7 @@ class MemberRegistrationController extends Controller
             $members['terms'] = $request->input('terms');
 
             $member_insert = DB::table('members')
-            ->insert([
+            ->insertGetId([
                    'member_id' =>  $generatedID,
                    'name' => $fullName,
                    'email' => $email,
@@ -122,6 +104,18 @@ class MemberRegistrationController extends Controller
                    'policy_is_agree' => $members['terms'],
                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                ]);
+
+               if($member_insert){
+                DB::table('tree')
+                ->update([
+                       'user_id' =>  Auth::user()->id,
+                       'left_id' => $member_insert ? $member_insert : '',
+                       'right_id' => $member_insert ? $member_insert : '',
+                       'parent_id' => Auth::user()->id,
+                       'registered_by' => Auth::user()->id,
+                       'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                   ]);
+               }
 
         }
 
