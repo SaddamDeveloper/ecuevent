@@ -4252,4 +4252,37 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
     border-radius: 0px !important;
     background-color: #ffff !important;
 }
-/** /bootstrap-datetimepicker **/
+/** /bnew changes **/
+.productsction .producttitle h4{
+    text-align: center;
+    font-size: 20px;
+    margin: 0;
+    color: #000;
+    font-weight: bold;
+}
+.productsction .producttitle p{
+    text-align: center;
+    font-size: 16px;
+}
+.productsction .productcontent img{
+    width: 100%;
+    cursor: pointer;
+}
+.productsction .productcontent h5{
+    text-align: center;
+    border: 1px solid red;
+    padding: 5px 0;
+}
+.productsction .productcontent .singleproduct img.fstchld {
+    border: 1px solid red;
+    margin-bottom: 20px;
+}
+.bottomcontent h5{
+    display: table;
+    padding: 7px 65px!important;
+    color: #333;
+    margin: 20px auto 0;
+    border: 0!important;
+    font-size: 26px;
+    background: linear-gradient(#aae8dd,#43c1ac);
+}

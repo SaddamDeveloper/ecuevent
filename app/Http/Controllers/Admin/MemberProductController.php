@@ -28,7 +28,7 @@ class MemberProductController extends Controller
             'image1' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'image2' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]); 
-
+        // return $request;
         $name = $request->input('name');
         $price = $request->input('price');
         $image1 = null;
@@ -36,14 +36,15 @@ class MemberProductController extends Controller
         if($request->hasfile('image1'))
         {
             $image1_array = $request->file('image1');
-            $image1 = $this->imageInsert($image1_array, $request);
+            $image1 = $this->imageInsert($image1_array, $request, 1);
         }
         if($request->hasfile('image2'))
         {
             $image2_array = $request->file('image2');
-            $image2 = $this->imageInsert($image2_array, $request);
+            $image2 = $this->imageInsert($image2_array, $request, 2);
         }
 
+        // return $image1;
         $product_insert = DB::table('member_product')
                         ->insertGetId([
                             'name' => $name,
@@ -61,12 +62,11 @@ class MemberProductController extends Controller
         } 
     }
 
-    function imageInsert($image, Request $request){
-
+    function imageInsert($image, Request $request, $flag){
         // $image = $request->file('img');
         $destination = base_path().'/public/member/product/';
         $image_extension = $image->getClientOriginalExtension();
-        $image_name = md5(date('now').time())."-".$request->input('category_name')."."."$image_extension";
+        $image_name = md5(date('now').time()).$flag.".".$image_extension;
         $original_path = $destination.$image_name;
         Image::make($image)->save($original_path);
         $thumb_path = base_path().'/public/member/product/thumb/'.$image_name;

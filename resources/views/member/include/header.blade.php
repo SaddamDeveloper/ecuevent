@@ -34,7 +34,7 @@
     <link href="{{asset('vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css')}}" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="{{asset('build/css/custom.min.css')}}" rel="stylesheet">
+    <link href="{{asset('build/css/custom.css')}}" rel="stylesheet">
     <link href="{{asset('production/css/jquery-ui.css')}}" rel="stylesheet">
     @yield('css')
   </head>

@@ -89,7 +89,8 @@ class MemberRegistrationController extends Controller
             $status = 1;
             $epin = $members['epin'];
             $members['terms'] = $request->input('terms');
-
+            $lag = $members['lag'];
+            
             $member_insert = DB::table('members')
             ->insertGetId([
                    'member_id' =>  $generatedID,
@@ -106,15 +107,36 @@ class MemberRegistrationController extends Controller
                ]);
 
                if($member_insert){
-                DB::table('tree')
-                ->update([
-                       'user_id' =>  Auth::user()->id,
-                       'left_id' => $member_insert ? $member_insert : '',
-                       'right_id' => $member_insert ? $member_insert : '',
-                       'parent_id' => Auth::user()->id,
-                       'registered_by' => Auth::user()->id,
-                       'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                   ]);
+                        DB::table('tree')
+                        ->update([
+                               'user_id' =>  Auth::user()->id,
+                               'left_id' => $lag == 1 ? $member_insert : NULL,
+                               'right_id' => $lag == 2 ? $member_insert : NULL,
+                               'parent_id' => Auth::user()->id,
+                               'registered_by' => Auth::user()->id,
+                               'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                           ]);
+                        
+                        DB::table('epin')
+                        ->where('epin', $epin)
+                        ->update([
+                               'status' => 1,
+                               'used_by'    => $member_insert,
+                               'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                           ]);
+
+                        $tree_insert =  DB::table('tree')
+                        ->insert([
+                                'user_id' =>  $member_insert,
+                                'parent_id' => Auth::user()->id,
+                                'registered_by' => Auth::user()->id,
+                                'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                            ]);
+
+                $token = rand(111111,999999);
+                Session::put('product_page_token', $token);
+                Session::save();
+                return redirect()->route('member.product_page',['product_page_token'=>encrypt($token)]);
                }
 
         }

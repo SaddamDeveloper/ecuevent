@@ -29,7 +29,7 @@
           <section class="login_content">
             {{ Form::open(array('url' => 'admin/login', 'method' => 'post')) }}
 
-              <h1>Admin Login Form</h1>
+              <h1>{{__('Admin Login')}}</h1>
               <div>
                 @if ($message = Session::get('login_error'))
                   <span class="invalid-feedback text-danger" role="alert">

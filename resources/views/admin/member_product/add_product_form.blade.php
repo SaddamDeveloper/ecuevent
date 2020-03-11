@@ -56,7 +56,7 @@
                                 <div class="form-row mb-10">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                         <label for="size">Image</label>
-                                        <input type="file" name="image1" class="form-control">
+                                        <input type="file" name="image1" value="{{old('image1')}}" class="form-control">
                                         @if($errors->has('image1'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('image1') }}</strong>
@@ -67,23 +67,19 @@
                                     
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                             <label for="size">Image</label>
-                                            <input type="file" name="image2" class="form-control">
+                                            <input type="file" name="image2" value="{{old('image2')}}"  class="form-control">
                                             @if($errors->has('image2'))
                                                 <span class="invalid-feedback" role="alert" style="color:red">
                                                     <strong>{{ $errors->first('image2') }}</strong>
                                                 </span>
                                             @enderror
-            
                                     </div>
-                               
                                 </div>
-                               
-                           </div>
-    
-                                    <div class="form-group">    	            	
-                                    {{ Form::submit('Submit', array('class'=>'btn btn-success')) }}  
-                                    </div>
-                                    {{ Form::close() }}
+                            </div>
+                            <div class="form-group">    	            	
+                                {{ Form::submit('Submit', array('class'=>'btn btn-success')) }}  
+                            </div>
+                                {{ Form::close() }}
     
                             </div>
                         </div>

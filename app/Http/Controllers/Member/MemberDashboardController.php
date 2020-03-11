@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Session;
 use Illuminate\Contracts\Encryption\DecryptException;
+use DB;
 
 class MemberDashboardController extends Controller
 {
@@ -56,6 +57,27 @@ class MemberDashboardController extends Controller
             $session_token = Session::get('terms_page_token');
             if ( $session_token == $token) {
                 return view('member.registration.add_terms_form');
+            } else {
+                abort(404);
+            }
+        }else{
+            abort(404);
+        }
+       
+    }
+    
+    public function productPage($token){
+        try{
+            $token = decrypt($token);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+
+        if (Session::has('product_page_token') && !empty(Session::get('product_page_token'))) {
+            $session_token = Session::get('product_page_token');
+            if ( $session_token == $token) {
+                $products = DB::table('member_product')->take(3)->get();
+                return view('member.registration.product_page', compact('products'));
             } else {
                 abort(404);
             }

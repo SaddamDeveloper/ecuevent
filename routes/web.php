@@ -74,6 +74,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member_form');
     Route::get('/add/epin/{epin_page_token}', 'MemberDashboardController@addEpinForm')->name('member.add_epin_form');
     Route::get('/add/terms/{terms_page_token}', 'MemberDashboardController@addTermsForm')->name('member.add_terms_form');
+    Route::get('/add/product/{product_page_token}', 'MemberDashboardController@productPage')->name('member.product_page');
     
     /***
      * Sponsor ID Search
