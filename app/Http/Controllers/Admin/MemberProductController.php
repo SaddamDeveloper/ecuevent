@@ -28,7 +28,7 @@ class MemberProductController extends Controller
             'image1' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'image2' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]); 
-        // return $request;
+
         $name = $request->input('name');
         $price = $request->input('price');
         $image1 = null;
@@ -44,7 +44,6 @@ class MemberProductController extends Controller
             $image2 = $this->imageInsert($image2_array, $request, 2);
         }
 
-        // return $image1;
         $product_insert = DB::table('member_product')
                         ->insertGetId([
                             'name' => $name,

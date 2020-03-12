@@ -5,7 +5,6 @@
     <!-- page content -->
     <div class="right_col" role="main">
         <div class="row">
-            {{-- <div class="col-md-2"></div> --}}
             <div class="col-md-12" style="margin-top:50px;">
                 <div class="x_panel">
     
@@ -33,20 +32,19 @@
                                     </div>
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                         <label for="add_epin">Add EPIN</label>
-                                        <input type="text" name="epin" class="form-control" placeholder="Add EPIN Number">
-                                        @if($errors->has('epin'))
-                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('epin') }}</strong>
-                                            </span>
-                                        @enderror
+                                        <input type="text" name="epin" id="epin" class="form-control" placeholder="Add EPIN Number" required>
+                                        <div id="myDiv">
+                                            <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
+                                        </div>
+                                        <div id="epin_msg"></div>    
                                         <br>
                                     </div> 
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                {{ Form::submit('Next', array('class'=>'btn btn-success pull-right')) }}  
+                            <div class="form-group submitBtn">
+                               
                             </div>
                             {{ Form::close() }}
     
@@ -54,7 +52,6 @@
                     </div>
                 </div>
             </div>
-            {{-- <div class="col-md-2"></div> --}}
         </div>
     </div>
     <!-- /page content -->
@@ -63,8 +60,6 @@
 @section('script')
     <script>
         $(document).ready(function(){
-            // $('.member_data').hide();
-            // fetch_member_data();
             function fetch_member_data(query){
                 $.ajaxSetup({
 	                headers: {
@@ -72,63 +67,43 @@
 	                }
 	            });
                 $.ajax({
-                    url: "{{route('member.search_sponsor_id')}}",
+                    url: "{{route('member.validate_epin')}}",
                     method: "GET",
                     data: {query:query},
                     beforeSend: function() {
                         $("#loading-image").show();
                     },
                     success: function(data){
-                        if(data == 5){
-                            $('#member_data').html("<font color='red'>All lags are full! Try with another Sponsor ID</font>").fadeIn( "slow" );
+                        if(data == 1){
+                            $('#epin_msg').html("<font color='red'><i class='fa fa-times'></i> Something went wrong!</font>").fadeIn( "slow" );
                             $("#loading-image").hide();
-                        }else if(data == 1){
-                            $('#member_data').html("<font color='red'>Invalid Sponsor ID!</font>").fadeIn( "slow" );
+                        }
+                        else if(data == 2){
+                            $('#epin_msg').html("<font color='red'><i class='fa fa-times'></i> Invalid EPIN</font>").fadeIn( "slow" );
+                            $("#loading-image").hide();
+                        }else if(data == 3){
+                            $('#epin_msg').html("<font color='red'><i class='fa fa-times'></i> EPIN is already been used!</font>").fadeIn( "slow" );
+                            $("#loading-image").hide();
+                        }
+                        else if(data == 5){
+                            $('#epin_msg').html("<font color='red'><i class='fa fa-times'></i> Not your EPIN!</font>").fadeIn( "slow" );
                             $("#loading-image").hide();
                         }else{
-                            $('#member_data').html(data);
+                            $('.submitBtn').html(data);
                             $("#loading-image").hide();
+                            $('#epin_msg').html("<font color='success'><i class='fa fa-check'></i> Yay! Unused EPIN!</font>").fadeIn( "slow" )
                         }
                     }
                 });
             }
-            $(document).on('blur', '#search_sponsor_id', function(){
+            $(document).on('blur', '#epin', function(){
                 var query = $(this).val();
                 if(query){
                     fetch_member_data(query);
                 }
             });
-
-            $( "#dob" ).datepicker({
-                changeMonth: true,
-                changeYear: true,
-                yearRange: "-50:+0",
-            });
         });
-
-        /***
-        * Display till today in DOB
-        */
-        var dtToday = new Date();
-        var month = dtToday.getMonth() + 1;     // getMonth() is zero-based
-        var day = dtToday.getDate();
-        var year = dtToday.getFullYear();
-        if(month < 10)
-            month = '0' + month.toString();
-        if(day < 10)
-            day = '0' + day.toString();
-
-        var maxDate = year + '-' + month + '-' + day;
-        $('#dob').attr('max', maxDate);
     </script>
 @endsection
-
-@section('css')
-    <style>
-        #search_sponsor_id{
-            text-transform: uppercase;
-        }
-    </style>
-@stop
 
 

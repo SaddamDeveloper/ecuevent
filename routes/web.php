@@ -80,6 +80,12 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
      * Sponsor ID Search
      */
     Route::get('/search/sponsorID', 'SponsorIDController@searchSponsorID')->name('member.search_sponsor_id');
+    
+    /***
+     * Epin Validate
+     */
+
+    Route::get('/validate/EPIN', 'MemberRegistrationController@validateEPIN')->name('member.validate_epin');
 
     /***
      * Member Registration Controller
@@ -87,6 +93,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::post('/add', 'MemberRegistrationController@addNewMember')->name('member.add_new_member');
     Route::post('/epin/data', 'MemberRegistrationController@epinSubmit')->name('member.epin_submit');
     Route::post('/terms/data', 'MemberRegistrationController@termsSubmit')->name('member.terms_submit');
+    Route::post('/product/data', 'MemberRegistrationController@productPurchase')->name('member.product_purchase');
 
     /***
      * Member Epin Control

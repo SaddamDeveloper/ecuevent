@@ -10,10 +10,11 @@ class SponsorIDController extends Controller
     public function searchSponsorID(Request $request){
         if($request->ajax()){
             $member_id = $request->get('query');
-            if (!empty($member_id)) {
+            if(!empty($member_id)) {
                 $member_data = DB::table('members')->where('member_id', $member_id)->first();
-                if ($member_data) {
+                if($member_data) {
                     $tree_data = DB::table('tree')->where('user_id', $member_data->id)->first();
+                    
                     if($tree_data){
                         if(is_null($tree_data->left_id) && is_null($tree_data->right_id)){
                             $html = '

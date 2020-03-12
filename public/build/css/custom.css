@@ -4266,7 +4266,6 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 }
 .productsction .productcontent img{
     width: 100%;
-    cursor: pointer;
 }
 .productsction .productcontent h5{
     text-align: center;
@@ -4286,3 +4285,21 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
     font-size: 26px;
     background: linear-gradient(#aae8dd,#43c1ac);
 }
+
+/* HIDE RADIO */
+.singleproduct [type=radio] { 
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* IMAGE STYLES */
+.singleproduct [type=radio] ~ img {
+    cursor: pointer;
+}
+  
+/* CHECKED STYLES */
+.singleproduct [type=radio]:checked ~ img {
+    outline: 2px solid #f00;
+  }

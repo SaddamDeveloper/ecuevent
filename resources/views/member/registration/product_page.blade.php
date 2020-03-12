@@ -24,7 +24,7 @@
                     </div>
                     <div>
                         <div class="x_content">
-                            
+                            {{ Form::open(['method' => 'post','route'=>'member.product_purchase']) }}
                             <div class="well" style="overflow: auto">
 
                                 <div class="form-row mb-10 mb-2">
@@ -40,13 +40,16 @@
                                                 <div class="row">
                                                     @foreach ($products as $product)
                                                     <div class="col-md-4 singleproduct">
-                                                    <h5>{{$product->name}}</h5>
-                                                        <img src="{{asset('member/product/thumb/'.$product->image1)}}" alt="" class="fstchld">
-                                                        <img src="{{asset('member/product/thumb/'.$product->image2)}}" alt="">
+                                                        <label>
+                                                            <input type="radio" name="product" value="{{$product->id}}">
+                                                            <h5>{{$product->name}}</h5>
+                                                            <img src="{{asset('member/product/thumb/'.$product->image1)}}" name="image1" alt="" class="fstchld">
+                                                            <img src="{{asset('member/product/thumb/'.$product->image2)}}" name="image2" alt="" class="sndimg">
+                                                        </label>
                                                     </div>
                                                     @endforeach
                                                     <div class="col-md-12 bottomcontent">
-                                                        <h5>Rs. 2999/ only (include GST)</h5>
+                                                        <h5>{{__('Rs. 2999/ only (include GST)')}}</h5>
                                                     </div>
                                                 </div>
                                             </div>
@@ -61,6 +64,10 @@
                                     </div> 
                                 </div>
                             </div>
+                            <div class="form-group">
+                                {{ Form::submit('Next', array('class'=>'btn btn-success pull-right')) }}  
+                            </div>
+                            {{ Form::close() }}
                         </div>
                     </div>
                 </div>
@@ -73,73 +80,8 @@
 
 @section('script')
     <script>
-        $(document).ready(function(){
-            // $('.member_data').hide();
-            // fetch_member_data();
-            function fetch_member_data(query){
-                $.ajaxSetup({
-	                headers: {
-	                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-	                }
-	            });
-                $.ajax({
-                    url: "{{route('member.search_sponsor_id')}}",
-                    method: "GET",
-                    data: {query:query},
-                    beforeSend: function() {
-                        $("#loading-image").show();
-                    },
-                    success: function(data){
-                        if(data == 5){
-                            $('#member_data').html("<font color='red'>All lags are full! Try with another Sponsor ID</font>").fadeIn( "slow" );
-                            $("#loading-image").hide();
-                        }else if(data == 1){
-                            $('#member_data').html("<font color='red'>Invalid Sponsor ID!</font>").fadeIn( "slow" );
-                            $("#loading-image").hide();
-                        }else{
-                            $('#member_data').html(data);
-                            $("#loading-image").hide();
-                        }
-                    }
-                });
-            }
-            $(document).on('blur', '#search_sponsor_id', function(){
-                var query = $(this).val();
-                if(query){
-                    fetch_member_data(query);
-                }
-            });
-
-            $( "#dob" ).datepicker({
-                changeMonth: true,
-                changeYear: true,
-                yearRange: "-50:+0",
-            });
-        });
-
-        /***
-        * Display till today in DOB
-        */
-        var dtToday = new Date();
-        var month = dtToday.getMonth() + 1;     // getMonth() is zero-based
-        var day = dtToday.getDate();
-        var year = dtToday.getFullYear();
-        if(month < 10)
-            month = '0' + month.toString();
-        if(day < 10)
-            day = '0' + day.toString();
-
-        var maxDate = year + '-' + month + '-' + day;
-        $('#dob').attr('max', maxDate);
+        
     </script>
 @endsection
-
-@section('css')
-    <style>
-        #search_sponsor_id{
-            text-transform: uppercase;
-        }
-    </style>
-@stop
 
 
