@@ -22,6 +22,7 @@ class MemberRegistrationController extends Controller
         ]);
 
         $sponsorID = $request->input('search_sponsor_id');
+        $sponsorVal = $request->input('sponsorVal');
         $lag = $request->input('lag');
         $f_name = $request->input('f_name');
         $m_name = $request->input('m_name');
@@ -31,23 +32,37 @@ class MemberRegistrationController extends Controller
         $mobile = $request->input('mobile');
         $gender = $request->input('gender');
         $dob = $request->input('dob');
-
-        $member_data = [
-            'full_name' => $fullName,
-            'email' => $email,
-            'mobile' => $mobile,
-            'gender' => $gender,
-            'dob' => $dob,
-            'sponsorID' => $sponsorID,
-            "lag" => $lag
-        ];
-
-        Session::put('member_data', $member_data);
-        Session::save();
-        $token = rand(111111,999999);
-        Session::put('epin_page_token', $token);
-        Session::save();
-        return redirect()->route('member.add_epin_form',['epin_page_token'=>encrypt($token)]);
+        
+        if($sponsorVal == 5){
+            return redirect()->back()->with('error', 'All lags are full! Try with another Sponsor ID.');
+        }
+        else if($sponsorVal == 1){
+            return redirect()->back()->with('error', 'Invalid Sponsor ID!');
+        }
+        else{
+            if(DB::table('members')->where('mobile', $mobile)->count() < 1){
+                $member_data = [
+                    'full_name' => $fullName,
+                    'email' => $email,
+                    'mobile' => $mobile,
+                    'gender' => $gender,
+                    'dob' => $dob,
+                    'sponsorID' => $sponsorID,
+                    "lag" => $lag
+                ];
+        
+                Session::put('member_data', $member_data);
+                Session::save();
+                $token = rand(111111,999999);
+                Session::put('epin_page_token', $token);
+                Session::save();
+                return redirect()->route('member.add_epin_form',['epin_page_token'=>encrypt($token)]);
+    
+            }
+            else{
+                return redirect()->back()->with('error', 'Mobile Number Exists.');
+            }
+        }
     }
 
     public function epinSubmit(Request $request){
@@ -73,8 +88,8 @@ class MemberRegistrationController extends Controller
                 $members['terms'] = $request->input('terms');
                 $lag = $members['lag']; 
 
-                if(isset($mobile) && !empty($mobile)){
-                    if(!DB::table('members')->where('mobile', $mobile)->count() > 0){
+                try {
+                    DB::transaction(function () use($members,$fullName,$email,$password,$mobile,$gender,$dob,$status,$epin, $lag) {
                         $member_insert = DB::table('members')
                         ->insertGetId([
                             'name' => $fullName,
@@ -89,164 +104,119 @@ class MemberRegistrationController extends Controller
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                         ]);
 
-                        if($member_insert){
-                            $generatedID = $this->memberIDGeneration($fullName, $member_insert);
-                            $member_update = DB::table('members')
-                            ->where('id', $member_insert)
-                            ->update([
-                                'member_id' =>  $generatedID,
-                            ]);
-
-                            try {
-                                DB::transaction(function () use($sponsor_leg,$sponsor_node,$buyer_id,$total_node,$joining_level,$order_by) {});
-                        }catch (\Exception $e) {
-                              return redirect()->back()->with('error','Something Went Wrong Please try Again');
                     
-                            }
+                        $generatedID = $this->memberIDGeneration($fullName, $member_insert);
+                        $member_update = DB::table('members')
+                        ->where('id', $member_insert)
+                        ->update([
+                            'member_id' =>  $generatedID,
+                            ]);
+                            
 
-                    }
-                    else{
-                        return redirect()->back()->with('error', 'Members is already registered!');
-                    }
-                }else{
-                    return redirect()->back()->with('error', 'Mobile is required');
-                }
-                /*
-                $member_insert = DB::table('members')
-                ->insertGetId([
-                    'name' => $fullName,
-                    'email' => $email,
-                    'password' => $password,
-                    'mobile' => $mobile,
-                    'gender' => $gender,
-                    'dob' => $dob,
-                    'status' => $status,
-                    'epin' => $epin,
-                    'policy_is_agree' => $members['terms'],
-                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                ]);
+                        //Fetch Member Data Using Sponsor ID
+                        $fetch_member = DB::table('members')
+                            ->where('member_id', $members['sponsorID'])
+                            ->first();
 
-                if($member_insert){
-                    $generatedID = $this->memberIDGeneration($fullName, $member_insert);
-                    $member_update = DB::table('members')
-                    ->where('id', $member_insert)
-                    ->update([
-                        'member_id' =>  $generatedID,
-                    ]);
-
-               /* try {
-                    DB::transaction(function () use($sponsor_leg,$sponsor_node,$buyer_id,$total_node,$joining_level,$order_by) {
-                     }
-            }catch (\Exception $e) {
-                  return redirect()->back()->with('error','Something Went Wrong Please try Again');
-        
-                }
-
-                return $generatedID;
-                Session::put('member_data_epin', $members);
-                Session::save();
-                $token = rand(111111,999999);
-                Session::put('terms_page_token', $token);
-                Session::save();
-                return redirect()->route('member.add_terms_form',['terms_page_token'=>encrypt($token)]);*/
-            }
-        }
-        else{
-            return redirect()->back()->with('error','EPIN is already been used! Try Different one!');
-        }
-    }
-}
-
-    public function termsSubmit(Request $request){
-        $validatedData = $request->validate([
-            'terms' => 'required',
-        ]);
-
-        if(Session::has('member_data_epin') && !empty(Session::get('member_data_epin'))) {
-            $members = Session::get('member_data_epin');
-            $fullName = $members['full_name'];
-            // $generatedID = $this->memberIDGeneration($fullName);
-            $email = $members['email'];
-            $password = Hash::make(123456);
-            $mobile = $members['mobile'];
-            $gender = $members['gender'];
-            $dob = $members['dob'];
-            $status = 1;
-            $epin = $members['epin'];
-            $members['terms'] = $request->input('terms');
-            $lag = $members['lag'];
-            
-            $member_insert = DB::table('members')
-            ->insertGetId([
-                //    'member_id' =>  $generatedID,
-                   'name' => $fullName,
-                   'email' => $email,
-                   'password' => $password,
-                   'mobile' => $mobile,
-                   'gender' => $gender,
-                   'dob' => $dob,
-                   'status' => $status,
-                   'epin' => $epin,
-                   'policy_is_agree' => $members['terms'],
-                   'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-               ]);
-
-               if($member_insert){
-                $generatedID = $this->memberIDGeneration($fullName, $member_insert);
-                $member_update = DB::table('members')
-                ->where('id', $member_insert)
-                ->update([
-                       'member_id' =>  $generatedID,
-                ]);
-                        // DB::table('tree')
-                        // ->update([
-                        //        'user_id' =>  Auth::user()->id,
-                        //        'left_id' => $lag == 1 ? $member_insert : NULL,
-                        //        'right_id' => $lag == 2 ? $member_insert : NULL,
-                        //        'parent_id' => Auth::user ()->id,
-                        //        'registered_by' => Auth::user()->id,
-                        //        'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                        //    ]);
+                        //Fetch Tree Data Using User ID
+                        $fetch_tree = DB::table('tree')
+                            ->where('user_id', $fetch_member->id)
+                            ->first();
                         
-                        // DB::table('epin')
-                        // ->where('epin', $epin)
-                        // ->update([
-                        //        'status' => 1,
-                        //        'used_by'    => $member_insert,
-                        //        'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                        //    ]);
+                        $tree_insert = DB::table('tree')
+                        ->insertGetId([
+                            'user_id' => $member_insert,
+                            'parent_id' => $fetch_tree->id,
+                            'registered_by' => Auth::user()->id,
+                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        ]);
+                        if($lag == 1){
+                            $tree_update = DB::table('tree')
+                                ->where('id', $fetch_tree->id)
+                                ->update([
+                                    'left_id' => $tree_insert,
+                                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                                ]);
 
-                        // $tree_insert =  DB::table('tree')
-                        // ->insert([
-                        //         'user_id' =>  $member_insert,
-                        //         'parent_id' => Auth::user()->id,
-                        //         'registered_by' => Auth::user()->id,
-                        //         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                        //     ]);
-
+                        }else{
+                            $tree_update = DB::table('tree')
+                                ->where('id', $fetch_tree->id)
+                                ->update([
+                                    'right_id' => $tree_insert ,
+                                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                                ]);
+                        
+                        }
+                        
+                        //Update EPIN Table as Used
+                        $epin_update = DB::table('epin')
+                                ->where('epin', $epin)
+                                ->update([
+                                    'status' => 1
+                                ]);
+                        
+                        //Insert Data in the Wallet for the first Time
+                        $wallet_insert = DB::table('wallet')
+                                    ->insertGetId([
+                                        'user_id' =>    $member_insert,
+                                        'amount' => 0,
+                                        'status' => 1,
+                                        'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                                    ]);
+                                });
+            
                 $token = rand(111111,999999);
                 Session::put('product_page_token', $token);
                 Session::save();
-                return redirect()->route('member.product_page',['product_page_token'=>encrypt($token)]);
-               }
-
+                return redirect()->route('member.product_page',['product_page_token'=>encrypt($token), 'user_id'=>encrypt($member_insert)]);
+                }catch (\Exception $e) {
+                        return redirect()->back()->with('error','Something Went Wrong Please try Again');
+            
+                }
+            } else{
+                return redirect()->back()->with('error','EPIN is already been used! Try Different one!');
+            }
         }
-
     }
 
     public function productPurchase(Request $request){
         $validatedData = $request->validate([
             'product' => 'required',
+            'u_id' => 'required'
         ]);
 
+        $product = $request->input('product');
+        $image1 = $request->input('image1');
+        $image2 = $request->input('image2');
+        $productName = $request->input('productName');
+
+        //EPIN Fetch
+        
+        //Insert Order to Databases
+        $order_insert = DB::table('memlber_joining_order')
+        ->insertGetId([
+            'user_id' => $member_insert,
+            'epin' => $epin,
+            'product_name' => $productName,
+            'image1' => $image1,
+            'image1' => $image1,
+            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+        ]);
+        // return $member_data['sponsorID'];
+
+        $token = rand(111111,999999);
+        Session::put('kyc_page_token', $token);
+        Session::save();
+        return redirect()->route('member.kyc_page',['kyc_page_token'=>encrypt($token)]);
     }
+    
 
     function memberIDGeneration($fullName, $id){
 
-        $splitName = explode(' ', $fullName, 3); 
+        $splitName = explode(' ', trim($fullName), 3); 
 
-        $first_name = $splitName[0];
-        $last_name = $splitName[2];
+        $first_name = trim($splitName[0]);
+        $last_name = trim($splitName[2]);
 
         $title_id = $first_name[0].$last_name[0];
         $l_id = 6 - strlen((string)$id);

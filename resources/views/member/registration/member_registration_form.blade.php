@@ -38,7 +38,7 @@
                                         <label for="search_sponsor_id">Sponsor ID</label>
                                         <input type="text" name="search_sponsor_id" id="search_sponsor_id" class="form-control" placeholder="Sponsor ID">
                                         <div id="member_data"></div><br>
-                                        
+                                        <input type="hidden" name="sponsorVal" value="" id="sponsorVal">
                                     </div> 
                                     
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
@@ -163,12 +163,15 @@
                     success: function(data){
                         if(data == 5){
                             $('#member_data').html("<font color='red'>All lags are full! Try with another Sponsor ID</font>").fadeIn( "slow" );
+                            $('#sponsorVal').val(data);
                             $("#loading-image").hide();
                         }else if(data == 1){
                             $('#member_data').html("<font color='red'>Invalid Sponsor ID!</font>").fadeIn( "slow" );
                             $("#loading-image").hide();
+                            $('#sponsorVal').val(data);
                         }else{
                             $('#member_data').html(data);
+                            $('#sponsorVal').val("200");
                             $("#loading-image").hide();
                         }
                     }

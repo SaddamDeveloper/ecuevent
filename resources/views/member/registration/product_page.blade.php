@@ -20,11 +20,11 @@
                          @if (Session::has('error'))
                             <div class="alert alert-danger">{{ Session::get('error') }}</div>
                          @endif
-    
                     </div>
                     <div>
                         <div class="x_content">
                             {{ Form::open(['method' => 'post','route'=>'member.product_purchase']) }}
+                            <input type="hidden" name="u_id" value="{{$user_id}}">
                             <div class="well" style="overflow: auto">
 
                                 <div class="form-row mb-10 mb-2">
@@ -42,6 +42,7 @@
                                                     <div class="col-md-4 singleproduct">
                                                         <label>
                                                             <input type="radio" name="product" value="{{$product->id}}">
+                                                            <input type="hidden" name="productName" value="{{$product->name}}">
                                                             <h5>{{$product->name}}</h5>
                                                             <img src="{{asset('member/product/thumb/'.$product->image1)}}" name="image1" alt="" class="fstchld">
                                                             <img src="{{asset('member/product/thumb/'.$product->image2)}}" name="image2" alt="" class="sndimg">

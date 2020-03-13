@@ -9,7 +9,7 @@
                 <div class="x_panel">
     
                     <div class="x_title">
-                        <h2>Add Epin</h2>
+                        <h2>{{__('Add Epin')}}</h2>
                         <div class="clearfix"></div>
                     </div>
                     <div>
@@ -31,7 +31,7 @@
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                     </div>
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
-                                        <label for="add_epin">Add EPIN</label>
+                                        <label for="add_epin">{{__('Add EPIN')}}</label>
                                         <input type="text" name="epin" id="epin" class="form-control" placeholder="Add EPIN Number" required>
                                         <div id="myDiv">
                                             <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
@@ -77,21 +77,25 @@
                         if(data == 1){
                             $('#epin_msg').html("<font color='red'><i class='fa fa-times'></i> Something went wrong!</font>").fadeIn( "slow" );
                             $("#loading-image").hide();
+                            $('.submitBtn').hide();
                         }
                         else if(data == 2){
                             $('#epin_msg').html("<font color='red'><i class='fa fa-times'></i> Invalid EPIN</font>").fadeIn( "slow" );
                             $("#loading-image").hide();
+                            $('.submitBtn').hide();
                         }else if(data == 3){
                             $('#epin_msg').html("<font color='red'><i class='fa fa-times'></i> EPIN is already been used!</font>").fadeIn( "slow" );
                             $("#loading-image").hide();
+                            $('.submitBtn').hide();
                         }
                         else if(data == 5){
                             $('#epin_msg').html("<font color='red'><i class='fa fa-times'></i> Not your EPIN!</font>").fadeIn( "slow" );
                             $("#loading-image").hide();
+                            $('.submitBtn').hide();
                         }else{
                             $('.submitBtn').html(data);
                             $("#loading-image").hide();
-                            $('#epin_msg').html("<font color='success'><i class='fa fa-check'></i> Yay! Unused EPIN!</font>").fadeIn( "slow" )
+                            $('#epin_msg').html("<font color='success'><i class='fa fa-check'></i> Yay! Unused EPIN!</font>").fadeIn( "slow" );
                         }
                     }
                 });

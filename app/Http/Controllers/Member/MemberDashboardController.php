@@ -66,9 +66,10 @@ class MemberDashboardController extends Controller
        
     }
     
-    public function productPage($token){
+    public function productPage($token,$user_id){
         try{
             $token = decrypt($token);
+            $user_id = decrypt($user_id);
         }catch(DecryptException $e) {
             abort(404);
         }
@@ -77,7 +78,7 @@ class MemberDashboardController extends Controller
             $session_token = Session::get('product_page_token');
             if ( $session_token == $token) {
                 $products = DB::table('member_product')->take(3)->get();
-                return view('member.registration.product_page', compact('products'));
+                return view('member.registration.product_page', compact('products','user_id'));
             } else {
                 abort(404);
             }
@@ -85,5 +86,25 @@ class MemberDashboardController extends Controller
             abort(404);
         }
        
+    }
+
+    public function kycPage($token){
+        try{
+            $token = decrypt($token);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+
+        if (Session::has('kyc_page_token') && !empty(Session::get('kyc_page_token'))) {
+            $session_token = Session::get('kyc_page_token');
+            if ( $session_token == $token) {
+                // $products = DB::table('member_product')->take(3)->get();
+                return view('member.registration.kyc_page');
+            } else {
+                abort(404);
+            }
+        }else{
+            abort(404);
+        }
     }
 }

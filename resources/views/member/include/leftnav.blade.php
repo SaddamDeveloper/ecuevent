@@ -40,6 +40,12 @@
                 <li><a href="{{route('member.mem_epin_list_form')}}"> My EPIN</a></li>
               </ul>
             </li>
+
+            <li><a><i class="fa fa-tree"></i>Tree <span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu">
+                <li><a href="{{route('member.mem_epin_list_form')}}"> My Tree</a></li>
+              </ul>
+            </li>
           </ul>
         </div>
       </div>
