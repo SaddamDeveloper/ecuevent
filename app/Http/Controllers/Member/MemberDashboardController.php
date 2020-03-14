@@ -88,9 +88,10 @@ class MemberDashboardController extends Controller
        
     }
 
-    public function kycPage($token){
+    public function kycPage($token, $user_id){
         try{
             $token = decrypt($token);
+            $user_id = decrypt($user_id);
         }catch(DecryptException $e) {
             abort(404);
         }
@@ -98,8 +99,30 @@ class MemberDashboardController extends Controller
         if (Session::has('kyc_page_token') && !empty(Session::get('kyc_page_token'))) {
             $session_token = Session::get('kyc_page_token');
             if ( $session_token == $token) {
+               
                 // $products = DB::table('member_product')->take(3)->get();
-                return view('member.registration.kyc_page');
+                return view('member.registration.kyc_page', compact('user_id'));
+            } else {
+                abort(404);
+            }
+        }else{
+            abort(404);
+        }
+    }
+
+    public function finishPage($token){
+        try{
+            $token = decrypt($token);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+
+        if (Session::has('finish_page_token') && !empty(Session::get('finish_page_token'))) {
+            $session_token = Session::get('finish_page_token');
+            if ( $session_token == $token) {
+                $delete_previous_session = session()->forget('kyc_page_token');
+                $success = 'Registration Successfull';
+                return view('member.registration.finish_page', compact('success'));
             } else {
                 abort(404);
             }

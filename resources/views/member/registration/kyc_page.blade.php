@@ -23,25 +23,32 @@
                     </div>
                     <div>
                         <div class="x_content">
-                            {{-- {{ Form::open(['method' => 'post','route'=>'member.product_purchase']) }} --}}
+                            {{ Form::open(['method' => 'post','route'=>'member.kyc_submit', 'enctype'=>'multipart/form-data']) }}
                             <div class="well" style="overflow: auto">
-
+                                <input type="hidden" name="u_id" value="{{$user_id}}">
                                 <div class="form-row mb-10 mb-2">
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                         <label for="address">Address proof</label>
                                         <input type="file" name="address" id="address" class="form-control">
+                                        @if($errors->has('address'))
+                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                                <strong>{{ $errors->first('address') }}</strong>
+                                            </span>
+                                         @enderror
                                     </div>
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                         <label for="doc">Document No</label>
                                         <input type="text" name="doc" id="doc" class="form-control" placeholder="Enter Document No">
+                                        @if($errors->has('doc'))
+                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                                <strong>{{ $errors->first('doc') }}</strong>
+                                            </span>
+                                         @enderror
                                     </div> 
     
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                         
                                     </div>
-                                </div>
-                                <div class="form-row mb-10 mb-2">
-                                   
                                 </div>
                             </div>
                             <div class="well" style="overflow: auto">
@@ -51,6 +58,11 @@
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                         <label for="photo">Photo proof</label>
                                         <input type="file" name="photo" id="photo" class="form-control">
+                                        @if($errors->has('photo'))
+                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                                <strong>{{ $errors->first('photo') }}</strong>
+                                            </span>
+                                         @enderror
                                     </div> 
     
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
@@ -62,7 +74,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                {{ Form::submit('Next', array('class'=>'btn btn-success pull-right')) }}  
+                                {{ Form::submit('Submit', array('class'=>'btn btn-success pull-right')) }}  
                                 {{ Form::submit('Skip', array('class'=>'btn btn-default pull-right')) }}  
                             </div>
                             {{ Form::close() }}

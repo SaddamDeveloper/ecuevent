@@ -74,7 +74,8 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member_form');
     Route::get('/add/epin/{epin_page_token}', 'MemberDashboardController@addEpinForm')->name('member.add_epin_form');
     Route::get('/add/product/{product_page_token}/{user_id}', 'MemberDashboardController@productPage')->name('member.product_page');
-    Route::get('/add/kyc/{kyc_page_token}', 'MemberDashboardController@kycPage')->name('member.kyc_page');
+    Route::get('/add/kyc/{kyc_page_token}/{user_id}', 'MemberDashboardController@kycPage')->name('member.kyc_page');
+    Route::get('/add/finish/{finish_page_token}', 'MemberDashboardController@finishPage')->name('member.finish_page');
     
     /***
      * Sponsor ID Search
@@ -93,6 +94,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::post('/add', 'MemberRegistrationController@addNewMember')->name('member.add_new_member');
     Route::post('/epin/data', 'MemberRegistrationController@epinSubmit')->name('member.epin_submit');
     Route::post('/product/data', 'MemberRegistrationController@productPurchase')->name('member.product_purchase');
+    Route::post('/kyc/data', 'MemberRegistrationController@kycSubmit')->name('member.kyc_submit');
 
     /***
      * Member Epin Control
