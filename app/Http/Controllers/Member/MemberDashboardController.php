@@ -116,10 +116,13 @@ class MemberDashboardController extends Controller
         }catch(DecryptException $e) {
             abort(404);
         }
-
+        
         if (Session::has('finish_page_token') && !empty(Session::get('finish_page_token'))) {
+            
             $session_token = Session::get('finish_page_token');
             if ( $session_token == $token) {
+
+                
                 $delete_previous_session = session()->forget('kyc_page_token');
                 $success = 'Registration Successfull';
                 return view('member.registration.finish_page', compact('success'));

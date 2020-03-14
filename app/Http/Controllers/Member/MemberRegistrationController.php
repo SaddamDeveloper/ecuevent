@@ -154,7 +154,8 @@ class MemberRegistrationController extends Controller
                         $epin_update = DB::table('epin')
                                 ->where('epin', $epin)
                                 ->update([
-                                    'status' => 1
+                                    'status' => 1,
+                                    'used_by' => $tree_insert
                                 ]);
                         
                         //Insert Data in the Wallet for the first Time
@@ -190,10 +191,10 @@ class MemberRegistrationController extends Controller
             
         $u_id = $request->input('u_id');
         $product_id = $request->input('product');
-
+        
         //EPIN Fetch
         $epin_fetch = DB::table('epin')->where('used_by', $u_id)->first();
-        dd($epin_fetch);
+        // dd($epin_fetch);
         $epin = $epin_fetch->epin;
         if($epin_fetch){
 
