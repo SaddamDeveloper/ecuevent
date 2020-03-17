@@ -50,6 +50,15 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::post('/add/matching/income', 'MatchingIncomeController@memAddMatchingIncome')->name('admin.mem_add_matching_income');
     
     /***
+     * Pair Cut OFF Control
+     */
+    Route::get('/pair/timing', 'PairCutoffController@memPairTiming')->name('admin.mem_pair_timing');
+    Route::post('/add/pair/timing', 'PairCutoffController@memAddPairTiming')->name('admin.mem_add_pair_timing');
+
+    Route::get('/pair/cuttoff', 'PairCutoffController@memPairCutoff')->name('admin.mem_pair_cutoff');
+    Route::post('/add/pair/cutoff', 'PairCutoffController@memAddPairCutoff')->name('admin.mem_add_pair_cut_off');
+    
+    /***
      * Member Prdouct Control
      */
     Route::group(['prefix'  =>  'member'], function(){
@@ -76,6 +85,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/add/product/{product_page_token}/{user_id}', 'MemberDashboardController@productPage')->name('member.product_page');
     Route::get('/add/kyc/{kyc_page_token}/{user_id}', 'MemberDashboardController@kycPage')->name('member.kyc_page');
     Route::get('/add/finish/{finish_page_token}', 'MemberDashboardController@finishPage')->name('member.finish_page');
+    // Route::get('msg', 'MemberDashboardController@msgHelper');
     
     /***
      * Sponsor ID Search
@@ -101,4 +111,11 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
      */
     Route::get('/my/epin/', 'MemberEpinController@memberEpinListForm')->name('member.mem_epin_list_form');
     Route::get('/my/epin/list', 'MemberEpinController@memberGetEpinList')->name('member.ajax.my_epin_list');
+    
+    /***
+     * Message helper
+     */
+    // Route::get('/my/epin/list', 'MemberEpinController@msgHelper');
+
+     
 }); 

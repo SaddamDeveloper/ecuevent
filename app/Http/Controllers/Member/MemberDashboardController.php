@@ -116,7 +116,7 @@ class MemberDashboardController extends Controller
         }catch(DecryptException $e) {
             abort(404);
         }
-        
+        // dd(Session::has('finish_page_token'));
         if (Session::has('finish_page_token') && !empty(Session::get('finish_page_token'))) {
             
             $session_token = Session::get('finish_page_token');
@@ -131,6 +131,15 @@ class MemberDashboardController extends Controller
             }
         }else{
             abort(404);
+        }
+    }
+
+    public function msgHelper(){
+        $notVerified = DB::table('members')->where('document_status', 2)->first();
+
+        if($notVerified){
+            $msg = "Document is uploaded but not verified yet!";
+            return view('member.template.member_master', compact('msg'));
         }
     }
 }

@@ -74,7 +74,8 @@
                             </div>
                             <div class="form-group">
                                 {{ Form::submit('Submit', array('class'=>'btn btn-success pull-right')) }}  
-                                <a href="{{route('member.finish_page', ['finish_page_token' => encrypt(session()->get('kyc_page_token'))])}}">Skip</a>
+                                {{ Form::submit('Skip', array('class'=>'btn btn-default pull-right')) }}  
+                                {{-- <a href="{{route('member.finish_page')}}" class="btn btn-default pull-right">Skip</a> --}}
                             </div>
                             {{ Form::close() }}
                         </div>

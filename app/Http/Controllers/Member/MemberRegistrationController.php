@@ -155,7 +155,7 @@ class MemberRegistrationController extends Controller
                                 ->where('epin', $epin)
                                 ->update([
                                     'status' => 1,
-                                    'used_by' => $tree_insert
+                                    'used_by' => $member_insert
                                 ]);
                         
                         //Insert Data in the Wallet for the first Time
@@ -166,7 +166,57 @@ class MemberRegistrationController extends Controller
                                         'status' => 1,
                                         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                                     ]);
-                                });
+
+
+                        // Fetch All Parent of Current Registered node
+                        // DB::enableQueryLog();
+
+
+                        $parrents = DB::select( DB::raw("SELECT * FROM (
+                            SELECT @pv:=(
+                                SELECT parent_id FROM tree WHERE id = @pv
+                                ) AS lv FROM tree
+                                JOIN
+                                (SELECT @pv:=:start_node) tmp
+                            ) a
+                            WHERE lv IS NOT NULL AND lv != 0 LIMIT 1000")
+                            , array(
+                              'start_node' => $tree_insert,
+                            )
+                        );
+                    
+                    $this->treePair($parrents, $member_insert);
+
+                    // $registered_node = $user_insert; // tke foe use in next loop
+                    // $chield_node = $user_insert; // tke foe use in next loop
+
+                    //***************Run Node With All Parrents To Process Parent Calculation***************
+                    /*for ($i=0; ($i < 1000) && $i < count($parrents) ; $i++){ 
+                        $parent = $parrents[$i]->lv; 
+                        $user_leg = null;
+                        $level = $i+1;
+
+                    //Fetch Parent
+                        $fetch_parent = DB::table('tree')
+                        ->where('id',$parent)
+                        ->first();
+
+                        // dd($member_insert);
+                        //***************check chield node is in left or right*******************
+                        if ($fetch_parent->left_id == $member_insert){
+                        $user_leg = "L";
+                        }else{
+                        $user_leg = "R";
+                        }
+                       
+                    }*/
+                        // $fetch_sponsors = DB::table('members')->where('registered_by', Auth::user()->id)->first();
+                    
+                    
+                    
+                    });
+
+
                     
                         // $delete_previous_session = session()->forget('member_data');
                         // $delete_epin_session = session()->forget('epin_page_token');
@@ -191,7 +241,7 @@ class MemberRegistrationController extends Controller
             
         $u_id = $request->input('u_id');
         $product_id = $request->input('product');
-        
+        // return $u_id;
         //EPIN Fetch
         $epin_fetch = DB::table('epin')->where('used_by', $u_id)->first();
         // dd($epin_fetch);
@@ -354,5 +404,72 @@ class MemberRegistrationController extends Controller
         ->save($thumb_path);
 
         return $image_name;
+    }
+
+
+    function treePair($parents, $member_insert){
+
+        $child = $member_insert;
+        for ($i=0; $i < count($parents) ; $i++) {
+            $parent = $parents[$i]->lv; 
+
+             //**************Fetch parrent details***************************
+             $fetch_parent = DB::table('tree')
+                ->select('left_count', 'right_count')
+                ->where('id',$parent)
+                ->first();
+            
+           //***************check chield node is in left or right*******************
+            if ($fetch_parent->left == $child){
+                //Check Left count already had previous value + 1
+                $update_left_count = DB::table('tree')
+                ->where('id', $parent)
+                ->update([
+                    'left_count' => DB::raw("`left_count`+".(1)),
+                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);
+            }else{
+                //Check Right count already had previous value
+                $update_left_count = DB::table('tree')
+                ->where('id', $parent)
+                ->update([
+                    'right_count' => DB::raw("`right_count`+".(1)),
+                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);
+            }
+
+            //Pair checking
+            $total_pair_count =  DB::table('tree')
+                ->select('total_pair')
+                ->where('id',$parent)
+                ->first();
+            
+            if($total_pair_count->total_pair == 0){
+                $pair_match = DB::table('tree')
+                    ->select('left_count', 'right_count')
+                    ->where('id',$parent)
+                    ->first();
+                if($pair_match->right_count >= 2 && $pair_match->left_count >= 1){
+                    
+                }
+            }else{
+
+            }
+
+                
+            // if($fetch_parent->total_pair == 0){
+            //     //Checking Pair Match 2:1 OR 1:2
+            //     if(){
+
+            //     }else{
+                    
+            //     }
+            // }else{
+
+            // }
+
+            $child = $parent;
+        }
+
     }
 }

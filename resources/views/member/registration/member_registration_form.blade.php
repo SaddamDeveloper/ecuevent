@@ -55,7 +55,7 @@
                                 <div class="form-row mb-3">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="f_name">First Name*</label>
-                                      <input type="text" class="form-control" name="f_name"  placeholder="Enter First Name" >
+                                      <input type="text" class="form-control" name="f_name" value="{{old('f_name')}}"  placeholder="Enter First Name" >
                                         @if($errors->has('f_name'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('f_name') }}</strong>
@@ -64,7 +64,7 @@
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="m_name">Middle Name</label>
-                                      <input type="text" class="form-control" name="m_name"  placeholder="Enter Middle Name" >
+                                      <input type="text" class="form-control" name="m_name" value="{{old('m_name')}}"  placeholder="Enter Middle Name" >
                                         @if($errors->has('m_name'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('m_name') }}</strong>
@@ -73,7 +73,7 @@
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="l_name">Last Name*</label>
-                                      <input type="text" class="form-control" name="l_name"  placeholder="Enter Last Name" >
+                                      <input type="text" class="form-control" name="l_name" value="{{old('l_name')}}" placeholder="Enter Last Name" >
                                         @if($errors->has('l_name'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('l_name') }}</strong>
@@ -84,7 +84,7 @@
                                 <div class="form-row mb-3">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="email">Email*</label>
-                                      <input type="email" class="form-control" name="email"  placeholder="Enter Email" >
+                                      <input type="email" class="form-control" name="email" value="{{old('email')}}"  placeholder="Enter Email" >
                                       @if($errors->has('email'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('email') }}</strong>
@@ -93,7 +93,7 @@
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="mobile">Mobile*</label>
-                                      <input type="text" class="form-control" name="mobile"  placeholder="Enter Mobile No" >
+                                      <input type="text" class="form-control" name="mobile" value="{{old('mobile')}}" placeholder="Enter Mobile No" >
                                       @if($errors->has('mobile'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('mobile') }}</strong>

@@ -46,7 +46,10 @@ class EpinController extends Controller
     {    
         $query = DB::table('epin')
                 ->leftjoin('members', 'epin.alloted_to', '=', 'members.id')
-                ->select('epin.*', 'members.name');
+                // ->leftjoin('members', 'epin.used_by', '=', 'members.id')
+                ->select('epin.*', 'members.name as alloted_to');
+                // ->select('epin.*', 'members.name AS used_by');
+                // return $query;
             return datatables()->of($query->get())
             ->addIndexColumn()
             ->make(true);

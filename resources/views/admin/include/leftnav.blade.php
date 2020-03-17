@@ -36,6 +36,8 @@
             <li><a><i class="fa fa-gear"></i> Configuration <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('admin.mem_matching_income')}}">Member Matching Income</a></li>
+                <li><a href="{{route('admin.mem_pair_timing')}}">Common Pair timing</a></li>
+                <li><a href="{{route('admin.mem_pair_cutoff')}}">Common Pair CutOFF</a></li>
               </ul>
             </li>
           </ul>

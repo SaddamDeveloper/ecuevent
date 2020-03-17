@@ -72,7 +72,7 @@
                         return "<button class='btn btn-danger'>Not Used</a>"
                       }                        
                     }},
-                    {data: 'name', name: 'name' ,searchable: true}, 
+                    {data: 'alloted_to', name: 'alloted_to' ,searchable: true}, 
                     {data: 'used_by', name: 'used_by' ,searchable: true},                 
                     // {data: 'action', name: 'action', orderable: false, searchable: false},
                 ]
