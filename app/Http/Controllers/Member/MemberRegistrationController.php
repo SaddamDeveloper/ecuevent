@@ -169,8 +169,6 @@ class MemberRegistrationController extends Controller
 
 
                         // Fetch All Parent of Current Registered node
-                        // DB::enableQueryLog();
-
 
                         $parrents = DB::select( DB::raw("SELECT * FROM (
                             SELECT @pv:=(
@@ -187,36 +185,7 @@ class MemberRegistrationController extends Controller
                     
                     $this->treePair($parrents, $member_insert);
 
-                    // $registered_node = $user_insert; // tke foe use in next loop
-                    // $chield_node = $user_insert; // tke foe use in next loop
-
-                    //***************Run Node With All Parrents To Process Parent Calculation***************
-                    /*for ($i=0; ($i < 1000) && $i < count($parrents) ; $i++){ 
-                        $parent = $parrents[$i]->lv; 
-                        $user_leg = null;
-                        $level = $i+1;
-
-                    //Fetch Parent
-                        $fetch_parent = DB::table('tree')
-                        ->where('id',$parent)
-                        ->first();
-
-                        // dd($member_insert);
-                        //***************check chield node is in left or right*******************
-                        if ($fetch_parent->left_id == $member_insert){
-                        $user_leg = "L";
-                        }else{
-                        $user_leg = "R";
-                        }
-                       
-                    }*/
-                        // $fetch_sponsors = DB::table('members')->where('registered_by', Auth::user()->id)->first();
-                    
-                    
-                    
                     });
-
-
                     
                         // $delete_previous_session = session()->forget('member_data');
                         // $delete_epin_session = session()->forget('epin_page_token');
@@ -408,19 +377,20 @@ class MemberRegistrationController extends Controller
 
 
     function treePair($parents, $member_insert){
-
         $child = $member_insert;
         for ($i=0; $i < count($parents) ; $i++) {
             $parent = $parents[$i]->lv; 
 
-             //**************Fetch parrent details***************************
-             $fetch_parent = DB::table('tree')
-                ->select('left_count', 'right_count')
+            //**************Fetch parrent details***************************
+            $fetch_parent = DB::table('tree')
+                ->select('left_id', 'right_id')
                 ->where('id',$parent)
                 ->first();
+
+            // dd($child);
             
-           //***************check chield node is in left or right*******************
-            if ($fetch_parent->left == $child){
+            //***************check chield node is in left or right*******************
+            if ($fetch_parent->left_id == $child){
                 //Check Left count already had previous value + 1
                 $update_left_count = DB::table('tree')
                 ->where('id', $parent)
@@ -428,48 +398,124 @@ class MemberRegistrationController extends Controller
                     'left_count' => DB::raw("`left_count`+".(1)),
                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
+                if($update_left_count){
+                    $total_pair = DB::table('tree')
+                    ->where('id', $parent)
+                    ->update([
+                        'total_pair'    => DB::raw("`total_pair`+".(1))
+                        ]);
+                    }
             }else{
                 //Check Right count already had previous value
-                $update_left_count = DB::table('tree')
+                $update_right_count = DB::table('tree')
                 ->where('id', $parent)
                 ->update([
                     'right_count' => DB::raw("`right_count`+".(1)),
                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
-            }
-
+                dd($update_right_count);
+                if($update_right_count){
+                    $total_pair = DB::table('tree')
+                        ->where('id', $parent)
+                        ->update([
+                            'total_pair'    => DB::raw("`total_pair`+".(1))
+                        ]);
+                }
+            }   
+            
             //Pair checking
             $total_pair_count =  DB::table('tree')
                 ->select('total_pair')
                 ->where('id',$parent)
                 ->first();
             
-            if($total_pair_count->total_pair == 0){
-                $pair_match = DB::table('tree')
-                    ->select('left_count', 'right_count')
-                    ->where('id',$parent)
-                    ->first();
-                if($pair_match->right_count >= 2 && $pair_match->left_count >= 1){
+            //Fetch Pair Match
+            $pair_match = DB::table('tree')
+                ->select('left_count', 'right_count')
+                ->where('id',$parent)
+                ->first();
+                //Initial Pair doesn't need to check timeframe also
+                if($total_pair_count->total_pair == 0){
+                    if($pair_match->right_count >= 2 && $pair_match->left_count >= 1){
+                        $this->creditCommisionTwoIsToOne($parent, 1,2);
+                    }else if($pair_match->left_count >= 2 && $pair_match->right_count >= 1){
+                        $this->creditCommisionTwoIsToOne($parent, 2,1);
+                    }
+                }else{
+                //Timeframe Comes here with pair checking
+                    if($pair_match->right_count == 1 && $pair_match->left_count == 1){
+                        // dd("sadda");
+                        $this->creditCommisionOneIsToOne($parent);
+                    }
                     
                 }
-            }else{
-
-            }
-
-                
-            // if($fetch_parent->total_pair == 0){
-            //     //Checking Pair Match 2:1 OR 1:2
-            //     if(){
-
-            //     }else{
-                    
-            //     }
-            // }else{
-
-            // }
 
             $child = $parent;
         }
 
     }
+    function creditCommisionTwoIsToOne($parent, $left, $right)
+    {   
+       
+        $update_left_count = DB::table('tree')
+            ->where('id', $parent)
+            ->update([
+                'left_count' => DB::raw("`left_count`-".($left)),
+                'right_count' => DB::raw("`right_count`-".($right)),
+                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+            ]);
+        
+        //Fetch User with Node ID
+        $fetch_user = DB::table('tree')
+            ->where('id', $parent)
+            ->first();        
+        
+        //Fetch Matching Income
+        $matching_income = DB::table('matching_income')->first();
+        
+        $wallet_insert = DB::table('wallet') 
+            ->where('user_id', $fetch_user->user_id)
+            ->update([
+                'amount' => DB::raw("`amount`+".($matching_income->income)),
+            ]);
+     
+        //Fetch Wallet
+        $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
+        //    dd($wallet_insert);
+        $credit_commision = DB::table('wallet_history')
+                ->insertGetId([
+                    'wallet_id' =>  $fetch_wallet->id,
+                    'user_id'   => $fetch_user->user_id,
+                    'transaction_type'  =>  1,
+                    'amount' => $matching_income->income,
+                    'total_amount'  => $fetch_wallet->amount,
+                    'comment'   => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);
+    }
+
+    function creditCommisionOneIsToOne($parent){
+        $this->checkTimeFrameDuplication($parent);
+    }
+
+    function checkTimeFrameDuplication($parent){
+        $fetch_parent = DB::table('tree')
+            ->where('id', $parent)
+            ->select('left_id', 'right_id')
+            ->first();
+        
+        //User Timeing Fetch
+        $left_user_timing = DB::table('tree')
+            ->select('created_at')
+            ->where('user_id', $fetch_parent->left_id)
+            ->first();
+
+        $right_user_timing = DB::table('tree')
+            ->select('created_at')
+            ->whereTime('user_id', $fetch_parent->right_id)
+            ->first();
+
+        
+    }
+
 }
