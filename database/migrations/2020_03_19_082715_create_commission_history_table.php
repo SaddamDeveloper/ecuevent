@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePairTimingTable extends Migration
+class CreateCommissionHistoryTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreatePairTimingTable extends Migration
      */
     public function up()
     {
-        Schema::create('pair_timing', function (Blueprint $table) {
+        Schema::create('commission_history', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->time('from')->nullable();
-            $table->time('to')->nullable();
+            $table->integer('user_id')->nullable();
+            $table->bigInteger('pair_number')->nullable();
+            $table->decimal('amount')->nullable();
+            $table->mediumText('comment')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ class CreatePairTimingTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pair_timing');
+        Schema::dropIfExists('commission_history');
     }
 }

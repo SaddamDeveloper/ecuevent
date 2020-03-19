@@ -167,7 +167,6 @@ class MemberRegistrationController extends Controller
                                         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                                     ]);
 
-
                         // Fetch All Parent of Current Registered node
 
                         $parrents = DB::select( DB::raw("SELECT * FROM (
@@ -182,9 +181,7 @@ class MemberRegistrationController extends Controller
                               'start_node' => $tree_insert,
                             )
                         );
-                    
-                    $this->treePair($parrents, $member_insert);
-
+                        $a = $this->treePair($parrents, $member_insert);
                     });
                     
                         // $delete_previous_session = session()->forget('member_data');
@@ -378,6 +375,7 @@ class MemberRegistrationController extends Controller
 
     function treePair($parents, $member_insert){
         $child = $member_insert;
+       
         for ($i=0; $i < count($parents) ; $i++) {
             $parent = $parents[$i]->lv; 
 
@@ -387,8 +385,6 @@ class MemberRegistrationController extends Controller
                 ->where('id',$parent)
                 ->first();
 
-            // dd($child);
-            
             //***************check chield node is in left or right*******************
             if ($fetch_parent->left_id == $child){
                 //Check Left count already had previous value + 1
@@ -396,31 +392,18 @@ class MemberRegistrationController extends Controller
                 ->where('id', $parent)
                 ->update([
                     'left_count' => DB::raw("`left_count`+".(1)),
+                    'total_left_count' => DB::raw("`total_left_count`+".(1)),
                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
-                if($update_left_count){
-                    $total_pair = DB::table('tree')
-                    ->where('id', $parent)
-                    ->update([
-                        'total_pair'    => DB::raw("`total_pair`+".(1))
-                        ]);
-                    }
             }else{
                 //Check Right count already had previous value
                 $update_right_count = DB::table('tree')
                 ->where('id', $parent)
                 ->update([
                     'right_count' => DB::raw("`right_count`+".(1)),
+                    'total_right_count' => DB::raw("`total_right_count`+".(1)),
                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
-                dd($update_right_count);
-                if($update_right_count){
-                    $total_pair = DB::table('tree')
-                        ->where('id', $parent)
-                        ->update([
-                            'total_pair'    => DB::raw("`total_pair`+".(1))
-                        ]);
-                }
             }   
             
             //Pair checking
@@ -434,25 +417,59 @@ class MemberRegistrationController extends Controller
                 ->select('left_count', 'right_count')
                 ->where('id',$parent)
                 ->first();
-                //Initial Pair doesn't need to check timeframe also
+
+            //Initial Pair doesn't need to check timeframe also
+
                 if($total_pair_count->total_pair == 0){
                     if($pair_match->right_count >= 2 && $pair_match->left_count >= 1){
+                        DB::table('member_pair_timing')
+                        ->insert([
+                            'user_id' => $parent,
+                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        ]);
                         $this->creditCommisionTwoIsToOne($parent, 1,2);
+                        //Pair Updte
+                        DB::table('tree')
+                            ->where('id', $parent)
+                            ->update([
+                                'total_pair' => DB::raw("`total_pair`+".(1)),
+                            ]);
                     }else if($pair_match->left_count >= 2 && $pair_match->right_count >= 1){
+                        DB::table('member_pair_timing')
+                        ->insert([
+                            'user_id' => $parent,
+                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        ]);
+
                         $this->creditCommisionTwoIsToOne($parent, 2,1);
+
+                        DB::table('tree')
+                        ->where('id', $parent)
+                        ->update([
+                            'total_pair' => DB::raw("`total_pair`+".(1)),
+                        ]);
                     }
                 }else{
-                //Timeframe Comes here with pair checking
+                    //Check 1:1 Check
                     if($pair_match->right_count == 1 && $pair_match->left_count == 1){
-                        // dd("sadda");
+                        DB::table('member_pair_timing')
+                        ->insert([
+                            'user_id' => $parent,
+                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        ]);
+
                         $this->creditCommisionOneIsToOne($parent);
+
+                        DB::table('tree')
+                        ->where('id', $parent)
+                        ->update([
+                            'total_pair' => DB::raw("`total_pair`+".(1)),
+                        ]);
                     }
-                    
                 }
 
             $child = $parent;
         }
-
     }
     function creditCommisionTwoIsToOne($parent, $left, $right)
     {   
@@ -464,7 +481,6 @@ class MemberRegistrationController extends Controller
                 'right_count' => DB::raw("`right_count`-".($right)),
                 'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
-        
         //Fetch User with Node ID
         $fetch_user = DB::table('tree')
             ->where('id', $parent)
@@ -499,23 +515,30 @@ class MemberRegistrationController extends Controller
     }
 
     function checkTimeFrameDuplication($parent){
-        $fetch_parent = DB::table('tree')
-            ->where('id', $parent)
-            ->select('left_id', 'right_id')
-            ->first();
         
-        //User Timeing Fetch
-        $left_user_timing = DB::table('tree')
-            ->select('created_at')
-            ->where('user_id', $fetch_parent->left_id)
-            ->first();
+      
+        //Pair Timing
+        $pair_timings = DB::table('pair_timing')->get();
+        $member_pair_timings = DB::table('member_pair_timing')
+            ->where('user_id', $parent)
+            ->whereDate('created_at', Carbon::today()->toDateString())
+            ->get();
 
-        $right_user_timing = DB::table('tree')
-            ->select('created_at')
-            ->whereTime('user_id', $fetch_parent->right_id)
-            ->first();
+        $foundFlag = false;
 
-        
+        if ($member_pair_timings->count() > 0) {
+            // $beginDate = \Carbon\Carbon::create(date('Y-m-d') . ' ' . $begintime); // You can be add at the end of varible ":00" if not exists
+            // $endDate = \Carbon\Carbon::create(date('Y-m-d') . ' ' . $endtime); //You can be add at the end of varible ":00" if not exists
+            foreach($member_pair_timings as $member_pair_timing){
+                $time = explode(" ",$member_pair_timing->created_at);
+            }
+        }
+        if (! $foundFlag) {
+            dd("good");
+        } else {
+            dd("Bad");
+        }
+      
     }
 
 }
