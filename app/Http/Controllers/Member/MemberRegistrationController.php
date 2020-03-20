@@ -427,7 +427,7 @@ class MemberRegistrationController extends Controller
                             'user_id' => $parent,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
-                        $this->creditCommisionTwoIsToOne($parent, 1,2);
+                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent, 1,2);
                         //Pair Updte
                         DB::table('tree')
                             ->where('id', $parent)
@@ -441,7 +441,7 @@ class MemberRegistrationController extends Controller
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
 
-                        $this->creditCommisionTwoIsToOne($parent, 2,1);
+                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent, 2,1);
 
                         DB::table('tree')
                         ->where('id', $parent)
@@ -460,7 +460,7 @@ class MemberRegistrationController extends Controller
 
                         $this->creditCommisionOneIsToOne($parent, 1, 1);
 
-                        DB::table('tree')
+                        $totla_pair_update = DB::table('tree')
                         ->where('id', $parent)
                         ->update([
                             'total_pair' => DB::raw("`total_pair`+".(1)),
@@ -471,9 +471,8 @@ class MemberRegistrationController extends Controller
             $child = $parent;
         }
     }
-    function creditCommisionTwoIsToOne($parent, $left, $right)
+    function creditCommisionTwoIsToOneOrOneIsToTwo($parent, $left, $right)
     {   
-       
         $update_left_count = DB::table('tree')
             ->where('id', $parent)
             ->update([
@@ -481,6 +480,7 @@ class MemberRegistrationController extends Controller
                 'right_count' => DB::raw("`right_count`-".($right)),
                 'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
+
         //Fetch User with Node ID
         $fetch_user = DB::table('tree')
             ->where('id', $parent)
@@ -498,7 +498,7 @@ class MemberRegistrationController extends Controller
         //Fetch Wallet
         $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
         //    dd($wallet_insert);
-        $credit_commision = DB::table('commision_history')
+        $credit_commision = DB::table('commission_history')
                 ->insertGetId([
                     'user_id' => $fetch_user->user_id,
                     'pair_number' =>  1,
@@ -522,61 +522,30 @@ class MemberRegistrationController extends Controller
     }
 
     function creditCommisionOneIsToOne($parent, $left, $right){
-
         $timing = $this->checkTimeFrameDuplication($parent);
-
         if($timing > 1){
-            $update_left_count = DB::table('tree')
-            ->where('id', $parent)
-            ->update([
-                'left_count' => DB::raw("`left_count`-".($left)),
-                'right_count' => DB::raw("`right_count`-".($right)),
-                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-            ]);
-
-        //Fetch User with Node ID
-        $fetch_user = DB::table('tree')
-        ->where('id', $parent)
-        ->first();        
-            
-        //Fetch Matching Income
-        $matching_income = DB::table('matching_income')->first();
-        
-        $wallet_insert = DB::table('wallet') 
-        ->where('user_id', $fetch_user->user_id)
-        ->update([
-            'amount' => DB::raw("`amount`+".(0.00)),
-            ]);
-            
-        //Fetch Wallet
-        $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
-        
-        //    dd($wallet_insert);
-        $credit_commision = DB::table('commission_history')
-                ->insertGetId([
-                    'user_id' => $fetch_user->user_id,
-                    'pair_number' =>  1,
-                    'amount' => 0.00,
-                    'comment' => 0.00.' Income of Pair Number 1 isnot credited to your wallet beacuase of duplicate timeframe! ',
-                    'status' => 2,
-                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                    ]);
+            //If Time frame is duplicate then push the data with status NO
+            $this->commisionWithNegative($parent, $left, $right);
         }else{
+
             //Check for exact cut-OFF
-            $this->checkCutOFFTiming($parent);
+            $fetch_cutoff = $this->checkCutOFFTiming($parent);
+            // dd($fetch_cutoff);
+            if($fetch_cutoff > 0){
+                $this->commisionWithNegative($parent, $left, $right);
+             }else{
+                $this->commisionWithPositive($parent, $left, $right);
+             }
         }
     }
 
     function checkTimeFrameDuplication($parent){
-        
         //Pair Timing
         $current_time = Carbon::now()->setTimezone('Asia/Kolkata')->toTimeString();
-        
         $pair_timings = DB::table('pair_timing')->where('from','<=',$current_time)->where('to','>=',$current_time)->first();
         $current_date = Carbon::now()->setTimezone('Asia/Kolkata')->toDateString();
         $time_frame_from = $current_date." ".$pair_timings->from;
         $time_frame_to = $current_date." ".$pair_timings->to;
-        
         $member_pair_timings = DB::table('member_pair_timing')
         ->where('user_id', $parent)
         ->whereBetween('created_at', [$time_frame_from, $time_frame_to])
@@ -585,7 +554,95 @@ class MemberRegistrationController extends Controller
     }
 
     public function checkCutOFFTiming($parent){
+        //Fetch User with Node ID
+        $fetch_tree = DB::table('tree')
+        ->where('id', $parent)
+        ->first();   
+        //Fetch cutoff
+        $fetch_cutoff = DB::table('cutoff')->where('cutoff', $fetch_tree->total_pair)->count();
+        return $fetch_cutoff;
+    }
 
+    public function commisionWithPositive($parent, $left, $right){
+
+        //INsert Comission Data
+        $update_left_right_count = DB::table('tree')
+        ->where('id', $parent)
+        ->update([
+            'left_count' => DB::raw("`left_count`-".($left)),
+            'right_count' => DB::raw("`right_count`-".($right)),
+            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+        ]);
+       
+        //Fetch User with Node ID
+        $fetch_tree = DB::table('tree')
+        ->where('id', $parent)
+        ->first();        
+
+        //Fetch Matching Income
+        $matching_income = DB::table('matching_income')->first();
+
+        $wallet_insert = DB::table('wallet') 
+        ->where('user_id', $fetch_tree->user_id)
+        ->update([
+            'amount' => DB::raw("`amount`+".($matching_income->income)),
+            ]);
+            
+        //Fetch Wallet
+        $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_tree->user_id)->first();
+
+        $credit_commision = DB::table('commission_history')
+        ->insertGetId([
+            'user_id' => $fetch_tree->user_id,
+            'pair_number' =>  1,
+            'amount' => $matching_income->income,
+            'comment' => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+            'status' => 1,
+            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+            ]);
+
+        if($credit_commision){
+            $credit_commision_to_wallet = DB::table('wallet_history')
+                ->insertGetId([
+                    'wallet_id' =>  $fetch_wallet->id,
+                    'user_id'   => $fetch_tree->user_id,
+                    'transaction_type'  =>  1,
+                    'amount' => $matching_income->income,
+                    'total_amount'  => $fetch_wallet->amount,
+                    'comment'   => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);
+        }
+    }
+
+    public function commisionWithNegative($parent, $left, $right){
+
+        //IF More than 1 data returns, Insert data with status NO
+        $update_left_right_count = DB::table('tree')
+        ->where('id', $parent)
+        ->update([
+            'left_count' => DB::raw("`left_count`-".($left)),
+            'right_count' => DB::raw("`right_count`-".($right)),
+            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+        ]);
+        //Fetch User with Node ID
+        $fetch_tree = DB::table('tree')
+        ->where('id', $parent)
+        ->first();        
+        
+        //Fetch Matching Income
+        $matching_income = DB::table('matching_income')->first();
+
+        $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_tree->user_id)->first();
+        $credit_commision = DB::table('commission_history')
+        ->insertGetId([
+            'user_id' => $fetch_tree->user_id,
+            'pair_number' =>  1,
+            'amount' => 0.00,
+            'comment' => 0.00.' Income of Pair Number 1 isnot credited to your wallet beacuase of Duplicate time frame! ',
+            'status' => 2,
+            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+            ]);
     }
 
 }

@@ -36,7 +36,7 @@
                                             <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
                                         </div>
                                         <label for="search_sponsor_id">Sponsor ID</label>
-                                        <input type="text" name="search_sponsor_id" id="search_sponsor_id" class="form-control" placeholder="Sponsor ID">
+                                        <input type="text" name="search_sponsor_id" id="search_sponsor_id" class="form-control" placeholder="Sponsor ID" required>
                                         <div id="member_data"></div><br>
                                         <input type="hidden" name="sponsorVal" value="" id="sponsorVal">
                                     </div> 
