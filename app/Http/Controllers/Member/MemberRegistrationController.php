@@ -458,7 +458,7 @@ class MemberRegistrationController extends Controller
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
 
-                        $this->creditCommisionOneIsToOne($parent);
+                        $this->creditCommisionOneIsToOne($parent, 1, 1);
 
                         DB::table('tree')
                         ->where('id', $parent)
@@ -498,47 +498,94 @@ class MemberRegistrationController extends Controller
         //Fetch Wallet
         $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
         //    dd($wallet_insert);
-        $credit_commision = DB::table('wallet_history')
+        $credit_commision = DB::table('commision_history')
                 ->insertGetId([
-                    'wallet_id' =>  $fetch_wallet->id,
-                    'user_id'   => $fetch_user->user_id,
-                    'transaction_type'  =>  1,
+                    'user_id' => $fetch_user->user_id,
+                    'pair_number' =>  1,
                     'amount' => $matching_income->income,
-                    'total_amount'  => $fetch_wallet->amount,
-                    'comment'   => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+                    'comment' => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+                    'status' => 1,
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
+        if($credit_commision){
+            $credit_commision_to_wallet = DB::table('wallet_history')
+                    ->insertGetId([
+                        'wallet_id' =>  $fetch_wallet->id,
+                        'user_id'   => $fetch_user->user_id,
+                        'transaction_type'  =>  1,
+                        'amount' => $matching_income->income,
+                        'total_amount'  => $fetch_wallet->amount,
+                        'comment'   => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+                        'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                    ]);
+        }
     }
 
-    function creditCommisionOneIsToOne($parent){
-        $this->checkTimeFrameDuplication($parent);
+    function creditCommisionOneIsToOne($parent, $left, $right){
+
+        $timing = $this->checkTimeFrameDuplication($parent);
+
+        if($timing > 1){
+            $update_left_count = DB::table('tree')
+            ->where('id', $parent)
+            ->update([
+                'left_count' => DB::raw("`left_count`-".($left)),
+                'right_count' => DB::raw("`right_count`-".($right)),
+                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+            ]);
+
+        //Fetch User with Node ID
+        $fetch_user = DB::table('tree')
+        ->where('id', $parent)
+        ->first();        
+            
+        //Fetch Matching Income
+        $matching_income = DB::table('matching_income')->first();
+        
+        $wallet_insert = DB::table('wallet') 
+        ->where('user_id', $fetch_user->user_id)
+        ->update([
+            'amount' => DB::raw("`amount`+".(0.00)),
+            ]);
+            
+        //Fetch Wallet
+        $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
+        
+        //    dd($wallet_insert);
+        $credit_commision = DB::table('commission_history')
+                ->insertGetId([
+                    'user_id' => $fetch_user->user_id,
+                    'pair_number' =>  1,
+                    'amount' => 0.00,
+                    'comment' => 0.00.' Income of Pair Number 1 isnot credited to your wallet beacuase of duplicate timeframe! ',
+                    'status' => 2,
+                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                    ]);
+        }else{
+            //Check for exact cut-OFF
+            $this->checkCutOFFTiming($parent);
+        }
     }
 
     function checkTimeFrameDuplication($parent){
         
-      
         //Pair Timing
-        $pair_timings = DB::table('pair_timing')->get();
+        $current_time = Carbon::now()->setTimezone('Asia/Kolkata')->toTimeString();
+        
+        $pair_timings = DB::table('pair_timing')->where('from','<=',$current_time)->where('to','>=',$current_time)->first();
+        $current_date = Carbon::now()->setTimezone('Asia/Kolkata')->toDateString();
+        $time_frame_from = $current_date." ".$pair_timings->from;
+        $time_frame_to = $current_date." ".$pair_timings->to;
+        
         $member_pair_timings = DB::table('member_pair_timing')
-            ->where('user_id', $parent)
-            ->whereDate('created_at', Carbon::today()->toDateString())
-            ->get();
+        ->where('user_id', $parent)
+        ->whereBetween('created_at', [$time_frame_from, $time_frame_to])
+        ->count();
+        return $member_pair_timings;
+    }
 
-        $foundFlag = false;
+    public function checkCutOFFTiming($parent){
 
-        if ($member_pair_timings->count() > 0) {
-            // $beginDate = \Carbon\Carbon::create(date('Y-m-d') . ' ' . $begintime); // You can be add at the end of varible ":00" if not exists
-            // $endDate = \Carbon\Carbon::create(date('Y-m-d') . ' ' . $endtime); //You can be add at the end of varible ":00" if not exists
-            foreach($member_pair_timings as $member_pair_timing){
-                $time = explode(" ",$member_pair_timing->created_at);
-            }
-        }
-        if (! $foundFlag) {
-            dd("good");
-        } else {
-            dd("Bad");
-        }
-      
     }
 
 }
