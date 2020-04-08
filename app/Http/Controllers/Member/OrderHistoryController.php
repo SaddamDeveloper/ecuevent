@@ -8,6 +8,7 @@ use DB;
 use Auth;
 class OrderHistoryController extends Controller
 {
+    
     public function ajaxGetOrderList(){
         $query = DB::table('member_joining_order')
         ->leftjoin('members', 'member_joining_order.user_id', '=', 'members.id')
