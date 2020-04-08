@@ -85,6 +85,10 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/add/product/{product_page_token}/{user_id}', 'MemberDashboardController@productPage')->name('member.product_page');
     Route::get('/add/kyc/{kyc_page_token}/{user_id}', 'MemberDashboardController@kycPage')->name('member.kyc_page');
     Route::get('/add/finish/{finish_page_token}', 'MemberDashboardController@finishPage')->name('member.finish_page');
+    Route::get('/my/epin/', 'MemberEpinController@memberEpinListForm')->name('member.mem_epin_list_form');
+    Route::get('/my/epin/list', 'MemberEpinController@memberGetEpinList')->name('member.ajax.my_epin_list');
+    Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');
+    Route::get('/my/order', 'MemberDashboardController@memberOrderListForm')->name('member.mem_order_list_form');
     // Route::get('msg', 'MemberDashboardController@msgHelper');
     
     /***
@@ -95,7 +99,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     /***
      * Epin Validate
      */
-
+    
     Route::get('/validate/EPIN', 'MemberRegistrationController@validateEPIN')->name('member.validate_epin');
 
     /***
@@ -106,16 +110,17 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::post('/product/data', 'MemberRegistrationController@productPurchase')->name('member.product_purchase');
     Route::post('/kyc/data', 'MemberRegistrationController@kycSubmit')->name('member.kyc_submit');
 
-    /***
-     * Member Epin Control
+    /**
+     * Commission History Generate
      */
-    Route::get('/my/epin/', 'MemberEpinController@memberEpinListForm')->name('member.mem_epin_list_form');
-    Route::get('/my/epin/list', 'MemberEpinController@memberGetEpinList')->name('member.ajax.my_epin_list');
     
+    Route::get('/ajax/get/commission','CommissionHistoryController@ajaxGetCommissionList')->name('member.ajax.my_commission_list');
+    Route::get('/ajax/get/order','OrderHistoryController@ajaxGetOrderList')->name('member.ajax.my_order_list');
+
     /***
      * Message helper
      */
     // Route::get('/my/epin/list', 'MemberEpinController@msgHelper');
-
+    
      
 }); 

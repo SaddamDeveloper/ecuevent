@@ -34,18 +34,26 @@
                 <li><a href="{{route('member.add_new_member_form')}}"> Add New Member</a></li>
               </ul>
             </li>
-
-            <li><a><i class="fa fa-ticket"></i>EPIN <span class="fa fa-chevron-down"></span></a>
-              <ul class="nav child_menu">
-                <li><a href="{{route('member.mem_epin_list_form')}}"> My EPIN</a></li>
-              </ul>
-            </li>
-
-            <li><a><i class="fa fa-tree"></i>Tree <span class="fa fa-chevron-down"></span></a>
+          
+            <li><a><i class="fa fa-code-fork"></i>My Downline <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('member.mem_epin_list_form')}}"> My Tree</a></li>
+                <li><a href="{{route('member.mem_epin_list_form')}}"> Downline List</a></li>
               </ul>
             </li>
+
+            <li><a href="{{route('member.mem_epin_list_form')}}"><i class="fa fa-ticket"></i> My EPIN</a>
+            </li>
+           
+            <li><a href="{{route('member.mem_commission_list_form')}}"><i class="fa fa-percent"></i> Commission History</a>
+            </li>
+
+            <li><a href="{{route('member.mem_order_list_form')}}"><i class="fa fa-database"></i> Orders</a>
+            </li>
+
+            <li><a href="{{route('member.mem_epin_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a>
+            </li>
+
           </ul>
         </div>
       </div>

@@ -142,4 +142,14 @@ class MemberDashboardController extends Controller
             return view('member.template.member_master', compact('msg'));
         }
     }
+
+    public function memberCommissionListForm(){
+        return view('member.commission');
+    }
+    
+    public function memberOrderListForm(){
+        return view('member.order');
+    }
+
+    
 }
