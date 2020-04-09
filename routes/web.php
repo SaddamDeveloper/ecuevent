@@ -89,7 +89,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/my/epin/list', 'MemberEpinController@memberGetEpinList')->name('member.ajax.my_epin_list');
     Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');
     Route::get('/my/order', 'MemberDashboardController@memberOrderListForm')->name('member.mem_order_list_form');
-    // Route::get('msg', 'MemberDashboardController@msgHelper');
+    // Route::get('msg', 'MemberDashboardController@msgHelper');    
     
     /***
      * Sponsor ID Search
@@ -124,3 +124,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     
      
 }); 
+
+    Route::get('/my/tree/', function () {
+        return view('member.tree');
+    })->name('member.tree');

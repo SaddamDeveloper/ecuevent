@@ -34,7 +34,7 @@
                                 <table id="epin_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                   <thead>
                                     <tr>
-                                      <th>Sl. No</th>
+                                      <th>Sl. No1</th>
                                       <th>EPIN</th>
                                       <th>Status</th>
                                       <th>Alloted To</th>
