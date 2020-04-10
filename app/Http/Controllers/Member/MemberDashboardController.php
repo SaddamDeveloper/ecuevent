@@ -267,4 +267,8 @@ class MemberDashboardController extends Controller
         $amount = $wallet->amount;
         return view('member.wallet', compact('amount'));
     }
+
+    public function memberTree(){
+        return view('member.tree');
+    }
 }

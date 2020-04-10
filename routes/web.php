@@ -119,6 +119,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/my/downline/list', 'MemberDashboardController@memberGetDownlineList')->name('member.ajax.my_downline_list');
     Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');
     Route::get('/my/order', 'MemberDashboardController@memberOrderListForm')->name('member.mem_order_list_form');
+    Route::get('/my/tree', 'MemberDashboardController@memberTree')->name('member.tree');
   
     Route::get('/my/wallet/', 'MemberDashboardController@memberWalletListForm')->name('member.mem_wallet_list_form');
 
@@ -157,7 +158,3 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     
      
 }); 
-
-    Route::get('/my/tree/', function () {
-        return view('member.tree');
-    })->name('member.tree');
