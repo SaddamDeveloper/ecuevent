@@ -117,8 +117,10 @@
                                     @if($fetch_member_data->document_status == 2)  
                                         <a href="{{route('admin.member_verify', ['id' => encrypt($fetch_member_data->id), 'status' => encrypt(1)])}}" class="btn btn-success btn-sm">Verify</a>
                                         <a href="{{route('admin.member_verify', ['id' => encrypt($fetch_member_data->id), 'status' => encrypt(3)])}}" class="btn btn-danger btn-sm">Reject</a>
+                                    @elseif($fetch_member_data->document_status == 3)
+                                        <button class="btn btn-danger" disabled>Rejected</button>
                                     @else
-                                        <button class="btn btn-primary" disabled>Verified</button>
+                                        <button class="btn btn-success" disabled>Verified</button>
                                     @endif
                                     <button class="btn btn-danger pull-right" onclick="javascript:window.close()">Close</button>
                                 </div>

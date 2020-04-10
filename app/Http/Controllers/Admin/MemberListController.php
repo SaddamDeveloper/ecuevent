@@ -46,8 +46,11 @@ class MemberListController extends Controller
                 $stat = '<span class="label label-success">VERIFIED</span>';
                 return $stat;
            }else if($members->document_status == 2){
-                $stat = '<span class="label label-danger">NOT VERIFIED</span>';
+                $stat = '<span class="label label-warning">NOT VERIFIED</span>';
                return $stat;
+           }else if($members->document_status == 3){
+                $stat = '<span class="label label-danger">REJECTED</span>';
+                return $stat;
            }
            return $stat;
         })
@@ -58,7 +61,7 @@ class MemberListController extends Controller
                 $stat = '<span class="label label-success">UPLOADED</span>';
                 return $stat;
            }else if($members->document_u_status == 2){
-                $stat = '<span class="label label-danger">NOT UPLOADED</span>';
+                $stat = '<span class="label label-warning">NOT UPLOADED</span>';
                return $stat;
            }
            return $stat;
@@ -187,7 +190,28 @@ class MemberListController extends Controller
         return redirect()->back()->with('message', 'Something went wrong!');
     }
 }
-public function memberVerify($vId){
+public function memberVerify($vId, $statusId){
+    try {
+            $id = decrypt($vId);
+            $sId = decrypt($statusId);
+        }catch(DecryptException $e) {
+            return redirect()->back();
+        }
+
+   $verify = DB::table('members')
+        ->where('id', $id)
+        ->update([
+            'document_status' => $sId,
+            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+        ]);
+
+    if($verify && $sId == 1){
+        return redirect()->back()->with('message', 'Verified Successfully!');
+    }else if($verify && $sId == 3){
+        return redirect()->back()->with('error', 'Document got Rejected!');
+    }
+}
+public function memberDownline($vId){
     try {
             $id = decrypt($vId);
         }catch(DecryptException $e) {
@@ -195,17 +219,6 @@ public function memberVerify($vId){
         }
 
     $fetch_member_data = DB::table('members')->where('id', $id)->first();
-    return view('admin.member_verify', compact('fetch_member_data'));
-}
-public function memberDownline($vId){
-        try {
-                $id = decrypt($vId);
-            }catch(DecryptException $e) {
-                return redirect()->back();
-            }
-
-        $fetch_member_data = DB::table('members')->where('id', $id)->first();
-       dd($fetch_member_data);
-        return view('admin.member_edit', compact('fetch_member_data', 'state', 'city'));
+    return view('admin.member_downline', compact('fetch_member_data'));
 }
 }
