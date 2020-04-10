@@ -15,6 +15,17 @@ class CommissionHistoryController extends Controller
         ->where('members.id', Auth::user()->id);
         return datatables()->of($query->get())
             ->addIndexColumn()
+            ->addColumn('amount', function($row){
+                if($row->amount == 900){
+                    $amt = '<span class="label label-success">'.$row->amount.'</span>';
+                    return $amt;
+                }else{
+                    $amt = '<span class="label label-warning">'.$row->amount.'</span>';
+                    return $amt;
+                }
+                return $amt;
+            })
+            ->rawColumns(['amount'])
             ->make(true);
     }
 }

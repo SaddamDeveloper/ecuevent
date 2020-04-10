@@ -51,7 +51,7 @@
             <li><a href="{{route('member.mem_order_list_form')}}"><i class="fa fa-database"></i> Orders</a>
             </li>
 
-            <li><a href="{{route('member.mem_epin_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a>
+            <li><a href="{{route('member.mem_wallet_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a>
             </li>
 
           </ul>

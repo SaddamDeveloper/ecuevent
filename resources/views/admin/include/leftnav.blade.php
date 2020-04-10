@@ -33,11 +33,18 @@
                 <li><a href="{{route('admin.mem_epin')}}">Generate EPIN</a></li>
               </ul>
             </li>
+            <li><a><i class="fa fa-users"></i> Members <span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu">
+                <li><a href="{{route('admin.mem_member_list')}}">Member List</a></li>
+              </ul>
+            </li>
             <li><a><i class="fa fa-gear"></i> Configuration <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('admin.mem_matching_income')}}">Member Matching Income</a></li>
                 <li><a href="{{route('admin.mem_pair_timing')}}">Common Pair timing</a></li>
                 <li><a href="{{route('admin.mem_pair_cutoff')}}">Common Pair CutOFF</a></li>
+                <li><a href="{{route('admin.state')}}">Add State</a></li>
+                <li><a href="{{route('admin.city')}}">Add City</a></li>
               </ul>
             </li>
           </ul>

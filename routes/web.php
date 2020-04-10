@@ -70,7 +70,35 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
         Route::get('/delete/product/{id}', 'MemberProductController@deleteMemberProduct')->name('admin.delete_member_product');
         
     }); 
-    
+
+    /**
+     * Member List
+     */
+    Route::get('/list/members', 'MemberListController@memberList')->name('admin.mem_member_list');
+    Route::get('/list/all/members', 'MemberListController@ajaxGetMemberList')->name('admin.ajax.get_member_list');
+    Route::get('/status/member/{id}/{status}', 'MemberListController@memberStatus')->name('admin.member_status');
+    Route::get('/view/member/{id}', 'MemberListController@memberView')->name('admin.member_view');
+    Route::get('/edit/member/{id}', 'MemberListController@memberEdit')->name('admin.member_edit');
+    Route::post('/edit/member/', 'MemberListController@memberUpdate')->name('admin.update_member');
+    Route::get('/downline/member/{id}', 'MemberListController@memberDownline')->name('admin.member_downline');
+    Route::get('/verify/member/{id}/{status}', 'MemberListController@memberVerify')->name('admin.member_verify');
+
+    /**
+     * State Configuration
+     */
+    Route::get('/state', 'AdminDashboardController@state')->name('admin.state');
+    Route::post('/add/state', 'AdminDashboardController@addState')->name('admin.add.state');
+    Route::get('/all/list/state/', 'AdminDashboardController@ajaxGetStateList')->name('admin.ajax.state_list');
+    Route::get('/status/state/{id}/{status}', 'AdminDashboardController@stateStatus')->name('admin.state_status');
+
+    /**
+     * City Configuration
+     */
+    Route::get('/city', 'AdminDashboardController@city')->name('admin.city');
+    Route::post('/add/city', 'AdminDashboardController@addCity')->name('admin.add.city');
+    Route::get('/all/list/city/', 'AdminDashboardController@ajaxGetCityList')->name('admin.ajax.city_list');
+    Route::get('/status/city/{id}/{status}', 'AdminDashboardController@cityStatus')->name('admin.city_status');
+
 });
 
 /***
@@ -87,9 +115,14 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/add/finish/{finish_page_token}', 'MemberDashboardController@finishPage')->name('member.finish_page');
     Route::get('/my/epin/', 'MemberEpinController@memberEpinListForm')->name('member.mem_epin_list_form');
     Route::get('/my/epin/list', 'MemberEpinController@memberGetEpinList')->name('member.ajax.my_epin_list');
+    Route::get('/my/downline/', 'MemberDashboardController@memberDownlineListForm')->name('member.mem_downline_list_form');
+    Route::get('/my/downline/list', 'MemberDashboardController@memberGetDownlineList')->name('member.ajax.my_downline_list');
     Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');
     Route::get('/my/order', 'MemberDashboardController@memberOrderListForm')->name('member.mem_order_list_form');
-    // Route::get('msg', 'MemberDashboardController@msgHelper');    
+  
+    Route::get('/my/wallet/', 'MemberDashboardController@memberWalletListForm')->name('member.mem_wallet_list_form');
+
+
     
     /***
      * Sponsor ID Search
