@@ -38,7 +38,7 @@
             <li><a><i class="fa fa-code-fork"></i>My Downline <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('member.tree')}}"> My Tree</a></li>
-                <li><a href="{{route('member.mem_epin_list_form')}}"> Downline List</a></li>
+                <li><a href="{{route('member.mem_downline_list_form')}}"> Downline List</a></li>
               </ul>
             </li>
 
@@ -51,7 +51,7 @@
             <li><a href="{{route('member.mem_order_list_form')}}"><i class="fa fa-database"></i> Orders</a>
             </li>
 
-            <li><a href="{{route('member.mem_epin_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a>
+            <li><a href="{{route('member.mem_wallet_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a>
             </li>
 
           </ul>

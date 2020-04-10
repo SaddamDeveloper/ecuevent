@@ -16,7 +16,7 @@ class MemberEpinController extends Controller
     public function memberGetEpinList(){
         $query = DB::table('epin')
                 ->leftjoin('members', 'epin.alloted_to', '=', 'members.id')
-                ->select('epin.*', 'members.name')
+                ->select('epin.*', 'members.name as name')
                 ->where('members.id', Auth::user()->id);
             return datatables()->of($query->get())
             ->addIndexColumn()

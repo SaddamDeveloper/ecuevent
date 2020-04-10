@@ -18,9 +18,16 @@ class MemberRegistrationController extends Controller
         $validatedData = $request->validate([
             'f_name' => 'required',
             'l_name' => 'required',
-            'mobile' => 'required',
+            'mobile' => 'required|numeric:10',
             'gender' => 'required',
-            'dob' => 'required'
+            'dob' => 'required',
+            'relation' => 'required',
+            'n_name' => 'required',
+            'n_mobile' => 'required|numeric:10',
+            'n_address' => 'required',
+            'state' => 'required',
+            'city' => 'required',
+            'pin' => 'required|numeric'
         ]);
 
         $sponsorID = $request->input('search_sponsor_id');
@@ -34,6 +41,15 @@ class MemberRegistrationController extends Controller
         $mobile = $request->input('mobile');
         $gender = $request->input('gender');
         $dob = $request->input('dob');
+
+        // Nominee Details
+        $relation = $request->input('relation');
+        $n_name = $request->input('n_name');
+        $n_mobile = $request->input('n_mobile');
+        $n_address = $request->input('n_address');
+        $state = $request->input('state');
+        $city = $request->input('city');
+        $pin = $request->input('pin');
         
         if($sponsorVal == 5){
             return redirect()->back()->with('error', 'All lags are full! Try with another Sponsor ID.');
@@ -50,9 +66,16 @@ class MemberRegistrationController extends Controller
                     'gender' => $gender,
                     'dob' => $dob,
                     'sponsorID' => $sponsorID,
-                    "lag" => $lag
+                    'lag' => $lag,
+                    'relation' => $relation,
+                    'n_name' => $n_name,
+                    'n_mobile' => $n_mobile,
+                    'n_address' => $n_address,
+                    'state' => $state,
+                    'city' => $city,
+                    'pin' => $pin
                 ];
-        
+
                 Session::put('member_data', $member_data);
                 Session::save();
                 $token = rand(111111,999999);
@@ -89,9 +112,16 @@ class MemberRegistrationController extends Controller
                 $epin = $members['epin'];
                 $members['terms'] = $request->input('terms');
                 $lag = $members['lag']; 
-
+                $relation = $members['relation'];
+                $n_name = $members['n_name'];
+                $n_mobile = $members['n_mobile'];
+                $n_address = $members['n_address'];
+                $state = $members['state'];
+                $city = $members['city'];
+                $pin = $members['pin'];
+                $registered_by = Auth::user()->name;
                 try {
-                    DB::transaction(function () use($members,$fullName,$email,$password,$mobile,$gender,$dob,$status,$epin, $lag, &$member_insert) {
+                    DB::transaction(function () use($members,$fullName,$email,$password,$mobile,$gender,$dob,$status,$epin,$lag,$relation,$n_name,$n_mobile,$n_address,$state,$city,$pin,$registered_by,&$member_insert) {
                         $member_insert = DB::table('members')
                         ->insertGetId([
                             'name' => $fullName,
@@ -102,7 +132,15 @@ class MemberRegistrationController extends Controller
                             'dob' => $dob,
                             'status' => $status,
                             'epin' => $epin,
+                            'nominee_relation' => $relation,
+                            'nominee_name' => $n_name,
+                            'nominee_mobile' => $n_mobile,
+                            'nominee_address' => $n_address,
+                            'state' => $state,
+                            'city' => $city,
+                            'pin' => $pin,
                             'policy_is_agree' => $members['terms'],
+                            'registered_by' => $registered_by,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                         ]);
 
@@ -160,12 +198,12 @@ class MemberRegistrationController extends Controller
                         
                         //Insert Data in the Wallet for the first Time
                         $wallet_insert = DB::table('wallet')
-                                    ->insertGetId([
-                                        'user_id' => $member_insert,
-                                        'amount' => 0,
-                                        'status' => 1,
-                                        'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                                    ]);
+                                ->insertGetId([
+                                    'user_id' => $member_insert,
+                                    'amount' => 0,
+                                    'status' => 1,
+                                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                                ]);
 
                         // Fetch All Parent of Current Registered node
 
@@ -276,7 +314,7 @@ class MemberRegistrationController extends Controller
             $photo_array = $request->file('photo');
             $photo = $this->imageInsert($photo_array, $request, 2);
         }
-        
+
         $member_fetch = DB::table('members')->where('id', $u_id)->first();
         if($member_fetch){
             $kyc_update = DB::table('members')

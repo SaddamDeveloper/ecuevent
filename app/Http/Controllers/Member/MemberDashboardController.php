@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use Session;
 use Illuminate\Contracts\Encryption\DecryptException;
 use DB;
-
+use Auth;
+use Carbon\Carbon;
 class MemberDashboardController extends Controller
 {
     public function index(){
@@ -19,7 +20,13 @@ class MemberDashboardController extends Controller
     }
 
     public function addNewMemberForm(){
-        return view('member.registration.member_registration_form');
+        $state = DB::table('state')
+            ->orderBy('id','desc')
+            ->get();
+        $city = DB::table('city')
+            ->orderBy('id','desc')
+            ->get();
+        return view('member.registration.member_registration_form', compact('state', 'city'));
     }
     
     public function memberList(){
@@ -151,5 +158,117 @@ class MemberDashboardController extends Controller
         return view('member.order');
     }
 
+    public function memberDownlineListForm(){
+        return view('member.downline');
+    }
     
+    public function memberGetDownlineList(){
+        
+        return datatables()->of(DB::select(DB::raw("SELECT * FROM (SELECT * FROM tree
+            ORDER BY user_id) items_sorted,
+           (SELECT @iv := :user_id) initialisation
+           WHERE find_in_set(parent_id, @iv)
+           AND length(@iv := concat(@iv, ',', id))"),
+            array(
+               'user_id' => Auth::user()->id,
+               )))
+            ->addIndexColumn()
+            ->addColumn('parent', function($row){
+                $parent = $row->parent_id;
+                if (!empty($parent)) {
+                   $parent_details =  DB::table('tree')
+                   ->select('members.name as u_name','members.id as u_id')
+                   ->join('members','members.id','=','tree.user_id')
+                   ->where('tree.id',$row->parent_id)
+                   ->first();
+                   if ($row->user_id == $parent_details->u_id) {
+                        $parent.=" (Self)";
+                    }else{
+                        $parent.=" (".$parent_details->u_name.")";
+                   }
+                }
+                return $parent;
+            })
+            ->addColumn('member_name', function($row){
+                $member_name = null;
+                if (!empty($row->user_id)) {
+                    $member_details =  DB::table('members')
+                    ->select('name','id')
+                    ->where('id',$row->user_id)
+                   ->first();
+                   $member_name =$member_details->name;
+                }
+                return $member_name;
+            })
+            ->addColumn('left_member', function($row){
+                $lft_member = $row->left_id;
+                if (!empty($lft_member)) {
+                    $lft_details =  DB::table('tree')
+                   ->select('members.name as u_name','members.id as u_id')
+                   ->join('members','members.id','=','tree.user_id')
+                   ->where('tree.id',$lft_member)
+                   ->first();
+                   if ($row->user_id == $lft_details->u_id) {
+                        $lft_member.=" (Self)";
+                    }else{
+                        $lft_member.=" (".$lft_details->u_name.")";
+                   }
+                }
+                return $lft_member;
+            })
+            ->addColumn('right_member', function($row){
+                $rht_member = $row->right_id;
+               
+                if (!empty($rht_member)) {
+                    $rht_details =  DB::table('tree')
+                    ->select('members.name as u_name','members.id as u_id')
+                   ->join('members','members.id','=','tree.user_id')
+                   ->where('tree.id',$rht_member)
+                   ->first();
+                   if ($row->user_id == $rht_details->u_id) {
+                        $rht_member.=" (Self)";
+                    }else{
+                        $rht_member.=" (".$rht_details->u_name.")";
+                    }
+                }else{
+                    $rht_member='';
+                }
+                return $rht_member;
+            })
+            ->addColumn('add_by', function($row){
+                $add_by = $row->registered_by;
+                if (!empty($add_by)) {
+                    if (substr($add_by, -1) == "A") {
+                    $add_by = "ADMIN";
+                }elseif($row->user_id == $add_by){
+                    $add_by = "SELF";
+                  }else{
+                      $user_details =  DB::table('members')
+                        ->select('name','id')
+                        ->where('id',$add_by)
+                        ->first();
+                        $add_by.=$add_by." (".$user_details->name.")";
+                    }
+                }
+                return $add_by;
+            })
+            ->addColumn('created_at', function($row){
+                $created_at = Carbon::parse($row->created_at)->toDayDateTimeString();
+                return $created_at;
+            })
+            ->rawColumns(['parent','member_name','left_member','right_member','add_by','created_at'])
+        ->make(true);
+    }
+
+    public function memberWalletListForm(){
+        $wallet = DB::table('wallet')
+            ->where('user_id', Auth::user()->id)
+            ->first();
+        $amount = $wallet->amount;
+        return view('member.wallet', compact('amount'));
+    }
+
+    public function memberTree(){
+        return view('member.tree');
+    }
 }

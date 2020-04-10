@@ -14,6 +14,7 @@ class OrderHistoryController extends Controller
         ->leftjoin('members', 'member_joining_order.user_id', '=', 'members.id')
         ->select('member_joining_order.*', 'members.name as user_name')
         ->where('members.id', Auth::user()->id);
+        
         return datatables()->of($query->get())
             ->addIndexColumn()
             ->addColumn('image', function($row){
