@@ -1,16 +1,4 @@
 <?php
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 /***
  * Admin Login Control
  */
@@ -57,6 +45,10 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
 
     Route::get('/pair/cuttoff', 'PairCutoffController@memPairCutoff')->name('admin.mem_pair_cutoff');
     Route::post('/add/pair/cutoff', 'PairCutoffController@memAddPairCutoff')->name('admin.mem_add_pair_cut_off');
+    Route::get('/ajax/pair/cutoff', 'PairCutoffController@memAjaxPairCutoff')->name('admin.ajax.cutOff_list');
+    Route::get('/edit/pair/cutoff/{id}', 'PairCutoffController@editPairCutoff')->name('admin.edit.mem_pair_cutoff');
+    Route::post('/update/pair/cutoff', 'PairCutoffController@memUpdatePairCutoff')->name('admin.mem_update_pair_cut_off');
+    Route::get('/delete/pair/cutoff/{id}', 'PairCutoffController@memDeletePairCutoff')->name('admin.delete.mem_pair_cutoff');
     
     /***
      * Member Prdouct Control
@@ -82,6 +74,14 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::post('/edit/member/', 'MemberListController@memberUpdate')->name('admin.update_member');
     Route::get('/downline/member/{id}', 'MemberListController@memberDownline')->name('admin.member_downline');
     Route::get('/verify/member/{id}/{status}', 'MemberListController@memberVerify')->name('admin.member_verify');
+    Route::get('/downline/member/list/{id}', 'MemberListController@memberDownlineList')->name('admin.ajax.downline_list');
+    Route::get('/commission/members', 'MemberListController@memberCommissionHistory')->name('admin.mem_commission_history');
+    Route::get('/commission/history', 'MemberListController@memberCommissionHistoryList')->name('admin.ajax.commission_list');
+    Route::get('/wallet/', 'MemberListController@memberWallet')->name('admin.mem_wallet');
+    Route::get('/wallet/list', 'MemberListController@memberWalletList')->name('admin.ajax.wallet_list');
+    Route::get('/wallet/history/{id}', 'MemberListController@memberWalletHistory')->name('admin.wallet_history');
+    Route::get('/wallet/ajax/history/{id}', 'MemberListController@memberAjaxWalletHistory')->name('admin.ajax.wallet_history');
+    
 
     /**
      * State Configuration
@@ -119,7 +119,8 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/my/downline/list', 'MemberDashboardController@memberGetDownlineList')->name('member.ajax.my_downline_list');
     Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');
     Route::get('/my/order', 'MemberDashboardController@memberOrderListForm')->name('member.mem_order_list_form');
-    Route::get('/my/tree', 'MemberDashboardController@memberTree')->name('member.tree');
+    Route::get('/my/tree/{rank?}', 'MemberDashboardController@memberTree')->name('member.tree');
+    Route::get('/my/tree/list', 'MemberDashboardController@memberTreeData')->name('member.tree_data');
   
     Route::get('/my/wallet/', 'MemberDashboardController@memberWalletListForm')->name('member.mem_wallet_list_form');
 

@@ -221,4 +221,171 @@ public function memberDownline($vId){
     $fetch_member_data = DB::table('members')->where('id', $id)->first();
     return view('admin.member_downline', compact('fetch_member_data'));
 }
+public function memberDownlineList($mId){
+    try {
+        $id = decrypt($mId);
+    }catch(DecryptException $e) {
+        return redirect()->back();
+    }
+
+    return datatables()->of(DB::select(DB::raw("SELECT * FROM (SELECT * FROM tree
+    ORDER BY user_id) items_sorted,
+   (SELECT @iv := :user_id) initialisation
+   WHERE find_in_set(parent_id, @iv)
+   AND length(@iv := concat(@iv, ',', id))"),
+    array(
+       'user_id' => $id,
+       )))
+    ->addIndexColumn()
+    ->addColumn('parent', function($row){
+        $parent = $row->parent_id;
+        if (!empty($parent)) {
+           $parent_details =  DB::table('tree')
+           ->select('members.name as u_name','members.id as u_id')
+           ->join('members','members.id','=','tree.user_id')
+           ->where('tree.id',$row->parent_id)
+           ->first();
+           if ($row->user_id == $parent_details->u_id) {
+                $parent.=" (Self)";
+            }else{
+                $parent.=" (".$parent_details->u_name.")";
+           }
+        }
+        return $parent;
+    })
+    ->addColumn('member_name', function($row){
+        $member_name = null;
+        if (!empty($row->user_id)) {
+            $member_details =  DB::table('members')
+            ->select('name','id')
+            ->where('id',$row->user_id)
+           ->first();
+           $member_name =$member_details->name;
+        }
+        return $member_name;
+    })
+    ->addColumn('left_member', function($row){
+        $lft_member = $row->left_id;
+        if (!empty($lft_member)) {
+            $lft_details =  DB::table('tree')
+           ->select('members.name as u_name','members.id as u_id')
+           ->join('members','members.id','=','tree.user_id')
+           ->where('tree.id',$lft_member)
+           ->first();
+           if ($row->user_id == $lft_details->u_id) {
+                $lft_member.=" (Self)";
+            }else{
+                $lft_member.=" (".$lft_details->u_name.")";
+           }
+        }
+        return $lft_member;
+    })
+    ->addColumn('right_member', function($row){
+        $rht_member = $row->right_id;
+       
+        if (!empty($rht_member)) {
+            $rht_details =  DB::table('tree')
+            ->select('members.name as u_name','members.id as u_id')
+           ->join('members','members.id','=','tree.user_id')
+           ->where('tree.id',$rht_member)
+           ->first();
+           if ($row->user_id == $rht_details->u_id) {
+                $rht_member.=" (Self)";
+            }else{
+                $rht_member.=" (".$rht_details->u_name.")";
+            }
+        }else{
+            $rht_member='';
+        }
+        return $rht_member;
+    })
+    ->addColumn('add_by', function($row){
+        $add_by = $row->registered_by;
+        if (!empty($add_by)) {
+            if (substr($add_by, -1) == "A") {
+            $add_by = "ADMIN";
+        }elseif($row->user_id == $add_by){
+            $add_by = "SELF";
+          }else{
+              $user_details =  DB::table('members')
+                ->select('name','id')
+                ->where('id',$add_by)
+                ->first();
+                $add_by.=$add_by." (".$user_details->name.")";
+            }
+        }
+        return $add_by;
+    })
+    ->addColumn('created_at', function($row){
+        $created_at = Carbon::parse($row->created_at)->toDayDateTimeString();
+        return $created_at;
+    })
+    ->rawColumns(['parent','member_name','left_member','right_member','add_by','created_at'])
+    ->make(true);
+}
+
+public function memberCommissionHistory(){
+    return view('admin.commission_history');
+}
+public function memberCommissionHistoryList(){
+    $query = DB::table('commission_history')
+        ->leftjoin('members', 'commission_history.user_id', '=', 'members.id')
+        ->select('commission_history.*', 'members.name as user_name', 'members.member_id as member_id');
+        return datatables()->of($query->get())
+            ->addIndexColumn()
+            ->addColumn('amount', function($row){
+                if($row->amount == 900){
+                    $amt = '<span class="label label-success">'.$row->amount.'</span>';
+                    return $amt;
+                }else{
+                    $amt = '<span class="label label-warning">'.$row->amount.'</span>';
+                    return $amt;
+                }
+                return $amt;
+            })
+            ->rawColumns(['amount'])
+            ->make(true);
+}
+public function memberWallet(){
+    return view('admin.wallet');
+}
+public function memberWalletList(){
+    $query = DB::table('wallet')
+        ->leftjoin('members', 'wallet.user_id', '=', 'members.id')
+        ->select('wallet.*', 'members.name as user_name', 'members.member_id as member_id');
+        return datatables()->of($query->get())
+        ->addIndexColumn()
+        ->addColumn('action', function($row){
+            $btn = '<a href="'.route('admin.wallet_history', ['id' => encrypt($row->user_id)]).'" class="btn btn-primary" target="_blank"><i class="fa fa-th-list" aria-hidden="true"></i></a>';
+            return $btn;
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+}
+
+public function memberWalletHistory($hId){
+    try {
+        $id = decrypt($hId);
+    }catch(DecryptException $e) {
+        return redirect()->back();
+    }
+    
+    return view('admin.wallet_history', compact('id'));
+}
+public function memberAjaxWalletHistory($pId){
+    try {
+        $id = decrypt($pId);
+    }catch(DecryptException $e) {
+        return redirect()->back();
+    }
+
+    $query = DB::table('wallet_history')
+        ->leftjoin('members', 'wallet_history.user_id', '=', 'members.id')
+        ->select('wallet_history.*', 'members.name as user_name', 'members.member_id as member_id')
+        ->where('wallet_history.user_id', $id);
+    return datatables()->of($query->get())
+        ->addIndexColumn()
+        ->make(true);
+
+}
 }

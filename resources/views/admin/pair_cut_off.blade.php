@@ -51,10 +51,21 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">    	            	
+                            <div class="form-group mb-3">    	            	
                                 {{ Form::submit('Submit', array('class'=>'btn btn-success pull-right')) }}  
-                                </div>
-                                {{ Form::close() }}
+                            </div>
+                            {{ Form::close() }}
+                            <table id="cutOff_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                <thead>
+                                  <tr>
+                                    <th>Sl. No</th>
+                                    <th>CutOFF</th>
+                                    <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody>                       
+                                </tbody>
+                            </table>
                             </div>
                         </div>
                     </div>
@@ -68,6 +79,8 @@
 @section('script')
     <script>
     $(function () {
+
+        //CutOFF Generate
         var max_fields      = 10; //maximum input boxes allowed
         var wrapper   		= $(".input_fields_wrap"); //Fields wrapper
         var add_button      = $("#add"); //Add button ID
@@ -83,11 +96,21 @@
         
         $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
             e.preventDefault(); $(this).parent('div').remove(); x--;
-        // $( 'input[name="mytext[]"]' ).each(function(index) {
-        //         // $( this ).val(index+1);
-        // });
         })
+
+        //CutOFF Table
+        var table = $('#cutOff_list').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('admin.ajax.cutOff_list') }}",
+            columns: [
+                {data: 'id', name: 'id',searchable: true},
+                {data: 'cutoff', name: 'cutoff',searchable: true},
+                {data: 'action', name: 'action' ,searchable: true},                 
+            ]
+        });
     });
+        
     </script>
 @endsection
 

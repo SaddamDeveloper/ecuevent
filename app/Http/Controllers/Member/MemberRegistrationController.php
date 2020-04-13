@@ -85,7 +85,7 @@ class MemberRegistrationController extends Controller
     
             }
             else{
-                return redirect()->back()->with('error', 'Mobile Number Exists.');
+                return redirect()->back()->with('error', 'Mobile number exists!');
             }
         }
     }
@@ -323,7 +323,8 @@ class MemberRegistrationController extends Controller
                     'address_proof_doc' => $address,
                     'address_proof_no' => $docNo,
                     'photo_proof' => $photo,
-                    'document_status'  => 3,
+                    'document_status' => 2,
+                    'document_u_status'  => 1,
                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                 ]);
             $delete_previous_session = session()->forget('kyc_page_token');
@@ -509,8 +510,7 @@ class MemberRegistrationController extends Controller
             $child = $parent;
         }
     }
-    function creditCommisionTwoIsToOneOrOneIsToTwo($parent, $left, $right)
-    {   
+    function creditCommisionTwoIsToOneOrOneIsToTwo($parent, $left, $right){   
         $update_left_count = DB::table('tree')
             ->where('id', $parent)
             ->update([
@@ -539,7 +539,7 @@ class MemberRegistrationController extends Controller
         $credit_commision = DB::table('commission_history')
                 ->insertGetId([
                     'user_id' => $fetch_user->user_id,
-                    'pair_number' =>  1,
+                    'pair_number' => DB::raw("`pair_number`+".(1)),
                     'amount' => $matching_income->income,
                     'comment' => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
                     'status' => 1,
@@ -563,14 +563,14 @@ class MemberRegistrationController extends Controller
         $timing = $this->checkTimeFrameDuplication($parent);
         if($timing > 1){
             //If Time frame is duplicate then push the data with status NO
-            $this->commisionWithNegative($parent, $left, $right);
+            $this->commisionWithNegative($parent, $left, $right, $cause = 'CAPPING', $status = '2');
         }else{
 
             //Check for exact cut-OFF
             $fetch_cutoff = $this->checkCutOFFTiming($parent);
-            // dd($fetch_cutoff);
+
             if($fetch_cutoff > 0){
-                $this->commisionWithNegative($parent, $left, $right);
+                $this->commisionWithNegative($parent, $left, $right, $cause = 'CutOFF', $status = '3');
              }else{
                 $this->commisionWithPositive($parent, $left, $right);
              }
@@ -632,9 +632,9 @@ class MemberRegistrationController extends Controller
         $credit_commision = DB::table('commission_history')
         ->insertGetId([
             'user_id' => $fetch_tree->user_id,
-            'pair_number' =>  1,
+            'pair_number' => DB::raw("`pair_number`+".(1)),
             'amount' => $matching_income->income,
-            'comment' => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+            'comment' => $matching_income->income.' Income of Pair Number '.DB::raw("`pair_number`+".(1)).' is successfully credited to your wallet! ',
             'status' => 1,
             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
@@ -653,7 +653,7 @@ class MemberRegistrationController extends Controller
         }
     }
 
-    public function commisionWithNegative($parent, $left, $right){
+    public function commisionWithNegative($parent, $left, $right, $cause, $status){
 
         //IF More than 1 data returns, Insert data with status NO
         $update_left_right_count = DB::table('tree')
@@ -675,10 +675,10 @@ class MemberRegistrationController extends Controller
         $credit_commision = DB::table('commission_history')
         ->insertGetId([
             'user_id' => $fetch_tree->user_id,
-            'pair_number' =>  1,
+            'pair_number' =>  DB::raw("`pair_number`+".(1)),
             'amount' => 0.00,
-            'comment' => 0.00.' Income of Pair Number 1 isnot credited to your wallet beacuase of Duplicate time frame! ',
-            'status' => 2,
+            'comment' => 0.00.' Income of Pair Number '.DB::raw("`pair_number`+".(1)).' isnot credited to your wallet beacuase of '.$cause.'! ',
+            'status' => $status,
             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
     }

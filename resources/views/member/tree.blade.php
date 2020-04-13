@@ -18,6 +18,13 @@
               <div>
                   <div class="x_content" style="overflow:scroll">
                         <div class="tree" style="width:100%;left:40%;right:40%;text-align: -webkit-center;">
+                            <input type="hidden" id="auth" value="{{Auth::user()->id}}">
+                            <div id="tree">
+                                @if (isset($html) && !empty($html))
+                                    {!! $html !!}
+                                @endif
+                            </div>
+
                             <ul>
                                 <li>        
                                     <a href="#">Parent
@@ -92,7 +99,7 @@
 @endsection
 
 @section('script')
-
+  
 @endsection
 
 

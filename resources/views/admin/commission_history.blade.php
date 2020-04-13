@@ -11,7 +11,7 @@
                     <div class="x_panel">
     
                         <div class="x_title">
-                            <h2>Add New EPIN</h2>
+                            <h2>Commission History</h2>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -25,21 +25,22 @@
                     </div>
                         <div>
                             <div class="x_content">
-                                <a href="{{route('admin.mem_add_epin_form')}}" class="btn btn-primary">Add New EPIN</a>
-                                <a href="{{route('admin.mem_allot_epin_form')}}" class="btn btn-primary">Allot EPIN</a>
+                                {{-- <a href="{{route('admin.mem_add_epin_form')}}" class="btn btn-primary">Add New EPIN</a> --}}
+                                {{-- <a href="{{route('admin.mem_allot_epin_form')}}" class="btn btn-primary">Allot EPIN</a> --}}
                             </div>
                         </div>
                         <div>
                             <div class="x_content">
-                                <table id="epin_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                <table id="commission_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                   <thead>
                                     <tr>
                                       <th>Sl. No</th>
-                                      <th>EPIN</th>
+                                      <th>Member ID</th>
+                                      <th>Member</th>
+                                      <th>Amount</th>
+                                      <th>Comment</th>
                                       <th>Status</th>
-                                      <th>Alloted To</th>
-                                      <th>Used By</th>
-                                      {{-- <th>Action</th> --}}
+                                      <th>Created At</th>
                                     </tr>
                                   </thead>
                                   <tbody>                       
@@ -58,29 +59,34 @@
 @section('script')
      <script type="text/javascript">
          $(function () {
-            var table = $('#epin_list').DataTable({
+            var i = 1;
+            var table = $('#commission_list').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('admin.ajax.get_epin_list') }}",
+                iDisplayLength: "50",
+                ajax: "{{ route('admin.ajax.commission_list') }}",
                 columns: [
-                    {data: 'id', name: 'id',searchable: true},
-                    {data: 'epin', name: 'epin',searchable: true},
+                    { "render": function(data, type, full, meta) {return i++;}},
+                    {data: 'member_id', name: 'member_id',searchable: true},
+                    {data: 'user_name', name: 'user_name',searchable: true},
+                    {data: 'amount', name: 'amount',searchable: true},
+                    {data: 'comment', name: 'comment',searchable: true},
                     {data: 'status', name: 'status', render:function(data, type, row){
                       if (row.status == '1') {
-                        return "<button class='btn btn-info'>Used</a>"
+                        return "<button class='btn btn-success rounded'>Credited</a>"
+                      }else if(row.status == '2'){
+                        return "<button class='btn btn-warning rounded'>Capping</a>"
                       }else{
-                        return "<button class='btn btn-danger'>Not Used</a>"
+                        return "<button class='btn btn-warning rounded'>CutOFF</a>"
                       }                        
-                    }},
-                    {data: 'alloted_to', name: 'alloted_to' ,searchable: true}, 
-                    {data: 'used_by', name: 'used_by' ,searchable: true},                 
-                    // {data: 'action', name: 'action', orderable: false, searchable: false},
+                    }},              
+                    {data: 'created_at', name: 'created_at',searchable: true}
                 ]
             });
             
         });
      </script>
-@endsection
+     @endsection
 
 
 

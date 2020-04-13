@@ -12,7 +12,16 @@ use Carbon\Carbon;
 class MemberDashboardController extends Controller
 {
     public function index(){
-        return view('member.dashboard');
+
+        $notification = DB::table('members')
+            ->select('document_u_status')
+            ->where('id', Auth::user()->id)->first();
+        if($notification->document_u_status == 2){
+            $msg = "You haven't uploaded documents! Please upload it for further verification!";
+            return view('member.dashboard', compact('msg'));
+        }else{
+            return view('member.dashboard');
+        }
     }
 
     public function profile(){
@@ -268,7 +277,214 @@ class MemberDashboardController extends Controller
         return view('member.wallet', compact('amount'));
     }
 
-    public function memberTree(){
-        return view('member.tree');
+    public function memberTree($rank=null){
+        if (empty($rank)) {
+            $rank = 0;
+        }
+        $user_id = Auth::guard('member')->id();
+        $html=null;
+        $root = DB::table('tree')
+            ->select('tree.*', 'members.name', 'members.member_id')
+            ->join('members', 'tree.user_id', '=', 'members.id')
+            ->where('user_id', $user_id)
+            ->first();
+        if ($root) {
+            $html = '<ul>
+            <li>        
+                <a href="#">'.$root->name.'
+                    <div class="info">
+                        <h5>Name : '.$root->name.'</h5>
+                        <h5>Id : '.$root->member_id.'</h5>
+                        <h5>Rank : '.$rank.'</h5>
+                    </div>
+                </a>';
+            $rank++;
+            $first_level = DB::table('tree')->where('parent_id',$root->id)->get();
+            if ($first_level) {
+                $html.="<ul>";
+                foreach ($first_level as $key => $first) {
+                    $html.="<li>";
+                    if ($root->left_id == $first->id) {
+                        $first_level_node = DB::table('tree')
+                        ->select('tree.*', 'members.name', 'members.member_id')
+                        ->join('members', 'tree.user_id', '=', 'members.id')
+                        ->where('user_id', $first->id)
+                        ->first();
+                        $html.='<a href="#">'.$first_level_node->name.'
+                            <div class="info">
+                                <h5>Name : '.$first_level_node->name.'/h5>
+                                <h5>Id : '.$first_level_node->member_id.'</h5>
+                                <h5>Rank : '.$rank.'</h5>
+                            </div>  
+                        </a>';
+                    } else if($root->right_id == $first->id){
+                        $first_level_node = DB::table('tree')
+                        ->select('tree.*', 'members.name', 'members.member_id')
+                        ->join('members', 'tree.user_id', '=', 'members.id')
+                        ->where('user_id', $first->id)
+                        ->first();
+                        $html.='<a href="#">'.$first_level_node->name.'
+                            <div class="info">
+                                <h5>Name : '.$first_level_node->name.'</h5>
+                                <h5>Id : '.$first_level_node->member_id.'</h5>
+                                <h5>Rank : '.$rank.'</h5>
+                            </div>  
+                        </a>';
+                    }
+
+                    $second_level = DB::table('tree')->where('parent_id',$first->id)->get();
+                    if ($second_level) {
+                        $html.="<ul>";
+                        foreach ($second_level as $key => $second) {
+                            $html.="<li>";
+                            if ($root->left_id == $first_level_node->id) {
+                                $second_level_node = DB::table('tree')
+                                ->select('tree.*', 'members.name', 'members.member_id')
+                                ->join('members', 'tree.user_id', '=', 'members.id')
+                                ->where('user_id', $second->id)
+                                ->first();
+                                $html.='<a href="#">'.$second_level_node->name.'
+                                    <div class="info">
+                                        <h5>Name : '.$second_level_node->name.'/h5>
+                                        <h5>Id : '.$second_level_node->member_id.'</h5>
+                                        <h5>Rank : '.$rank.'</h5>
+                                    </div>  
+                                </a>';
+                            } else if($root->right_id == $first_level_node->id){
+                                $second_level_node = DB::table('tree')
+                                ->select('tree.*', 'members.name', 'members.member_id')
+                                ->join('members', 'tree.user_id', '=', 'members.id')
+                                ->where('user_id', $second->id)
+                                ->first();
+                                $html.='<a href="#">'.$second_level_node->name.'
+                                    <div class="info">
+                                        <h5>Name : '.$second_level_node->name.'</h5>
+                                        <h5>Id : '.$second_level_node->member_id.'</h5>
+                                        <h5>Rank : '.$rank.'</h5>
+                                    </div>  
+                                </a>';
+                            }
+                            
+                            $html.="</li>";
+                        }
+                        $html.="</ul>";
+                    }
+                    /////////////////////Second End
+                    $html.="</li>";
+                }
+                $html.="</ul>";
+            }
+
+            $html.="
+                </li>
+            </ul>";
+        }     
+       
+        return view('member.tree',compact('html'));
     }
-}
+
+    public function memberTreeData(Request $request){
+        if($request->ajax()){
+            $user_id = $request->get('query');
+            $output = '';
+            if(!empty($user_id)){
+                $first_level = DB::table('tree')
+                    ->select('tree.*', 'members.name', 'members.member_id')
+                    ->join('members', 'tree.user_id', '=', 'members.id')
+                    ->where('user_id', $user_id)
+                    ->first();
+                if($first_level){
+                    $output .= '<ul>
+                    <li>        
+                        <a href="#">'.$first_level->name.'
+                            <div class="info">
+                                <h5>Name : '.$first_level->name.'</h5>
+                                <h5>Id : '.$first_level->member_id.'</h5>
+                                <h5>Rank : 1</h5>
+                            </div>
+                        </a>';
+                        $left_node = DB::table('tree')
+                            ->select('tree.*', 'members.name', 'members.member_id')
+                            ->join('members', 'tree.left_id', '=', 'members.id')
+                            ->where('left_id', $first_level->left_id)
+                            ->first();
+                        $right_node = DB::table('tree')
+                            ->select('tree.*', 'members.name', 'members.member_id')
+                            ->join('members', 'tree.right_id', '=', 'members.id')
+                            ->where('right_id', $first_level->right_id)
+                            ->first();
+                        if($left_node){
+                            $output .= '<ul>
+                                            <li>
+                                                <a href="#">'.$left_node->name.'
+                                                    <div class="info">
+                                                        <h5>Name : '.$left_node->name.'</h5>
+                                                        <h5>Id : '.$left_node->member_id.'</h5>
+                                                        <h5>Rank : 2</h5>
+                                                    </div>  
+                                                </a>
+                                            </li>
+                                        </ul> </li>
+                                        </ul>';
+                        }else if($right_node){
+                            dd(2);
+                            $output .= '
+                            <ul>
+                                <li>
+                                <a href="#">'.$right_node->name.'
+                                    <div class="info">
+                                        <h5>Name : '.$right_node->name.'</h5>
+                                        <h5>Id : '.$right_node->member_id.'</h5>
+                                        <h5>Rank : 2</h5>
+                                    </div>  
+                                </a>
+                                </li></ul>';
+                        }else if($left_node && $right_node){
+                            dd(123);
+                            $output .= '
+                            <ul>
+                                <li>
+                                    <a href="#">'.$left_node->name.'
+                                        <div class="info">
+                                            <h5>Name : '.$left_node->name.'</h5>
+                                            <h5>Id : '.$left_node->member_id.'</h5>
+                                            <h5>Rank : 2</h5>
+                                        </div>  
+                                    </a>
+                                    
+                                </li>
+                                <li>
+                                    <a href="#">'.$right_node->name.'
+                                        <div class="info">
+                                            <h5>Name : '.$right_node->name.'</h5>
+                                            <h5>Id : '.$right_node->member_id.'</h5>
+                                            <h5>Rank : 2</h5>
+                                        </div>  
+                                    </a>
+                                </li>
+                            </ul>';
+                        }
+                        }else{
+                            $output .= '</li>
+                            </ul>';
+                        }
+                return $output;
+                }else{
+                    return 1;
+                }
+            }else{
+                return 1;
+            }
+        }
+    }
+
+    // function treeBuilding($leftNode, $rightNode){
+    //     $left_node = DB::table('tree')
+    //     ->select('tree.*', 'members.name', 'members.member_id')
+    //     ->join('members', 'tree.left_id', '=', 'members.id')
+    //     ->where('left_id', $leftNode)
+    //     // ->where('right_id', $first_level->right_id)
+    //     ->first();
+
+    //     return $left_node;
+    // }
