@@ -8,6 +8,7 @@
         <div class="row">
                 {{-- <div class="col-md-2"></div> --}}
                 <div class="col-md-12" style="margin-top:50px;">
+                    {{ Helper::Status() }}
                     <div class="x_panel">
     
                         <div class="x_title">
@@ -62,6 +63,7 @@
             var table = $('#downline_list').DataTable({
                 processing: true,
                 serverSide: true,
+                iDisplayLength: 50,
                 ajax: "{{ route('member.ajax.my_downline_list') }}",
                 columns: [
                     {data: 'id', name: 'id',searchable: true},

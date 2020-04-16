@@ -74,8 +74,8 @@
                             </div>
                             <div class="form-group">
                                 {{ Form::submit('Submit', array('class'=>'btn btn-success pull-right')) }}  
-                                {{ Form::submit('Skip', array('class'=>'btn btn-default pull-right')) }}  
-                                {{-- <a href="{{route('member.finish_page')}}" class="btn btn-default pull-right">Skip</a> --}}
+                                <a href="{{route('member.finish_page', ['finish_page_token' => encrypt(1)])}}" class="btn btn-default pull-right">Skip</a>
+                                {{-- {{ Form::submit('Skip', array('class'=>'btn btn-default pull-right')) }}   --}}
                             </div>
                             {{ Form::close() }}
                         </div>

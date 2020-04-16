@@ -139,6 +139,7 @@ class MemberRegistrationController extends Controller
                             'state' => $state,
                             'city' => $city,
                             'pin' => $pin,
+                            'order_status' => 1,
                             'policy_is_agree' => $members['terms'],
                             'registered_by' => $registered_by,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
@@ -170,6 +171,7 @@ class MemberRegistrationController extends Controller
                             'registered_by' => Auth::user()->id,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
+
                         if($lag == 1){
                             $tree_update = DB::table('tree')
                                 ->where('id', $fetch_tree->id)
@@ -510,38 +512,39 @@ class MemberRegistrationController extends Controller
             $child = $parent;
         }
     }
-    function creditCommisionTwoIsToOneOrOneIsToTwo($parent, $left, $right){   
+    function creditCommisionTwoIsToOneOrOneIsToTwo($parent, $left, $right){
         $update_left_count = DB::table('tree')
-            ->where('id', $parent)
-            ->update([
-                'left_count' => DB::raw("`left_count`-".($left)),
-                'right_count' => DB::raw("`right_count`-".($right)),
-                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+        ->where('id', $parent)
+        ->update([
+            'left_count' => DB::raw("`left_count`-".($left)),
+            'right_count' => DB::raw("`right_count`-".($right)),
+            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
-
-        //Fetch User with Node ID
-        $fetch_user = DB::table('tree')
+            
+            //Fetch User with Node ID
+            $fetch_user = DB::table('tree')
             ->where('id', $parent)
             ->first();        
-        
-        //Fetch Matching Income
-        $matching_income = DB::table('matching_income')->first();
-        
-        $wallet_insert = DB::table('wallet') 
+            
+            //Fetch Matching Income
+            $matching_income = DB::table('matching_income')->first();
+            
+            $wallet_insert = DB::table('wallet') 
             ->where('user_id', $fetch_user->user_id)
             ->update([
                 'amount' => DB::raw("`amount`+".($matching_income->income)),
-            ]);
-     
-        //Fetch Wallet
-        $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
-        //    dd($wallet_insert);
+                ]);
+                
+            //Fetch Wallet
+            $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
+            //    dd($wallet_insert);
+            //Fetch Commission History
         $credit_commision = DB::table('commission_history')
                 ->insertGetId([
                     'user_id' => $fetch_user->user_id,
-                    'pair_number' => DB::raw("`pair_number`+".(1)),
+                    'pair_number' => ($fetch_user->total_pair+1),
                     'amount' => $matching_income->income,
-                    'comment' => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+                    'comment' => $matching_income->income.' Income of Pair Number '.($fetch_user->total_pair+1).' is successfully credited to your wallet! ',
                     'status' => 1,
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
@@ -553,7 +556,7 @@ class MemberRegistrationController extends Controller
                         'transaction_type'  =>  1,
                         'amount' => $matching_income->income,
                         'total_amount'  => $fetch_wallet->amount,
-                        'comment'   => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+                        'comment'   => $matching_income->income.' Income of Pair Number '.($fetch_user->total_pair+1).' is successfully credited to your wallet! ',
                         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                     ]);
         }
@@ -628,13 +631,13 @@ class MemberRegistrationController extends Controller
             
         //Fetch Wallet
         $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_tree->user_id)->first();
-
+        
         $credit_commision = DB::table('commission_history')
         ->insertGetId([
             'user_id' => $fetch_tree->user_id,
-            'pair_number' => DB::raw("`pair_number`+".(1)),
+            'pair_number' => ($fetch_tree->total_pair+1),
             'amount' => $matching_income->income,
-            'comment' => $matching_income->income.' Income of Pair Number '.DB::raw("`pair_number`+".(1)).' is successfully credited to your wallet! ',
+            'comment' => $matching_income->income.' Income of Pair Number '.($fetch_tree->total_pair+1).' is successfully credited to your wallet! ',
             'status' => 1,
             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
@@ -647,7 +650,7 @@ class MemberRegistrationController extends Controller
                     'transaction_type'  =>  1,
                     'amount' => $matching_income->income,
                     'total_amount'  => $fetch_wallet->amount,
-                    'comment'   => $matching_income->income.' Income of Pair Number 1 is successfully credited to your wallet! ',
+                    'comment'   => $matching_income->income.' Income of Pair Number '.($fetch_tree->total_pair+1).' is successfully credited to your wallet! ',
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
         }
@@ -670,14 +673,16 @@ class MemberRegistrationController extends Controller
         
         //Fetch Matching Income
         $matching_income = DB::table('matching_income')->first();
-
+        //Fetch Wallet
         $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_tree->user_id)->first();
+
+
         $credit_commision = DB::table('commission_history')
         ->insertGetId([
             'user_id' => $fetch_tree->user_id,
-            'pair_number' =>  DB::raw("`pair_number`+".(1)),
+            'pair_number' =>  ($fetch_tree->total_pair+1),
             'amount' => 0.00,
-            'comment' => 0.00.' Income of Pair Number '.DB::raw("`pair_number`+".(1)).' isnot credited to your wallet beacuase of '.$cause.'! ',
+            'comment' => 0.00.' Income of Pair Number '.($fetch_tree->total_pair+1).' isnot credited to your wallet beacuase of '.$cause.'! ',
             'status' => $status,
             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);

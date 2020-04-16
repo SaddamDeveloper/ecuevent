@@ -55,6 +55,7 @@
         var table = $('#downline_list').DataTable({
             processing: true,
             serverSide: true,
+            iDisplayLength: 50,
             ajax: "{{ route('admin.ajax.downline_list', ['id' => encrypt($fetch_member_data->id)]) }}",
             columns: [
                 {data: 'id', name: 'id',searchable: true},

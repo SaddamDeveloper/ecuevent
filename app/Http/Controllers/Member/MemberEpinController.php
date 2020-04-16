@@ -20,6 +20,17 @@ class MemberEpinController extends Controller
                 ->where('members.id', Auth::user()->id);
             return datatables()->of($query->get())
             ->addIndexColumn()
+            ->addColumn('used_by', function($row){
+                $used_by = DB::table('members')
+                    ->select('epin.*', 'members.name as used_by')
+                    ->join('epin','members.id', '=', 'epin.used_by')
+                    ->where('members.id', $row->used_by)
+                    ->first();
+                if($used_by){
+                    return $used_by->used_by;
+                }
+            })
+            ->rawColumns(['used_by'])
             ->make(true);
     }
 }

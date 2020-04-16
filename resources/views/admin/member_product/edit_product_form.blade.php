@@ -28,7 +28,7 @@
                                 @if(isset($member) && !empty($member))
                            
                                     {{ Form::open(['method' => 'POST','route'=>'admin.mem_update_new_product',  'enctype'=>'multipart/form-data']) }}
-                                        <input type="hidden" value="{{$member->id}}"> 
+                                        <input type="hidden" name="id" value="{{$member->id}}"> 
                                         <div class="well" style="overflow: auto">
                                             <div class="form-row mb-10">
                                                 <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
@@ -53,7 +53,7 @@
                                         </div>
 
                 
-                                    <div class="well" style="overflow: auto" id="image_div">
+                                        <div class="well" style="overflow: auto" id="image_div">
                                             <div class="form-row mb-10">
                                                 <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                                     <label for="size">Image</label>
@@ -80,10 +80,8 @@
                                                 <div>
                                                     <img src="{{ asset('member/product/thumb/'.$member->image2.'') }}" height="100px">
                                                 </div>
-                                        
                                             </div>
-                                        
-                                    </div>
+                                        </div>
                 
                                         <div class="form-group">    	            	    
                                         {{ Form::submit('Update', array('class'=>'btn btn-success pull-right')) }}  

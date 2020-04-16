@@ -12,16 +12,7 @@ use Carbon\Carbon;
 class MemberDashboardController extends Controller
 {
     public function index(){
-
-        $notification = DB::table('members')
-            ->select('document_u_status')
-            ->where('id', Auth::user()->id)->first();
-        if($notification->document_u_status == 2){
-            $msg = "You haven't uploaded documents! Please upload it for further verification!";
-            return view('member.dashboard', compact('msg'));
-        }else{
-            return view('member.dashboard');
-        }
+        return view('member.dashboard');
     }
 
     public function profile(){
@@ -89,7 +80,6 @@ class MemberDashboardController extends Controller
         }catch(DecryptException $e) {
             abort(404);
         }
-
         if (Session::has('product_page_token') && !empty(Session::get('product_page_token'))) {
             $session_token = Session::get('product_page_token');
             if ( $session_token == $token) {
@@ -132,19 +122,11 @@ class MemberDashboardController extends Controller
         }catch(DecryptException $e) {
             abort(404);
         }
-        // dd(Session::has('finish_page_token'));
-        if (Session::has('finish_page_token') && !empty(Session::get('finish_page_token'))) {
-            
-            $session_token = Session::get('finish_page_token');
-            if ( $session_token == $token) {
-
-                
+        
+        if($token){
                 $delete_previous_session = session()->forget('kyc_page_token');
                 $success = 'Registration Successfull';
                 return view('member.registration.finish_page', compact('success'));
-            } else {
-                abort(404);
-            }
         }else{
             abort(404);
         }
@@ -185,15 +167,15 @@ class MemberDashboardController extends Controller
             ->addColumn('parent', function($row){
                 $parent = $row->parent_id;
                 if (!empty($parent)) {
-                   $parent_details =  DB::table('tree')
-                   ->select('members.name as u_name','members.id as u_id')
-                   ->join('members','members.id','=','tree.user_id')
-                   ->where('tree.id',$row->parent_id)
-                   ->first();
+                    $parent_details =  DB::table('tree')
+                    ->select('members.name as u_name','members.id as u_id')
+                    ->join('members','members.id','=','tree.user_id')
+                    ->where('tree.id',$row->parent_id)
+                    ->first();
                    if ($row->user_id == $parent_details->u_id) {
-                        $parent.=" (Self)";
+                        $parent .=" (Self)";
                     }else{
-                        $parent.=" (".$parent_details->u_name.")";
+                        $parent .=" (".$parent_details->u_name.")";
                    }
                 }
                 return $parent;
@@ -477,14 +459,3 @@ class MemberDashboardController extends Controller
             }
         }
     }
-
-    // function treeBuilding($leftNode, $rightNode){
-    //     $left_node = DB::table('tree')
-    //     ->select('tree.*', 'members.name', 'members.member_id')
-    //     ->join('members', 'tree.left_id', '=', 'members.id')
-    //     ->where('left_id', $leftNode)
-    //     // ->where('right_id', $first_level->right_id)
-    //     ->first();
-
-    //     return $left_node;
-    // }
