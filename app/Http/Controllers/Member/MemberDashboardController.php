@@ -312,7 +312,7 @@ class MemberDashboardController extends Controller
                         ->first();
                         $html.='<a href="#">'.$first_level_node->name.'
                             <div class="info">
-                                <h5>Name : '.$first_level_node->name.'/h5>
+                                <h5>Name : '.$first_level_node->name.'</h5>
                                 <h5>Id : '.$first_level_node->member_id.'</h5>
                                 <h5>Rank : '.$rank.'</h5>
                             </div>  
@@ -345,7 +345,7 @@ class MemberDashboardController extends Controller
                                 ->first();
                                 $html.='<a href="#">'.$second_level_node->name.'
                                     <div class="info">
-                                        <h5>Name : '.$second_level_node->name.'/h5>
+                                        <h5>Name : '.$second_level_node->name.'</h5>
                                         <h5>Id : '.$second_level_node->member_id.'</h5>
                                         <h5>Rank : '.$rank.'</h5>
                                     </div>  
