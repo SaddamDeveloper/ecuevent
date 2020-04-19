@@ -1,5 +1,5 @@
 
-@extends('member.template.member_master')
+@extends('admin.template.admin_master')
 @section('link')
   <link href="{{asset('build/css/T-style.css')}}" rel="stylesheet">
 @endsection
@@ -10,10 +10,10 @@
 <div class="right_col" role="main">
     <div class="row">
         <div class="col-md-12 col-xs-12 col-sm-12" style="margin-top:50px;">
-            {{ Helper::Status() }}
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Tree</h2>
+                    <button class="btn btn-danger pull-right" onclick="javascript:window.close()"><i class="fa fa-close"></i></button>
                     <div class="clearfix"></div>
                 </div>
                 <div>

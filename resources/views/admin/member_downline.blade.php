@@ -12,6 +12,7 @@
     
                         <div class="x_title">
                             <h2>Downline Member</h2>
+                            <button class="btn btn-danger pull-right" onclick="javascript:window.close()"><i class="fa fa-close"></i></button>
                             <div class="clearfix"></div>
                         </div>
                     <div>

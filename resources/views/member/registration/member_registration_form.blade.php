@@ -33,11 +33,11 @@
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                     </div>
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
+                                        <label for="search_sponsor_id">Sponsor ID</label>
+                                        <input type="text" name="search_sponsor_id" id="search_sponsor_id" value="{{old('search_sponsor_id')}}" class="form-control" placeholder="Sponsor ID" required>
                                         <div id="myDiv">
                                             <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
                                         </div>
-                                        <label for="search_sponsor_id">Sponsor ID</label>
-                                        <input type="text" name="search_sponsor_id" id="search_sponsor_id" class="form-control" placeholder="Sponsor ID" required>
                                         <div id="member_data"></div><br>
                                         <input type="hidden" name="sponsorVal" value="" id="sponsorVal">
                                     </div> 
@@ -172,14 +172,7 @@
                                 <div class="form-row mb-3">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                         <label for="state">State*</label>
-                                        @if(isset($state) && !empty($state))
-                                        <select name="state" id="state" class="form-control">
-                                            <option disabled selected value="">--Select State--</option>
-                                            @foreach($state as $states)
-                                                <option value="{{$states->state}}">{{$states->state}}</option>
-                                            @endforeach
-                                        </select>
-                                        @endif
+                                       <input type="text" class="form-control" name="state" value="{{old('state')}}"  placeholder="Enter State">
                                         @if($errors->has('state'))
                                               <span class="invalid-feedback" role="alert" style="color:red">
                                                   <strong>{{ $errors->first('state') }}</strong>
@@ -188,14 +181,7 @@
                                       </div> 
                                       <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                         <label for="city">City*</label>
-                                        @if(isset($city) && !empty($city))
-                                        <select name="city" id="city" class="form-control">
-                                            <option disabled selected value="">--Select City--</option>
-                                            @foreach($city as $citys)
-                                                <option value="{{$citys->city}}">{{$citys->city}}</option>
-                                            @endforeach
-                                        </select>
-                                        @endif
+                                       <input type="text" class="form-control" name="city" value="{{old('city')}}"  placeholder="Enter City">
                                         @if($errors->has('city'))
                                               <span class="invalid-feedback" role="alert" style="color:red">
                                                   <strong>{{ $errors->first('city') }}</strong>

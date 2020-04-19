@@ -11,7 +11,7 @@
 	<link rel="icon" href="images/favicon.ico" type="image/ico" />
 
     <title>{{ __('ECU EVENT') }}</title>
-
+    @yield('link')
     <!-- Bootstrap -->
     <link href="{{asset('vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
     <!-- Font Awesome -->

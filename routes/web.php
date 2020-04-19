@@ -81,23 +81,7 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/wallet/list', 'MemberListController@memberWalletList')->name('admin.ajax.wallet_list');
     Route::get('/wallet/history/{id}', 'MemberListController@memberWalletHistory')->name('admin.wallet_history');
     Route::get('/wallet/ajax/history/{id}', 'MemberListController@memberAjaxWalletHistory')->name('admin.ajax.wallet_history');
-    
-
-    /**
-     * State Configuration
-     */
-    Route::get('/state', 'AdminDashboardController@state')->name('admin.state');
-    Route::post('/add/state', 'AdminDashboardController@addState')->name('admin.add.state');
-    Route::get('/all/list/state/', 'AdminDashboardController@ajaxGetStateList')->name('admin.ajax.state_list');
-    Route::get('/status/state/{id}/{status}', 'AdminDashboardController@stateStatus')->name('admin.state_status');
-
-    /**
-     * City Configuration
-     */
-    Route::get('/city', 'AdminDashboardController@city')->name('admin.city');
-    Route::post('/add/city', 'AdminDashboardController@addCity')->name('admin.add.city');
-    Route::get('/all/list/city/', 'AdminDashboardController@ajaxGetCityList')->name('admin.ajax.city_list');
-    Route::get('/status/city/{id}/{status}', 'AdminDashboardController@cityStatus')->name('admin.city_status');
+    Route::get('/member/tree/{rank?}/{user_id?}', 'MemberListController@memberTree')->name('admin.member.tree');
 
 });
 
@@ -119,13 +103,11 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/my/downline/list', 'MemberDashboardController@memberGetDownlineList')->name('member.ajax.my_downline_list');
     Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');
     Route::get('/my/order', 'MemberDashboardController@memberOrderListForm')->name('member.mem_order_list_form');
-    Route::get('/my/tree/{rank?}', 'MemberDashboardController@memberTree')->name('member.tree');
+    Route::get('/my/tree/{rank?}/{user_id?}', 'MemberDashboardController@memberTree')->name('member.tree');
     Route::get('/my/tree/list', 'MemberDashboardController@memberTreeData')->name('member.tree_data');
   
     Route::get('/my/wallet/', 'MemberDashboardController@memberWalletListForm')->name('member.mem_wallet_list_form');
 
-
-    
     /***
      * Sponsor ID Search
      */
