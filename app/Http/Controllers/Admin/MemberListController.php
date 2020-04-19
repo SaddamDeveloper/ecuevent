@@ -129,13 +129,7 @@ class MemberListController extends Controller
       }
 
      $fetch_member_data = DB::table('members')->where('id', $id)->first();
-     $state = DB::table('state')
-          ->orderBy('id','desc')
-          ->get();
-     $city = DB::table('city')
-          ->orderBy('id','desc')
-          ->get();  
-     return view('admin.member_edit', compact('fetch_member_data', 'state', 'city'));
+     return view('admin.member_edit', compact('fetch_member_data'));
  }
  
  public function memberUpdate(Request $request){
