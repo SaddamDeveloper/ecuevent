@@ -292,6 +292,14 @@ class MemberDashboardController extends Controller
         $amount = $wallet->amount;
         return view('member.wallet', compact('amount'));
     }
+    public function ajaxGetWalletHistory(){
+        $query = DB::table('wallet_history')
+            ->orderBy('id','desc')
+            ->where('user_id', Auth::user()->id);
+    return datatables()->of($query->get())
+        ->addIndexColumn()
+        ->make(true);
+    }
 
     public function memberTree($rank=null, $user_id=null){
         

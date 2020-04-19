@@ -107,7 +107,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/my/tree/list', 'MemberDashboardController@memberTreeData')->name('member.tree_data');
   
     Route::get('/my/wallet/', 'MemberDashboardController@memberWalletListForm')->name('member.mem_wallet_list_form');
-
+    Route::get('/ajax/get/wallet/history','MemberDashboardController@ajaxGetWalletHistory')->name('member.ajax.my_wallet_history');
     /***
      * Sponsor ID Search
      */
@@ -133,6 +133,10 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     
     Route::get('/ajax/get/commission','CommissionHistoryController@ajaxGetCommissionList')->name('member.ajax.my_commission_list');
     Route::get('/ajax/get/order','OrderHistoryController@ajaxGetOrderList')->name('member.ajax.my_order_list');
+    
+    /**
+     * Member Wallet History
+     */
 
     /***
      * Message helper

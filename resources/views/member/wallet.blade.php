@@ -30,21 +30,22 @@
                             </div>
                         </div>
                         <div>
-                            <div class="x_content">
-                                <table id="commission_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
-                                  <thead>
-                                    <tr>
-                                      <th>Sl. No</th>
-                                      <th>Member</th>
-                                      <th>Amount</th>
-                                      <th>Comment</th>
-                                      <th>Status</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>                       
-                                  </tbody>
-                                </table>
-                            </div>
+                          <div class="x_content">
+                            <table id="wallet_history" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                              <thead>
+                                <tr>
+                                  <th>Sl. No</th>
+                                  <th>Amount</th>
+                                  <th>Total Amount</th>
+                                  <th>Comment</th>
+                                  <th>Status</th>
+                                  <th>Created At</th>
+                                </tr>
+                              </thead>
+                              <tbody>                       
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -58,22 +59,23 @@
      <script type="text/javascript">
           $(function () {
             var i = 1;
-            var table = $('#commission_list').DataTable({
+            var table = $('#wallet_history').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('member.ajax.my_commission_list') }}",
+                ajax: "{{ route('member.ajax.my_wallet_history') }}",
                 columns: [
                     { "render": function(data, type, full, meta) {return i++;}},
-                    {data: 'user_name', name: 'user_name',searchable: true},
                     {data: 'amount', name: 'amount',searchable: true},
+                    {data: 'total_amount', name: 'total_amount',searchable: true},
                     {data: 'comment', name: 'comment',searchable: true},
                     {data: 'status', name: 'status', render:function(data, type, row){
-                      if (row.status == '1') {
-                        return "<button class='btn btn-success rounded'>Credited</a>"
-                      }else{
-                        return "<button class='btn btn-warning rounded'>Not Credited</a>"
-                      }                        
-                    }},              
+                      if (row.transaction_type == '1') {
+                        return "<button class='btn btn-success rounded'>Cr</a>"
+                        }else if(row.transaction_type == '2'){
+                          return "<button class='btn btn-warning rounded'>Dr</a>"
+                          }                        
+                        }},              
+                    {data: 'created_at', name: 'created_at',searchable: true},
                 ]
             });
             
