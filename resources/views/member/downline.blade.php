@@ -36,10 +36,11 @@
                                   <thead>
                                     <tr>
                                       <th>Sl. No</th>
-                                      <th>Parent</th>
+                                      <th>Member ID</th>
                                       <th>Member Name</th>
                                       <th>Left Member</th>
                                       <th>Right Member</th>
+                                      <th>Parent</th>
                                       <th>Added By</th>
                                       <th>Reistered At</th>
                                     </tr>
@@ -67,10 +68,11 @@
                 ajax: "{{ route('member.ajax.my_downline_list') }}",
                 columns: [
                     {data: 'id', name: 'id',searchable: true},
-                    {data: 'parent', name: 'parent',searchable: true},
+                    {data: 'member_id', name: 'member_id',searchable: true},
                     {data: 'member_name', name: 'member_name' ,searchable: true}, 
                     {data: 'left_member', name: 'left_member' ,searchable: true}, 
                     {data: 'right_member', name: 'right_member' ,searchable: true}, 
+                    {data: 'parent', name: 'parent',searchable: true},
                     {data: 'add_by', name: 'add_by' ,searchable: true},                 
                     {data: 'created_at', name: 'created_at' ,searchable: true},                 
                 ]

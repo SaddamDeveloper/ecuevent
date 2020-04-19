@@ -185,15 +185,26 @@ class MemberDashboardController extends Controller
                 'user_id' => Auth::user()->id,
                 )))
             ->addIndexColumn()
+            ->addColumn('member_id', function($row){
+                $user_id = $row->user_id;
+                if(!empty($user_id)){
+                    $member_id =  DB::table('tree')
+                        ->select('members.member_id as member_id')
+                        ->join('members', 'members.id', '=', 'tree.user_id')
+                        ->where('tree.user_id', $row->user_id)
+                        ->value('members.member_id');
+                }
+                return $member_id;
+            })
             ->addColumn('parent', function($row){
-                $parent = $row->parent_id;
-                if (!empty($parent)) {
+                $parents = $row->parent_id;
+                if (!empty($parents)) {
                     $parent_details =  DB::table('tree')
-                    ->select('members.name as u_name','members.id as u_id')
+                    ->select('members.name as u_name','members.id as u_id', 'members.member_id as member_id')
                     ->join('members','members.id','=','tree.user_id')
                     ->where('tree.id',$row->parent_id)
                     ->first();
-                   
+                   $parent = $parent_details->member_id;
                    if ($row->user_id == $parent_details->u_id) {
                         $parent .=" (Self)";
                     }else{
@@ -259,10 +270,11 @@ class MemberDashboardController extends Controller
                     $add_by = "SELF";
                   }else{
                       $user_details =  DB::table('members')
-                        ->select('name','id')
+                        ->select('name','id', 'member_id')
                         ->where('id',$add_by)
                         ->first();
-                        $add_by.=$add_by." (".$user_details->name.")";
+                        $add_by = $user_details->member_id;
+                        $add_by.= "(".$user_details->name.")";
                     }
                 }
                 return $add_by;
