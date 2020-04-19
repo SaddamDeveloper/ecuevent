@@ -8,6 +8,7 @@
         <div class="row">
                 {{-- <div class="col-md-2"></div> --}}
                 <div class="col-md-12" style="margin-top:50px;">
+                  {{ Helper::Status() }}
                     <div class="x_panel">
     
                         <div class="x_title">
@@ -56,31 +57,32 @@
 @endsection
 
 @section('script')
-     <script type="text/javascript">
-         $(function () {
-            var table = $('#epin_list').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('member.ajax.my_epin_list') }}",
-                columns: [
-                    {data: 'id', name: 'id',searchable: true},
-                    {data: 'epin', name: 'epin',searchable: true},
-                    {data: 'status', name: 'status', render:function(data, type, row){
-                      if (row.status == '1') {
-                        return "<button class='btn btn-info'>Used</a>"
-                      }else{
-                        return "<button class='btn btn-danger'>Not Used</a>"
-                      }                        
-                    }},
-                    {data: 'name', name: 'name' ,searchable: true}, 
-                    {data: 'used_by', name: 'used_by' ,searchable: true},                 
-                    // {data: 'action', name: 'action', orderable: false, searchable: false},
-                ]
-            });
-            
+ <script type="text/javascript">
+     $(function () {
+        var table = $('#epin_list').DataTable({
+            processing: true,
+            serverSide: true,
+            iDisplayLength: 50,
+            ajax: "{{ route('member.ajax.my_epin_list') }}",
+            columns: [
+                {data: 'id', name: 'id',searchable: true},
+                {data: 'epin', name: 'epin',searchable: true},
+                {data: 'status', name: 'status', render:function(data, type, row){
+                  if (row.status == '1') {
+                    return "<button class='btn btn-info'>Used</a>"
+                  }else{
+                    return "<button class='btn btn-danger'>Not Used</a>"
+                  }                        
+                }},
+                {data: 'name', name: 'name' ,searchable: true}, 
+                {data: 'used_by', name: 'used_by' ,searchable: true},                 
+                // {data: 'action', name: 'action', orderable: false, searchable: false},
+            ]
         });
-     </script>
-     @endsection
+        
+    });
+  </script>
+ @endsection
 
 
 

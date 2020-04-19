@@ -61,6 +61,7 @@
             var table = $('#epin_list').DataTable({
                 processing: true,
                 serverSide: true,
+                iDisplayLength: 50,
                 ajax: "{{ route('admin.ajax.get_epin_list') }}",
                 columns: [
                     {data: 'id', name: 'id',searchable: true},

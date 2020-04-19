@@ -12,6 +12,7 @@
     
                         <div class="x_title">
                             <h2>Downline Member</h2>
+                            <button class="btn btn-danger pull-right" onclick="javascript:window.close()"><i class="fa fa-close"></i></button>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -55,6 +56,7 @@
         var table = $('#downline_list').DataTable({
             processing: true,
             serverSide: true,
+            iDisplayLength: 50,
             ajax: "{{ route('admin.ajax.downline_list', ['id' => encrypt($fetch_member_data->id)]) }}",
             columns: [
                 {data: 'id', name: 'id',searchable: true},

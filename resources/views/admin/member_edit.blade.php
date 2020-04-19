@@ -12,6 +12,7 @@
     
                         <div class="x_title">
                             <h2>Edit Member Info</h2>
+                            <button class="btn btn-danger pull-right" onclick="javascript:window.close()"><i class="fa fa-close"></i><button>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -129,34 +130,20 @@
                                     <div class="form-row mb-3">
                                         <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                             <label for="state">State*</label>
-                                            @if(isset($state) && !empty($state))
-                                            <select name="state" id="state" class="form-control">
-                                                <option disabled selected value="">--Select State--</option>
-                                                @foreach($state as $states)
-                                                    <option value="{{$states->state}}" {{$fetch_member_data->state == $states->state ? "selected" : ""}}>{{$states->state}}</option>
-                                                @endforeach
-                                            </select>
-                                            @endif
+                                            <input type="text" class="form-control" name="state" value="{{$fetch_member_data->state}}">
                                             @if($errors->has('state'))
-                                                  <span class="invalid-feedback" role="alert" style="color:red">
-                                                      <strong>{{ $errors->first('state') }}</strong>
-                                                  </span>
+                                                <span class="invalid-feedback" role="alert" style="color:red">
+                                                    <strong>{{ $errors->first('state') }}</strong>
+                                                </span>
                                               @enderror
                                           </div> 
                                           <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                             <label for="city">City*</label>
-                                            @if(isset($city) && !empty($city))
-                                            <select name="city" id="city" class="form-control">
-                                                <option disabled selected value="">--Select City--</option>
-                                                @foreach($city as $citys)
-                                                    <option value="{{$citys->city}}" {{$fetch_member_data->city == $citys->city ? "selected" : ""}}>{{$citys->city}}</option>
-                                                @endforeach
-                                            </select>
-                                            @endif
+                                            <input type="text" class="form-control" name="city" value="{{$fetch_member_data->city}}">
                                             @if($errors->has('city'))
-                                                  <span class="invalid-feedback" role="alert" style="color:red">
-                                                      <strong>{{ $errors->first('city') }}</strong>
-                                                  </span>
+                                                <span class="invalid-feedback" role="alert" style="color:red">
+                                                    <strong>{{ $errors->first('city') }}</strong>
+                                                </span>
                                               @enderror
                                             </div>
                                           <div class="col-md-4 col-sm-12 col-xs-12 mb-3">

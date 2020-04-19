@@ -34,6 +34,7 @@
                                   <thead>
                                     <tr>
                                       <th>Sl. No</th>
+                                      <th>Member ID</th>
                                       <th>Name</th>
                                       <th>Mobile</th>
                                       <th>Left</th>
@@ -67,6 +68,7 @@
                 ajax: "{{ route('admin.ajax.get_member_list') }}",
                 columns: [
                     {data: 'id', name: 'id',searchable: true},
+                    {data: 'member_id', name: 'member_id',searchable: true},
                     {data: 'name', name: 'name',searchable: true},
                     {data: 'mobile', name: 'mobile',searchable: true},
                     {data: 'left', name: 'left',searchable: true},

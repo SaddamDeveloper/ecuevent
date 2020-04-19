@@ -45,8 +45,6 @@
                 <li><a href="{{route('admin.mem_matching_income')}}">Member Matching Income</a></li>
                 <li><a href="{{route('admin.mem_pair_timing')}}">Common Pair timing</a></li>
                 <li><a href="{{route('admin.mem_pair_cutoff')}}">Common Pair CutOFF</a></li>
-                <li><a href="{{route('admin.state')}}">Add State</a></li>
-                <li><a href="{{route('admin.city')}}">Add City</a></li>
               </ul>
             </li>
           </ul>

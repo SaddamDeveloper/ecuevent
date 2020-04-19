@@ -12,6 +12,7 @@
     
                         <div class="x_title">
                             <h2>Member Details</h2>
+                            <button class="btn btn-danger pull-right" onclick="javascript:window.close()"><i class="fa fa-close"></i></button>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -122,7 +123,6 @@
                                     @else
                                         <button class="btn btn-success" disabled>Verified</button>
                                     @endif
-                                    <button class="btn btn-danger pull-right" onclick="javascript:window.close()">Close</button>
                                 </div>
                             </div>  
                         </div>
