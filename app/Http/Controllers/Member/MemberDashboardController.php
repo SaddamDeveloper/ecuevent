@@ -210,8 +210,8 @@ class MemberDashboardController extends Controller
                     }else{
                         $parent .=" (".$parent_details->u_name.")";
                    }
+                   return $parent;
                 }
-                return $parent;
             })
             ->addColumn('member_name', function($row){
                 $member_name = null;
@@ -225,41 +225,39 @@ class MemberDashboardController extends Controller
                 return $member_name;
             })
             ->addColumn('left_member', function($row){
-                $lft_member = $row->left_id;
-                if (!empty($lft_member)) {
+                $lft_members = $row->left_id;
+                if (!empty($lft_members)) {
                     $lft_details =  DB::table('tree')
-                   ->select('members.name as u_name','members.id as u_id')
+                   ->select('members.name as u_name','members.id as u_id', 'members.member_id as member_id')
                    ->join('members','members.id','=','tree.user_id')
-                   ->where('tree.id',$lft_member)
+                   ->where('tree.id',$lft_members)
                    ->first();
-
+                    $lft_member = $lft_details->member_id;
                    if ($row->user_id == $lft_details->u_id) {
                         $lft_member.=" (Self)";
                     }else{
                         $lft_member.=" (".$lft_details->u_name.")";
                    }
+                   return $lft_member;
                 }
-                return $lft_member;
             })
             ->addColumn('right_member', function($row){
-                $rht_member = $row->right_id;
+                $rht_members = $row->right_id;
                
-                if (!empty($rht_member)) {
+                if (!empty($rht_members)) {
                     $rht_details =  DB::table('tree')
-                    ->select('members.name as u_name','members.id as u_id')
+                    ->select('members.name as u_name','members.id as u_id', 'members.member_id as member_id')
                    ->join('members','members.id','=','tree.user_id')
-                   ->where('tree.id',$rht_member)
+                   ->where('tree.id',$rht_members)
                    ->first();
-
+                    $rht_member = $rht_details->member_id;
                    if ($row->user_id == $rht_details->u_id) {
                         $rht_member.=" (Self)";
                     }else{
                         $rht_member.=" (".$rht_details->u_name.")";
                     }
-                }else{
-                    $rht_member='';
+                    return $rht_member;
                 }
-                return $rht_member;
             })
             ->addColumn('add_by', function($row){
                 $add_by = $row->registered_by;
