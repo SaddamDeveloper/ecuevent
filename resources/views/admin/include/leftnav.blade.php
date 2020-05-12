@@ -40,6 +40,12 @@
                 <li><a href="{{route('admin.mem_wallet')}}">Member Wallet List</a></li>
               </ul>
             </li>
+            <li><a><i class="fa fa-shopping-cart"></i> Shopping <span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu">
+                <li><a href="{{route('admin.shopping_product')}}">Product List</a></li>
+                <li><a href="{{route('admin.shopping_category')}}">Category List</a></li>
+              </ul>
+            </li>
             <li><a><i class="fa fa-gear"></i> Configuration <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('admin.mem_matching_income')}}">Member Matching Income</a></li>

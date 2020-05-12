@@ -83,6 +83,30 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/wallet/ajax/history/{id}', 'MemberListController@memberAjaxWalletHistory')->name('admin.ajax.wallet_history');
     Route::get('/member/tree/{rank?}/{user_id?}', 'MemberListController@memberTree')->name('admin.member.tree');
 
+
+        
+    /**
+     * Shopping Product List Control
+     */
+
+    //Shopping Product
+    Route::get('/shopping/product', 'ShoppingProductController@shoppingProduct')->name('admin.shopping_product');
+    Route::get('/shopping/product/add', 'ShoppingProductController@addShoppingProduct')->name('admin.add_shopping_product');
+    Route::post('/shopping/product/store', 'ShoppingProductController@storeShoppingProduct')->name('admin.store_shopping_product');
+    Route::get('/shopping/product/list', 'ShoppingProductController@ShoppingProductList')->name('admin.shopping_product_list');
+    Route::get('/shopping/product/status/{pId}/{status}', 'ShoppingProductController@ShoppingProductStatus')->name('admin.shopping_product_status');
+    Route::get('/shopping/product/edit/{id}', 'ShoppingProductController@ShoppingProductEdit')->name('admin.shopping_product_edit');
+    Route::post('/shopping/product/update', 'ShoppingProductController@ShoppingProductUpdate')->name('admin.update_shopping_product');
+
+    //Shopping Category
+    Route::get('/shopping/category', 'ShoppingProductController@shoppingCategory')->name('admin.shopping_category');
+    Route::get('/shopping/category/add', 'ShoppingProductController@addShoppingCategory')->name('admin.add_shopping_category');
+    Route::post('/shopping/category/store', 'ShoppingProductController@storeShoppingCategory')->name('admin.store_shopping_category');
+    Route::get('/shopping/category/list', 'ShoppingProductController@ShoppingCategoryList')->name('admin.shoppingCategoryList');
+    Route::get('/shopping/category/status/{pId}/{status}', 'ShoppingProductController@ShoppingCategoryStatus')->name('admin.shopping_category_status');
+    Route::get('/shopping/category/edit/{id}', 'ShoppingProductController@ShoppingCategoryEdit')->name('admin.shopping_category_edit');
+    Route::post('/shopping/category/update/{id}', 'ShoppingProductController@ShoppingCategoryUpdate')->name('admin.update_shopping_category');
+
 });
 
 /***
@@ -105,7 +129,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/my/order', 'MemberDashboardController@memberOrderListForm')->name('member.mem_order_list_form');
     Route::get('/my/tree/{rank?}/{user_id?}', 'MemberDashboardController@memberTree')->name('member.tree');
     Route::get('/my/tree/list', 'MemberDashboardController@memberTreeData')->name('member.tree_data');
-  
+    
     Route::get('/my/wallet/', 'MemberDashboardController@memberWalletListForm')->name('member.mem_wallet_list_form');
     Route::get('/ajax/get/wallet/history','MemberDashboardController@ajaxGetWalletHistory')->name('member.ajax.my_wallet_history');
     /***
@@ -126,7 +150,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::post('/epin/data', 'MemberRegistrationController@epinSubmit')->name('member.epin_submit');
     Route::post('/product/data', 'MemberRegistrationController@productPurchase')->name('member.product_purchase');
     Route::post('/kyc/data', 'MemberRegistrationController@kycSubmit')->name('member.kyc_submit');
-
+    
     /**
      * Commission History Generate
      */
@@ -134,14 +158,5 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/ajax/get/commission','CommissionHistoryController@ajaxGetCommissionList')->name('member.ajax.my_commission_list');
     Route::get('/ajax/get/order','OrderHistoryController@ajaxGetOrderList')->name('member.ajax.my_order_list');
     
-    /**
-     * Member Wallet History
-     */
-
-    /***
-     * Message helper
-     */
-    // Route::get('/my/epin/list', 'MemberEpinController@msgHelper');
     
-     
 }); 
