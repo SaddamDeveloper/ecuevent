@@ -29,6 +29,16 @@
             </div>
           </div>
           <div class="x_content">
+            <div class="well text-info">
+              <h3>Important Notice</h3>
+              @if(isset($notice) && !empty($notice))
+                <marquee height="100px" direction="up" scrollamount="1"> 
+                  @foreach ($notice as $nt)
+                    <a href="{{route('member.notice', ['id' => encrypt($nt->id)])}}" target="_blank">{!! Str::words($nt->title, 10, ' ...') !!}</a> <br>
+                  @endforeach
+                </marquee>
+              @endif  
+            </div>
             <div class="table-responsive">
               <table class="table table-striped jambo_table bulk_action">
                   <thead>

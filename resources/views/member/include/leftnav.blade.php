@@ -50,6 +50,12 @@
             <li><a href="{{route('member.mem_wallet_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a>
             </li>
 
+            <li><a href="{{asset('member/usermanual/anne_of_green_gables.pdf')}}"><i class="fa fa-file-pdf-o"></i> User Manual</a>
+            </li>
+
+            <li><a href="{{route('member.feedback')}}"><i class="fa fa-comments"></i> Complaint/ Feedback</a>
+            </li>
+
           </ul>
         </div>
       </div>

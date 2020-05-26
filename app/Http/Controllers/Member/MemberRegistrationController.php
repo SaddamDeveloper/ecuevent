@@ -539,9 +539,8 @@ class MemberRegistrationController extends Controller
                 
             //Fetch Wallet
             $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
-            //    dd($wallet_insert);
             //Fetch Commission History
-        $credit_commision = DB::table('commission_history')
+            $credit_commision = DB::table('commission_history')
                 ->insertGetId([
                     'user_id' => $fetch_user->user_id,
                     'pair_number' => ($fetch_user->total_pair+1),

@@ -28,7 +28,6 @@
                        
                             {{ Form::open(['method' => 'post','route'=>'member.add_new_member']) }}
                             <div class="well" style="overflow: auto">
-
                                 <div class="form-row mb-10 mb-2">
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                     </div>
@@ -103,11 +102,11 @@
                                     </div> 
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="gender">Gender*</label>
-                                      <select class="form-control" name="gender" id="gender">
-                                        <option value="">Select Gender</option>
-                                        <option value="1">Male</option>
-                                        <option value="2">Female</option>
-                                    </select>
+                                        <select class="form-control" name="gender" id="gender">
+                                            <option value="">Select Gender</option>
+                                            <option value="1">Male</option>
+                                            <option value="2">Female</option>
+                                        </select>
                                     @if($errors->has('gender'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('gender') }}</strong>

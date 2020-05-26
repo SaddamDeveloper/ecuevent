@@ -14,6 +14,17 @@
             </a>
             <ul class="dropdown-menu dropdown-usermenu pull-right">
               <li>
+                <a href="{{ route('member.profile') }}" class="fa fa-user"> Profile</a>
+              </li>
+              <li>
+                <a href="{{route('member.change_password')}}" class="fa fa-key">
+                  Change Password
+                </a>
+              </li>
+              <div class="devider">
+
+              </div>
+              <li>
                 <a href="{{ route('member.logout') }}" class="fa fa-sign-out pull-right" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
                     Logout
                 </a>     

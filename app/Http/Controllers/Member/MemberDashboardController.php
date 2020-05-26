@@ -9,6 +9,9 @@ use Illuminate\Contracts\Encryption\DecryptException;
 use DB;
 use Auth;
 use Carbon\Carbon;
+use Hash;
+use App\Member;
+use App\ImportantNotice;
 class MemberDashboardController extends Controller
 {
     public function index(){
@@ -39,11 +42,13 @@ class MemberDashboardController extends Controller
             ->limit(10)
             ->get();
 
-        return view('member.dashboard', compact('my_commission', 'total_pair_completed', 'epin_available', 'epin_used', 'my_wallet', 'epin_list'));
+        $notice = ImportantNotice::orderBy('created_at', 'DESC')->limit(10)->get();
+        return view('member.dashboard', compact('my_commission', 'total_pair_completed', 'epin_available', 'epin_used', 'my_wallet', 'epin_list', 'notice'));
     }
 
     public function profile(){
-        return view('member.profile');
+        $member = Member::findOrFail(Auth::user()->id);
+        return view('member.profile', compact('member'));
     }
 
     public function addNewMemberForm(){
@@ -296,7 +301,7 @@ class MemberDashboardController extends Controller
         $query = DB::table('wallet_history')
             ->orderBy('id','desc')
             ->where('user_id', Auth::user()->id);
-    return datatables()->of($query->get())
+        return datatables()->of($query->get())
         ->addIndexColumn()
         ->make(true);
     }
@@ -567,4 +572,80 @@ class MemberDashboardController extends Controller
        
         return view('member.tree',compact('html'));
     }
+
+    public function changePasswordPage()
+    {
+        return view('member.change_password');
     }
+
+    public function changePassword(Request $request){
+        $validatedData = $request->validate([
+            'current-password' => 'required',
+            'new-password' => 'required|string|min:6|confirmed',
+        ]);
+
+        if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
+            // The passwords matches
+            return redirect()->back()->with('error','Your current password does not matches with the password you provided. Please try again.');
+        }
+
+        if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
+            //Current password and new password are same
+            return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
+        }
+
+
+        //Change Password
+        $user = Auth::user();
+        $user->password = bcrypt($request->get('new-password'));
+        $user->save();
+
+        return redirect()->back()->with("message","Password changed successfully !");
+
+    }
+
+    public function accountUpdatePage()
+    {
+        $member = Member::findOrFail(Auth::user()->id);
+        return view('member.account', compact('member'));
+    }
+
+    public function updateMember(Request $request)
+    {   
+        $this->validate($request, [
+            'member_name'   => 'required',
+            'mobile'        => 'required',
+            'email'         => 'required|email'
+        ]);
+        
+        $member = Member::find(Auth::user()->id);
+        $member->name = $request->input('member_name');
+        $member->mobile = $request->input('mobile');
+        $member->email = $request->input('email');
+        $member->gender = $request->input('gender');
+        $member->dob = $request->input('dob');
+
+        if($member->save()){
+            return redirect()->back()->with('message', 'Account Updated Successfully!');
+        }else{
+            return redirect()->back()->with('error', 'Something Went Wrong!');
+        }
+    }
+
+    public function getNotice($nId)
+    {
+        try{
+            $id = decrypt($nId);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+
+        $notice = ImportantNotice::findOrFail($id);
+        return view('member.view_notice', compact('notice'));
+    }
+
+    public function feedBack()
+    {
+        return view('member.feedback');
+    }
+}

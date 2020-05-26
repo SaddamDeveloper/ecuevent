@@ -106,7 +106,16 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/shopping/category/status/{pId}/{status}', 'ShoppingProductController@ShoppingCategoryStatus')->name('admin.shopping_category_status');
     Route::get('/shopping/category/edit/{id}', 'ShoppingProductController@ShoppingCategoryEdit')->name('admin.shopping_category_edit');
     Route::post('/shopping/category/update/{id}', 'ShoppingProductController@ShoppingCategoryUpdate')->name('admin.update_shopping_category');
-
+    
+    /**
+     * Important Notice
+     */
+    Route::get('/important/notice/page', 'AdminDashboardController@importantNoticePage')->name('admin.important_notice');
+    Route::post('/important/notice', 'AdminDashboardController@importantNotice')->name('admin.store_important_notice');
+    Route::get('/my/notice/list', 'AdminDashboardController@getNoticeList')->name('admin.ajax.notice_list');
+    Route::get('/view/notice/{id}', 'AdminDashboardController@viewNotice')->name('admin.notice_view');
+    Route::get('/status/notice/{id}/{status}', 'AdminDashboardController@noticeStatus')->name('admin.notice_status');
+    
 });
 
 /***
@@ -142,7 +151,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
      */
     
     Route::get('/validate/EPIN', 'MemberRegistrationController@validateEPIN')->name('member.validate_epin');
-
+    
     /***
      * Member Registration Controller
      */
@@ -157,6 +166,17 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     
     Route::get('/ajax/get/commission','CommissionHistoryController@ajaxGetCommissionList')->name('member.ajax.my_commission_list');
     Route::get('/ajax/get/order','OrderHistoryController@ajaxGetOrderList')->name('member.ajax.my_order_list');
+
+    // Member Password Change
+    Route::get('/change/password', 'MemberDashboardController@changePasswordPage')->name('member.change_password');
+    Route::post('/changePassword','MemberDashboardController@changePassword')->name('member.changePassword');
     
+    Route::get('/account/update/page', 'MemberDashboardController@accountUpdatePage')->name('member.account_update');
+    Route::post('/update/member','MemberDashboardController@updateMember')->name('member.update_member');
     
+    // Member Notice
+    Route::get('/member/notice/{id}', 'MemberDashboardController@getNotice')->name('member.notice');
+
+    // Feedback or Compalint
+    Route::get('/member/feedback', 'MemberDashboardController@feedBack')->name('member.feedback');
 }); 
