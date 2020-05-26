@@ -121,3 +121,6 @@
 	font-weight: 500;
 	margin: 0;
 }
+.downline div .col-md-6:nth-child(2) {
+    float: right;
+}
