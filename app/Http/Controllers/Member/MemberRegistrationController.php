@@ -79,15 +79,47 @@ class MemberRegistrationController extends Controller
                 Session::put('member_data', $member_data);
                 Session::save();
                 $token = rand(111111,999999);
-                Session::put('epin_page_token', $token);
+                Session::put('product_page_token', $token);
                 Session::save();
-                return redirect()->route('member.add_epin_form',['epin_page_token'=>encrypt($token)]);
+                return redirect()->route('member.product_page',['product_page_token'=>encrypt($token)]);
     
             }
             else{
                 return redirect()->back()->with('error', 'Mobile number exists!');
             }
         }
+    }
+
+    public function productPurchase(Request $request){
+        $validatedData = $request->validate([
+                'product' => 'required',
+            ]);
+            
+        $product_id = $request->input('product');
+        // Product Fetch
+        $product_fetch = DB::table('member_product')->where('id', $product_id)->first();
+        $productName = $product_fetch->name;
+        $price = $product_fetch->price;
+        $image1 = $product_fetch->image1;
+        $image2 = $product_fetch->image2;
+        if($product_fetch){
+            //Insert In SESSION of Product DATA
+            $product_data = [
+                'product_name' => $productName,
+                'price' => $price,
+                'image1' => $image1,
+                'image2' => $image2,
+            ];
+
+            $token = rand(111111,999999);
+            Session::put('product_data', $product_data);
+            Session::put('epin_page_token', $token);
+            Session::save();
+            return redirect()->route('member.add_epin_form',['epin_page_token'=>encrypt($token)]);
+        }else{
+            return redirect()->back()->with('error', 'Oops! No Product Found!');
+        }
+
     }
 
     public function epinSubmit(Request $request){
@@ -98,6 +130,8 @@ class MemberRegistrationController extends Controller
 
         if(DB::table('epin')->where('epin', '=', $request->input('epin'))->where('status', 2)->where('alloted_to', Auth::user()->id)->count() > 0){
             if(Session::has('member_data') && !empty(Session::get('member_data'))) {
+            
+                // Member Data
                 $members = Session::get('member_data');
                 $members['epin'] = $request->input('epin');
                 $members['terms'] = $request->input('terms');
@@ -120,8 +154,16 @@ class MemberRegistrationController extends Controller
                 $city = $members['city'];
                 $pin = $members['pin'];
                 $registered_by = Auth::user()->name;
+                    // Product Data
+                $products = Session::get('product_data');
+                $productName = $products['product_name'];
+                $price = $products['price'];
+                $image1 = $products['image1'];
+                $image2 = $products['image2'];
                 try {
-                    DB::transaction(function () use($members,$fullName,$email,$password,$mobile,$gender,$dob,$status,$epin,$lag,$relation,$n_name,$n_mobile,$n_address,$state,$city,$pin,$registered_by,&$member_insert) {
+                    DB::transaction(function () use($members,$fullName,$email,$password,$mobile,$gender,$dob,$status,
+                    $epin,$lag,$relation,$n_name,$n_mobile,$n_address,$state,$city,$pin,$registered_by,$productName,$price,
+                    $image1,$image2,&$member_insert) {
                         $member_insert = DB::table('members')
                         ->insertGetId([
                             'name' => $fullName,
@@ -145,24 +187,23 @@ class MemberRegistrationController extends Controller
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                         ]);
 
-                    
                         $generatedID = $this->memberIDGeneration($fullName, $member_insert);
                         $member_update = DB::table('members')
                         ->where('id', $member_insert)
                         ->update([
                             'member_id' =>  $generatedID,
-                            ]);
+                        ]);
                             
-
+                        
                         //Fetch Member Data Using Sponsor ID
                         $fetch_member = DB::table('members')
-                            ->where('member_id', $members['sponsorID'])
-                            ->first();
-
+                        ->where('member_id', $members['sponsorID'])
+                        ->first();
+                        
                         //Fetch Tree Data Using User ID
                         $fetch_tree = DB::table('tree')
-                            ->where('user_id', $fetch_member->id)
-                            ->first();
+                        ->where('user_id', $fetch_member->id)
+                        ->first();
                         
                         $tree_insert = DB::table('tree')
                         ->insertGetId([
@@ -171,7 +212,7 @@ class MemberRegistrationController extends Controller
                             'registered_by' => Auth::user()->id,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
-
+                        
                         if($lag == 1){
                             $tree_update = DB::table('tree')
                                 ->where('id', $fetch_tree->id)
@@ -180,18 +221,18 @@ class MemberRegistrationController extends Controller
                                     'parent_leg' => 'L',
                                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                                 ]);
-
+                                
                         }else{
                             $tree_update = DB::table('tree')
-                                ->where('id', $fetch_tree->id)
-                                ->update([
-                                    'right_id' => $tree_insert ,
-                                    'parent_leg' => 'R',
-                                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                            ->where('id', $fetch_tree->id)
+                            ->update([
+                                'right_id' => $tree_insert ,
+                                'parent_leg' => 'R',
+                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                                 ]);
                         
                         }
-                        
+                            
                         //Update EPIN Table as Used
                         $epin_update = DB::table('epin')
                                 ->where('epin', $epin)
@@ -208,7 +249,7 @@ class MemberRegistrationController extends Controller
                                     'status' => 1,
                                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                                 ]);
-
+                        
                         // Fetch All Parent of Current Registered node
 
                         $parrents = DB::select( DB::raw("SELECT * FROM (
@@ -223,75 +264,23 @@ class MemberRegistrationController extends Controller
                               'start_node' => $tree_insert,
                             )
                         );
-                        $a = $this->treePair($parrents, $member_insert);
+                        $a = $this->treePair($parrents, $member_insert, $price, $epin);
                     });
                     
                         // $delete_previous_session = session()->forget('member_data');
                         // $delete_epin_session = session()->forget('epin_page_token');
-                        $token = rand(111111,999999);
-                        Session::put('product_page_token', $token);
-                        Session::save();
-                        return redirect()->route('member.product_page',['product_page_token'=>encrypt($token), 'user_id'=>encrypt($member_insert)]);
+                    $token = rand(111111,999999);
+                    Session::put('kyc_page_token', $token);
+                    Session::save();
+                    return redirect()->route('member.kyc_page',['kyc_page_token'=>encrypt($token), 'user_id' => encrypt($member_insert)]);
                 }catch (\Exception $e) {
                         return redirect()->back()->with('error','Something Went Wrong Please try Again');
                 }
+            
             } else{
                 return redirect()->back()->with('error','EPIN is already been used! Try Different one!');
             }
         }
-    }
-
-    public function productPurchase(Request $request){
-        $validatedData = $request->validate([
-            'product' => 'required',
-            'u_id' => 'required'
-            ]);
-            
-        $u_id = $request->input('u_id');
-        $product_id = $request->input('product');
-        // return $u_id;
-        //EPIN Fetch
-        $epin_fetch = DB::table('epin')->where('used_by', $u_id)->first();
-        // dd($epin_fetch);
-        $epin = $epin_fetch->epin;
-        if($epin_fetch){
-
-            // Product Fetch
-            $product_fetch = DB::table('member_product')->where('id', $product_id)->first();
-            $productName = $product_fetch->name;
-            $image1 = $product_fetch->image1;
-            $image2 = $product_fetch->image2;
-            
-            if($product_fetch){
-                //Insert Order to Databases
-                $order_insert = DB::table('member_joining_order')
-                ->insertGetId([
-                    'user_id' => $u_id,
-                    'epin' => $epin,
-                    'product_name' => $productName,
-                    'image1' => $image1,
-                    'image1' => $image1,
-                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                ]);
-
-                if($order_insert){
-                    $delete_previous_session = session()->forget('product_page_token');
-                    $token = rand(111111,999999);
-                    Session::put('kyc_page_token', $token);
-                    Session::save();
-                    return redirect()->route('member.kyc_page',['kyc_page_token'=>encrypt($token), 'user_id' => encrypt($u_id)]);
-                }else{
-                    return redirect()->back()->with('error', 'Something went wrong!');
-                }
-
-            }else{
-                return redirect()->back()->with('error', 'Oops! No Product Found!');
-            }
-
-        }else{
-            return redirect()->back()->with('error', 'Ooops! No EPIN Found!');
-        }
-
     }
 
     public function kycSubmit(Request $request){
@@ -416,10 +405,9 @@ class MemberRegistrationController extends Controller
     }
 
 
-    function treePair($parents, $member_insert){
+    function treePair($parents, $member_insert, $price, $epin){
         $child = $member_insert;
-       
-        for ($i=0; $i < count($parents) ; $i++) {
+        for($i=0; $i < count($parents) ; $i++) {
             $parent = $parents[$i]->lv; 
 
             //**************Fetch parrent details***************************
@@ -462,7 +450,6 @@ class MemberRegistrationController extends Controller
                 ->first();
 
             //Initial Pair doesn't need to check timeframe also
-
                 if($total_pair_count->total_pair == 0){
                     if($pair_match->right_count >= 2 && $pair_match->left_count >= 1){
                         DB::table('member_pair_timing')
@@ -470,7 +457,7 @@ class MemberRegistrationController extends Controller
                             'user_id' => $parent,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
-                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent, 1,2);
+                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent,$child, 1,2,$price,$epin);
                         //Pair Update
                         DB::table('tree')
                             ->where('id', $parent)
@@ -484,7 +471,7 @@ class MemberRegistrationController extends Controller
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
 
-                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent, 2,1);
+                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent, $child, 2,1,$price,$epin);
 
                         DB::table('tree')
                         ->where('id', $parent)
@@ -501,7 +488,7 @@ class MemberRegistrationController extends Controller
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
 
-                        $this->creditCommisionOneIsToOne($parent, 1, 1);
+                        $this->creditCommisionOneIsToOne($parent, $child, 1, 1,$price,$epin);
 
                         $totla_pair_update = DB::table('tree')
                         ->where('id', $parent)
@@ -510,11 +497,10 @@ class MemberRegistrationController extends Controller
                         ]);
                     }
                 }
-
             $child = $parent;
         }
     }
-    function creditCommisionTwoIsToOneOrOneIsToTwo($parent, $left, $right){
+    function creditCommisionTwoIsToOneOrOneIsToTwo($parent, $child, $left, $right, $price,$epin){
         $update_left_count = DB::table('tree')
         ->where('id', $parent)
         ->update([
@@ -530,13 +516,14 @@ class MemberRegistrationController extends Controller
             
             //Fetch Matching Income
             $matching_income = DB::table('matching_income')->first();
-            
+            // Business Logic
+            $earning = ($price * $matching_income->income)/100;
             $wallet_insert = DB::table('wallet') 
             ->where('user_id', $fetch_user->user_id)
             ->update([
-                'amount' => DB::raw("`amount`+".($matching_income->income)),
+                'amount' => DB::raw("`amount`+".($earning)),
                 ]);
-                
+            $this->prdouctPurchased($child, $epin);
             //Fetch Wallet
             $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
             //Fetch Commission History
@@ -544,8 +531,8 @@ class MemberRegistrationController extends Controller
                 ->insertGetId([
                     'user_id' => $fetch_user->user_id,
                     'pair_number' => ($fetch_user->total_pair+1),
-                    'amount' => $matching_income->income,
-                    'comment' => $matching_income->income.' income of pair number '.($fetch_user->total_pair+1).' is generated! ',
+                    'amount' => $earning,
+                    'comment' => $earning.' income of pair number '.($fetch_user->total_pair+1).' is generated! ',
                     'status' => 1,
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
@@ -555,28 +542,28 @@ class MemberRegistrationController extends Controller
                         'wallet_id' =>  $fetch_wallet->id,
                         'user_id'   => $fetch_user->user_id,
                         'transaction_type'  =>  1,
-                        'amount' => $matching_income->income,
+                        'amount' => $earning,
                         'total_amount'  => $fetch_wallet->amount,
-                        'comment'   => $matching_income->income.' income of pair number '.($fetch_user->total_pair+1).' is generated! ',
+                        'comment'   => $earning.' income of pair number '.($fetch_user->total_pair+1).' is generated! ',
                         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                     ]);
         }
     }
 
-    function creditCommisionOneIsToOne($parent, $left, $right){
+    function creditCommisionOneIsToOne($parent,$child, $left, $right, $price, $epin){
         $timing = $this->checkTimeFrameDuplication($parent);
         if($timing > 1){
             //If Time frame is duplicate then push the data with status NO
-            $this->commisionWithNegative($parent, $left, $right, $cause = 'CAPPING', $status = '2');
+            $this->commisionWithNegative($parent,$child, $left, $right, $cause = 'CAPPING', $status = '2', $price, $epin);
         }else{
             // dd("CUTOFF");
             //Check for exact cut-OFF
             $fetch_cutoff = $this->checkCutOFFTiming($parent);
 
             if($fetch_cutoff > 0){
-                $this->commisionWithNegative($parent, $left, $right, $cause = 'CutOFF', $status = '3');
+                $this->commisionWithNegative($parent,$child, $left, $right, $cause = 'CutOFF', $status = '3', $price, $epin);
              }else{
-                $this->commisionWithPositive($parent, $left, $right);
+                $this->commisionWithPositive($parent,$child, $left, $right, $price, $epin);
              }
         }
     }
@@ -606,7 +593,7 @@ class MemberRegistrationController extends Controller
         return $fetch_cutoff;
     }
 
-    public function commisionWithPositive($parent, $left, $right){
+    public function commisionWithPositive($parent,$child, $left, $right, $price, $epin){
 
         //INsert Comission Data
         $update_left_right_count = DB::table('tree')
@@ -624,13 +611,18 @@ class MemberRegistrationController extends Controller
 
         //Fetch Matching Income
         $matching_income = DB::table('matching_income')->first();
+        // Business Logic
+        $earning = ($price * $matching_income->income)/100;
 
+        // Wallet Insert
         $wallet_insert = DB::table('wallet') 
         ->where('user_id', $fetch_tree->user_id)
         ->update([
-            'amount' => DB::raw("`amount`+".($matching_income->income)),
+            'amount' => DB::raw("`amount`+".($earning)),
             ]);
-            
+
+        // Product Purchase
+        $this->prdouctPurchased($child, $epin);
         //Fetch Wallet
         $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_tree->user_id)->first();
         
@@ -638,8 +630,8 @@ class MemberRegistrationController extends Controller
         ->insertGetId([
             'user_id' => $fetch_tree->user_id,
             'pair_number' => ($fetch_tree->total_pair+1),
-            'amount' => $matching_income->income,
-            'comment' => $matching_income->income.' income of pair number '.($fetch_tree->total_pair+1).' is generated! ',
+            'amount' => $earning,
+            'comment' => $earning.' income of pair number '.($fetch_tree->total_pair+1).' is generated! ',
             'status' => 1,
             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
@@ -650,15 +642,15 @@ class MemberRegistrationController extends Controller
                     'wallet_id' =>  $fetch_wallet->id,
                     'user_id'   => $fetch_tree->user_id,
                     'transaction_type'  =>  1,
-                    'amount' => $matching_income->income,
+                    'amount' => $earning,
                     'total_amount'  => $fetch_wallet->amount,
-                    'comment'   => $matching_income->income.' income of pair number'.($fetch_tree->total_pair+1).' is generated! ',
+                    'comment'   => $earning.' income of pair number'.($fetch_tree->total_pair+1).' is generated! ',
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
         }
     }
 
-    public function commisionWithNegative($parent, $left, $right, $cause, $status){
+    public function commisionWithNegative($parent,$child, $left, $right, $cause, $status, $price, $epin){
 
         //IF More than 1 data returns, Insert data with status NO
         $update_left_right_count = DB::table('tree')
@@ -675,7 +667,9 @@ class MemberRegistrationController extends Controller
         
         //Fetch Matching Income
         $matching_income = DB::table('matching_income')->first();
-
+        
+        // Product Purchase
+        $this->prdouctPurchased($child, $epin);
         //Fetch Wallet
         $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_tree->user_id)->first();
 
@@ -689,6 +683,28 @@ class MemberRegistrationController extends Controller
             'status' => $status,
             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
+    }
+
+    public function prdouctPurchased($child, $epin)
+    {
+        // Product Data
+        $products = Session::get('product_data');
+        $productName = $products['product_name'];
+        $price = $products['price'];
+        $image1 = $products['image1'];
+        $image2 = $products['image2'];
+        
+        //Insert Order to Databases
+        $order_insert = DB::table('member_joining_order')
+        ->insertGetId([
+            'user_id' => $child,
+            'epin' => $epin,
+            'product_name' => $productName,
+            'image1' => $image1,
+            'image1' => $image1,
+            'order_status' => 1,
+            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+        ]);
     }
 
 }

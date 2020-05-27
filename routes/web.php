@@ -127,7 +127,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/member/list', 'MemberDashboardController@memberList')->name('member.member_list');
     Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member_form');
     Route::get('/add/epin/{epin_page_token}', 'MemberDashboardController@addEpinForm')->name('member.add_epin_form');
-    Route::get('/add/product/{product_page_token}/{user_id}', 'MemberDashboardController@productPage')->name('member.product_page');
+    Route::get('/add/product/{product_page_token}', 'MemberDashboardController@productPage')->name('member.product_page');
     Route::get('/add/kyc/{kyc_page_token}/{user_id}', 'MemberDashboardController@kycPage')->name('member.kyc_page');
     Route::get('/add/finish/{finish_page_token}', 'MemberDashboardController@finishPage')->name('member.finish_page');
     Route::get('/my/epin/', 'MemberEpinController@memberEpinListForm')->name('member.mem_epin_list_form');
@@ -179,4 +179,6 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
 
     // Feedback or Compalint
     Route::get('/member/feedback', 'MemberDashboardController@feedBack')->name('member.feedback');
+    Route::post('/store/complaint','MemberDashboardController@storeComplaint')->name('member.store_complaint');
+    Route::post('ck-editor-image-upload','MemberDashboardController@ckEditorImageUpload')->name('member.ck_editor_image_upload');
 }); 

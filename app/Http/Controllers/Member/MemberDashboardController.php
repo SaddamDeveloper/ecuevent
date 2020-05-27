@@ -99,10 +99,9 @@ class MemberDashboardController extends Controller
        
     }
     
-    public function productPage($token,$user_id){
+    public function productPage($token){
         try{
             $token = decrypt($token);
-            $user_id = decrypt($user_id);
         }catch(DecryptException $e) {
             abort(404);
         }
@@ -110,7 +109,7 @@ class MemberDashboardController extends Controller
             $session_token = Session::get('product_page_token');
             if ( $session_token == $token) {
                 $products = DB::table('member_product')->take(3)->get();
-                return view('member.registration.product_page', compact('products','user_id'));
+                return view('member.registration.product_page', compact('products'));
             } else {
                 abort(404);
             }
@@ -648,4 +647,44 @@ class MemberDashboardController extends Controller
     {
         return view('member.feedback');
     }
+
+    public function storeComplaint(Request $request)
+    {
+        $this->validate($request, [
+            'complaint'   => 'required',
+            'reason'         => 'required'
+        ]);
+        
+    }
+
+    public function ckEditorImageUpload(Request $request)
+    {
+        if($request->hasFile('upload')) {
+            //get filename with extension
+            $filenamewithextension = $request->file('upload')->getClientOriginalName();
+       
+            //get filename without extension
+            $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME);
+       
+            //get file extension
+            $extension = $request->file('upload')->getClientOriginalExtension();
+       
+            //filename to store
+            $filenametostore = $filename.'_'.time().'.'.$extension;
+       
+            //Upload File
+            // $request->file('upload')->storeAs('assets/category/ckeditor/', $filenametostore);
+
+            $request->file('upload')->move(public_path('assets/ckeditor'), $filenametostore);
+     
+            $CKEditorFuncNum = $request->input('CKEditorFuncNum');
+            $url = asset('assets/ckeditor/'.$filenametostore); 
+            $msg = 'Image successfully uploaded'; 
+            $re = "<script>window.parent.CKEDITOR.tools.callFunction($CKEditorFuncNum, '$url', '$msg')</script>";
+              
+            // Render HTML output 
+            @header('Content-type: text/html; charset=utf-8'); 
+            echo $re;
+        }
+    }   
 }

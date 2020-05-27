@@ -24,7 +24,6 @@
                     <div>
                         <div class="x_content">
                             {{ Form::open(['method' => 'post','route'=>'member.product_purchase']) }}
-                            <input type="hidden" name="u_id" value="{{$user_id}}">
                             <div class="well" style="overflow: auto">
 
                                 <div class="form-row mb-10 mb-2">

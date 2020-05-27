@@ -29,7 +29,7 @@
                             <div class="well" style="overflow: auto">
                                 <div class="form-row mb-10">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                    <label for="name">Set Mathcing Income</label>
+                                    <label for="name">Set Mathcing Income Rate (%)</label>
                                     <input type="text" class="form-control" name="matching_income" value="{{$matching_income_final}}"  placeholder="Set Matching Income">
                                         @if($errors->has('matching_income'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
