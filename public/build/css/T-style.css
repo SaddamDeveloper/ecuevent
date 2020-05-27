@@ -124,3 +124,6 @@ right connector from last child*/
 }
 /*Thats all. I hope you enjoyed it.
 Thanks :)*/
+.downline div .col-md-6:nth-child(2) {
+    float: right;
+}
