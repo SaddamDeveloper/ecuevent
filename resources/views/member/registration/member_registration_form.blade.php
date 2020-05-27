@@ -38,7 +38,6 @@
                                             <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
                                         </div>
                                         <div id="member_data"></div><br>
-                                        <input type="hidden" name="sponsorVal" value="" id="sponsorVal">
                                     </div> 
                                     
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">

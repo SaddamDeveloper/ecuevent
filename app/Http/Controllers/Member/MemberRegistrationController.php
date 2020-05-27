@@ -15,7 +15,7 @@ use File;
 class MemberRegistrationController extends Controller
 {
     public function addNewMember(Request $request){
-        $validatedData = $request->validate([
+        $this->validate($request, [
             'f_name' => 'required',
             'l_name' => 'required',
             'mobile' => 'required|numeric:10',
@@ -31,7 +31,6 @@ class MemberRegistrationController extends Controller
         ]);
 
         $sponsorID = $request->input('search_sponsor_id');
-        $sponsorVal = $request->input('sponsorVal');
         $lag = $request->input('lag');
         $f_name = $request->input('f_name');
         $m_name = $request->input('m_name');
@@ -51,14 +50,51 @@ class MemberRegistrationController extends Controller
         $city = $request->input('city');
         $pin = $request->input('pin');
         
-        if($sponsorVal == 5){
-            return redirect()->back()->with('error', 'All lags are full! Try with another Sponsor ID.');
-        }
-        else if($sponsorVal == 1){
-            return redirect()->back()->with('error', 'Invalid Sponsor ID!');
-        }
-        else{
+        if(!empty($sponsorID)) {
+            $member_data = DB::table('members')->where('member_id', $sponsorID)->first();
+            if($member_data) {
+                $tree_data = DB::table('tree')->where('user_id', $member_data->id)->first();
+                if($tree_data){
+                    if(is_null($tree_data->left_id) && is_null($tree_data->right_id)){
+                        $sponsorID = $sponsorID;
+                        dd($sponsorID);
+                    }else if(is_null($tree_data->left_id)){
+                        $sponsorID = $sponsorID;
+                    }else if(is_null($tree_data->right_id)){
+                        $sponsorID = $sponsorID;
+                    }else{
+                        return redirect()->back()->with('error', 'All Lags are full');
+                    }
+                }
+            }else{
+                return redirect()->back()->with('error', 'Invalid Sponsor ID!');
+            }
+            
+        }else{
             if(DB::table('members')->where('mobile', $mobile)->count() < 1){
+
+                if(!empty($sponsorID)) {
+                    $member_data = DB::table('members')->where('member_id', $sponsorID)->first();
+                    if($member_data) {
+                        $tree_data = DB::table('tree')->where('user_id', $member_data->id)->first();
+                        if($tree_data){
+                            if(is_null($tree_data->left_id) && is_null($tree_data->right_id)){
+                                $this->insertInSession();
+                                dd($sponsorID);
+                            }else if(is_null($tree_data->left_id)){
+                                $sponsorID = $sponsorID;
+                            }else if(is_null($tree_data->right_id)){
+                                $sponsorID = $sponsorID;
+                            }else{
+                                return redirect()->back()->with('error', 'All Lags are full');
+                            }
+                        }
+                    }else{
+                        return redirect()->back()->with('error', 'SponsorID is invalid!');
+                    }
+                }else{
+                    return redirect()->back()->with('error', 'SponsorID is required!');
+                }
                 $member_data = [
                     'full_name' => $fullName,
                     'email' => $email,
@@ -83,8 +119,7 @@ class MemberRegistrationController extends Controller
                 Session::save();
                 return redirect()->route('member.product_page',['product_page_token'=>encrypt($token)]);
     
-            }
-            else{
+            }else{
                 return redirect()->back()->with('error', 'Mobile number exists!');
             }
         }
@@ -264,11 +299,14 @@ class MemberRegistrationController extends Controller
                               'start_node' => $tree_insert,
                             )
                         );
-                        $a = $this->treePair($parrents, $member_insert, $price, $epin);
+                        $a = $this->treePair($parrents, $member_insert, $price);
+                        
+                        // Product Purchase
+                        $b = $this->productPurchased($member_insert, $epin);
                     });
                     
-                        // $delete_previous_session = session()->forget('member_data');
-                        // $delete_epin_session = session()->forget('epin_page_token');
+                    $delete_previous_session = session()->forget('member_data');
+                    $delete_epin_session = session()->forget('epin_page_token');
                     $token = rand(111111,999999);
                     Session::put('kyc_page_token', $token);
                     Session::save();
@@ -405,7 +443,7 @@ class MemberRegistrationController extends Controller
     }
 
 
-    function treePair($parents, $member_insert, $price, $epin){
+    function treePair($parents, $member_insert, $price){
         $child = $member_insert;
         for($i=0; $i < count($parents) ; $i++) {
             $parent = $parents[$i]->lv; 
@@ -457,7 +495,7 @@ class MemberRegistrationController extends Controller
                             'user_id' => $parent,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
-                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent,$child, 1,2,$price,$epin);
+                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent,1,2,$price);
                         //Pair Update
                         DB::table('tree')
                             ->where('id', $parent)
@@ -471,7 +509,7 @@ class MemberRegistrationController extends Controller
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
 
-                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent, $child, 2,1,$price,$epin);
+                        $this->creditCommisionTwoIsToOneOrOneIsToTwo($parent,2,1,$price);
 
                         DB::table('tree')
                         ->where('id', $parent)
@@ -488,7 +526,7 @@ class MemberRegistrationController extends Controller
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
 
-                        $this->creditCommisionOneIsToOne($parent, $child, 1, 1,$price,$epin);
+                        $this->creditCommisionOneIsToOne($parent,1, 1,$price);
 
                         $totla_pair_update = DB::table('tree')
                         ->where('id', $parent)
@@ -500,7 +538,7 @@ class MemberRegistrationController extends Controller
             $child = $parent;
         }
     }
-    function creditCommisionTwoIsToOneOrOneIsToTwo($parent, $child, $left, $right, $price,$epin){
+    function creditCommisionTwoIsToOneOrOneIsToTwo($parent, $left, $right, $price){
         $update_left_count = DB::table('tree')
         ->where('id', $parent)
         ->update([
@@ -523,7 +561,6 @@ class MemberRegistrationController extends Controller
             ->update([
                 'amount' => DB::raw("`amount`+".($earning)),
                 ]);
-            $this->prdouctPurchased($child, $epin);
             //Fetch Wallet
             $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
             //Fetch Commission History
@@ -550,20 +587,19 @@ class MemberRegistrationController extends Controller
         }
     }
 
-    function creditCommisionOneIsToOne($parent,$child, $left, $right, $price, $epin){
+    function creditCommisionOneIsToOne($parent,$left, $right, $price){
         $timing = $this->checkTimeFrameDuplication($parent);
         if($timing > 1){
             //If Time frame is duplicate then push the data with status NO
-            $this->commisionWithNegative($parent,$child, $left, $right, $cause = 'CAPPING', $status = '2', $price, $epin);
+            $this->commisionWithNegative($parent,$left, $right, $cause = 'CAPPING', $status = '2', $price);
         }else{
-            // dd("CUTOFF");
             //Check for exact cut-OFF
             $fetch_cutoff = $this->checkCutOFFTiming($parent);
 
             if($fetch_cutoff > 0){
-                $this->commisionWithNegative($parent,$child, $left, $right, $cause = 'CutOFF', $status = '3', $price, $epin);
+                $this->commisionWithNegative($parent,$left, $right, $cause = 'CutOFF', $status = '3', $price);
              }else{
-                $this->commisionWithPositive($parent,$child, $left, $right, $price, $epin);
+                $this->commisionWithPositive($parent,$left, $right, $price);
              }
         }
     }
@@ -593,7 +629,7 @@ class MemberRegistrationController extends Controller
         return $fetch_cutoff;
     }
 
-    public function commisionWithPositive($parent,$child, $left, $right, $price, $epin){
+    public function commisionWithPositive($parent,$left, $right, $price){
 
         //INsert Comission Data
         $update_left_right_count = DB::table('tree')
@@ -621,8 +657,6 @@ class MemberRegistrationController extends Controller
             'amount' => DB::raw("`amount`+".($earning)),
             ]);
 
-        // Product Purchase
-        $this->prdouctPurchased($child, $epin);
         //Fetch Wallet
         $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_tree->user_id)->first();
         
@@ -650,7 +684,7 @@ class MemberRegistrationController extends Controller
         }
     }
 
-    public function commisionWithNegative($parent,$child, $left, $right, $cause, $status, $price, $epin){
+    public function commisionWithNegative($parent, $left, $right, $cause, $status, $price){
 
         //IF More than 1 data returns, Insert data with status NO
         $update_left_right_count = DB::table('tree')
@@ -668,8 +702,6 @@ class MemberRegistrationController extends Controller
         //Fetch Matching Income
         $matching_income = DB::table('matching_income')->first();
         
-        // Product Purchase
-        $this->prdouctPurchased($child, $epin);
         //Fetch Wallet
         $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_tree->user_id)->first();
 
@@ -685,7 +717,7 @@ class MemberRegistrationController extends Controller
             ]);
     }
 
-    public function prdouctPurchased($child, $epin)
+    public function productPurchased($child, $epin)
     {
         // Product Data
         $products = Session::get('product_data');
