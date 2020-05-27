@@ -7,7 +7,6 @@
         <div class="row">
             {{-- <div class="col-md-2"></div> --}}
             <div class="col-md-12" style="margin-top:50px;">
-                {{ Helper::Status() }}
                 <div class="x_panel">
     
                     <div class="x_title">

@@ -16,6 +16,7 @@ class MemberRegistrationController extends Controller
 {
     public function addNewMember(Request $request){
         $this->validate($request, [
+            'search_sponsor_id' => 'required',
             'f_name' => 'required',
             'l_name' => 'required',
             'mobile' => 'required|numeric:10',
@@ -49,80 +50,101 @@ class MemberRegistrationController extends Controller
         $state = $request->input('state');
         $city = $request->input('city');
         $pin = $request->input('pin');
-        
-        if(!empty($sponsorID)) {
-            $member_data = DB::table('members')->where('member_id', $sponsorID)->first();
-            if($member_data) {
-                $tree_data = DB::table('tree')->where('user_id', $member_data->id)->first();
-                if($tree_data){
-                    if(is_null($tree_data->left_id) && is_null($tree_data->right_id)){
-                        $sponsorID = $sponsorID;
-                        dd($sponsorID);
-                    }else if(is_null($tree_data->left_id)){
-                        $sponsorID = $sponsorID;
-                    }else if(is_null($tree_data->right_id)){
-                        $sponsorID = $sponsorID;
-                    }else{
-                        return redirect()->back()->with('error', 'All Lags are full');
-                    }
-                }
-            }else{
-                return redirect()->back()->with('error', 'Invalid Sponsor ID!');
-            }
-            
-        }else{
-            if(DB::table('members')->where('mobile', $mobile)->count() < 1){
 
+            if(DB::table('members')->where('mobile', $mobile)->count() < 1){
                 if(!empty($sponsorID)) {
                     $member_data = DB::table('members')->where('member_id', $sponsorID)->first();
                     if($member_data) {
                         $tree_data = DB::table('tree')->where('user_id', $member_data->id)->first();
                         if($tree_data){
                             if(is_null($tree_data->left_id) && is_null($tree_data->right_id)){
-                                $this->insertInSession();
-                                dd($sponsorID);
+                                $member_data = [
+                                    'full_name' => $fullName,
+                                    'email' => $email,
+                                    'mobile' => $mobile,
+                                    'gender' => $gender,
+                                    'dob' => $dob,
+                                    'sponsorID' => $sponsorID,
+                                    'lag' => $lag,
+                                    'relation' => $relation,
+                                    'n_name' => $n_name,
+                                    'n_mobile' => $n_mobile,
+                                    'n_address' => $n_address,
+                                    'state' => $state,
+                                    'city' => $city,
+                                    'pin' => $pin
+                                ];
+                
+                                Session::put('member_data', $member_data);
+                                Session::save();
+                                $token = rand(111111,999999);
+                                Session::put('product_page_token', $token);
+                                Session::save();
+                                return redirect()->route('member.product_page',['product_page_token'=>encrypt($token)]);
                             }else if(is_null($tree_data->left_id)){
-                                $sponsorID = $sponsorID;
+                                $member_data = [
+                                    'full_name' => $fullName,
+                                    'email' => $email,
+                                    'mobile' => $mobile,
+                                    'gender' => $gender,
+                                    'dob' => $dob,
+                                    'sponsorID' => $sponsorID,
+                                    'lag' => $lag,
+                                    'relation' => $relation,
+                                    'n_name' => $n_name,
+                                    'n_mobile' => $n_mobile,
+                                    'n_address' => $n_address,
+                                    'state' => $state,
+                                    'city' => $city,
+                                    'pin' => $pin
+                                ];
+                
+                                Session::put('member_data', $member_data);
+                                Session::save();
+                                $token = rand(111111,999999);
+                                Session::put('product_page_token', $token);
+                                Session::save();
+                                return redirect()->route('member.product_page',['product_page_token'=>encrypt($token)]);
                             }else if(is_null($tree_data->right_id)){
-                                $sponsorID = $sponsorID;
+                                $member_data = [
+                                    'full_name' => $fullName,
+                                    'email' => $email,
+                                    'mobile' => $mobile,
+                                    'gender' => $gender,
+                                    'dob' => $dob,
+                                    'sponsorID' => $sponsorID,
+                                    'lag' => $lag,
+                                    'relation' => $relation,
+                                    'n_name' => $n_name,
+                                    'n_mobile' => $n_mobile,
+                                    'n_address' => $n_address,
+                                    'state' => $state,
+                                    'city' => $city,
+                                    'pin' => $pin
+                                ];
+                
+                                Session::put('member_data', $member_data);
+                                Session::save();
+                                $token = rand(111111,999999);
+                                Session::put('product_page_token', $token);
+                                Session::save();
+                                return redirect()->route('member.product_page',['product_page_token'=>encrypt($token)]);
                             }else{
-                                return redirect()->back()->with('error', 'All Lags are full');
+                                return redirect()->back()->with('error', 'All lags are full! Try with another Sponsor ID!');
                             }
+                        }else{
+                            return redirect()->back()->with('error', 'Inavlid SponsorID!');
                         }
                     }else{
-                        return redirect()->back()->with('error', 'SponsorID is invalid!');
+                        return redirect()->back()->with('error', 'Inavlid SponsorID!');
                     }
                 }else{
                     return redirect()->back()->with('error', 'SponsorID is required!');
                 }
-                $member_data = [
-                    'full_name' => $fullName,
-                    'email' => $email,
-                    'mobile' => $mobile,
-                    'gender' => $gender,
-                    'dob' => $dob,
-                    'sponsorID' => $sponsorID,
-                    'lag' => $lag,
-                    'relation' => $relation,
-                    'n_name' => $n_name,
-                    'n_mobile' => $n_mobile,
-                    'n_address' => $n_address,
-                    'state' => $state,
-                    'city' => $city,
-                    'pin' => $pin
-                ];
-
-                Session::put('member_data', $member_data);
-                Session::save();
-                $token = rand(111111,999999);
-                Session::put('product_page_token', $token);
-                Session::save();
-                return redirect()->route('member.product_page',['product_page_token'=>encrypt($token)]);
     
             }else{
                 return redirect()->back()->with('error', 'Mobile number exists!');
             }
-        }
     }
 
     public function productPurchase(Request $request){
