@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use Hash;
 use App\Member;
 use App\ImportantNotice;
+use App\Feedback;
+use Illuminate\Support\Str;
 class MemberDashboardController extends Controller
 {
     public function index(){
@@ -42,7 +44,7 @@ class MemberDashboardController extends Controller
             ->limit(10)
             ->get();
 
-        $notice = ImportantNotice::orderBy('created_at', 'DESC')->limit(10)->get();
+        $notice = ImportantNotice::where('status', 1)->orderBy('created_at', 'DESC')->limit(10)->get();
         return view('member.dashboard', compact('my_commission', 'total_pair_completed', 'epin_available', 'epin_used', 'my_wallet', 'epin_list', 'notice'));
     }
 
@@ -651,10 +653,15 @@ class MemberDashboardController extends Controller
     public function storeComplaint(Request $request)
     {
         $this->validate($request, [
-            'complaint'   => 'required',
-            'reason'         => 'required'
+            'complaint'   => 'required'
         ]);
         
+        $feedback = new Feedback;
+        $feedback->feedback = $request->input('complaint');
+        $feedback->added_by = Auth::user()->name;
+        if($feedback->save()){
+            return redirect()->back()->with('message', 'Complain/ Feedback Added');
+        }
     }
 
     public function ckEditorImageUpload(Request $request)
@@ -686,5 +693,17 @@ class MemberDashboardController extends Controller
             @header('Content-type: text/html; charset=utf-8'); 
             echo $re;
         }
-    }   
+    } 
+    
+    public function getFeedbackList(){
+        $query = Feedback::where('added_by', Auth::user()->name)->orderBy('id','desc');
+        return datatables()->of($query->get())
+        ->addIndexColumn()
+        ->addColumn('feedback', function($row){
+            $description = Str::words($row->feedback, 10, ' ...');
+            return $description;
+        })
+        ->rawColumns(['feedback'])
+        ->make(true);
+    }
 }

@@ -46,7 +46,7 @@
                 <div class="navbar-header float-none-sm">
                   <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button"><i class="fa fa-bars"></i></button>
                   <a class="navbar-brand page-scroll" href="index.html">
-                    <img alt="Streetwear" src="{{asset('web/images/logo.png')}}" style="width: 70%;">
+                    <img alt="Streetwear" src="{{asset('web/images/logo.png')}}">
                   </a>
                 </div>
               </div>
@@ -78,6 +78,11 @@
                       <div class="header_search_toggle mobile-view">
                         <form>
                           <div class="search-box">
+                          <select name="" id="">
+                              <option>Books</option>
+                              <option>Shoping</option>
+                              <option>Education</option>
+                            </select>
                             <input type="text" placeholder="Search" class="input-text">
                             <button class="search-btn"></button>
                           </div>
@@ -198,7 +203,7 @@
                   </div>
                 </div>
               </li>
-              <li class="level"><a href="shop.html" class="page-scroll">Vendor Register</a></li>
+              <li class="level"><a href="{{route('member.login')}}" class="page-scroll">Vendor Login</a></li>
               <li class="level"><a href="shop.html" class="page-scroll">Contact Us</a></li>
                <!--  <li class="level"><a href="shop.html" class="page-scroll">Today's Deals</a></li>
               <li class="level dropdown">

@@ -59,7 +59,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-xs-2">
+            <div class="col-sm-3 col-lg-2 col-xs-12">
               <div class="heading-part align-center mb-40">
                 <div id="tabs" class="category-bar mt-60">
                   <ul class="tab-stap">
@@ -70,7 +70,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-xs-10">
+            <div class="col-sm-9 col-lg-10 col-xs-12">
               <div class="row">
                 <div id="items">
                   <div class="tab_content pro_cat">
@@ -745,7 +745,6 @@
               <div class="col-sm-4">
                 <div class="footer-static-block">
                   <div class="footer-static-block-inner">
-                    <span class="opener plus"></span>
                     <h3 class="title">Information</h3>
                     <ul class="footer-block-contant link">
                       <li><a>Mission & Vision</a></li>
@@ -759,7 +758,6 @@
               <div class="col-sm-4">
                 <div class="footer-static-block">
                   <div class="footer-static-block-inner">
-                    <span class="opener plus"></span>
                     <h3 class="title">Addtional</h3>
                     <ul class="footer-block-contant link">
                       <li><a>Privacy Policy</a></li>
@@ -771,7 +769,6 @@
               <div class="col-sm-4">
                 <div class="footer-static-block">
                   <div class="footer-static-block-inner">
-                    <span class="opener plus"></span>
                     <h3 class="title">Follow us</h3>
                     <ul class="footer-block-contant link">
                       <li><a>Facebook</a></li>

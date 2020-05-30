@@ -70,6 +70,28 @@ class AdminDashboardController extends Controller
                  return $btn;
             })
             ->rawColumns(['description', 'action'])
+            ->make(true);            $query = ImportantNotice::orderBy('id','desc');
+            return datatables()->of($query->get())
+            ->addIndexColumn()
+            ->addColumn('description', function($row){
+                $description = Str::words($row->description, 6, ' ...');
+                return $description;
+            })
+            ->addColumn('action', function($row){
+                   $btn = '
+                    <a href="'.route('admin.notice_view', ['id' => encrypt($row->id)]).'" class="btn btn-info btn-sm" target="_blank"><i class="fa fa-eye"></i></a>
+                   ';
+    
+                   if($row->status == '1'){
+                        $btn .= '<a href="'.route('admin.notice_status', ['id' => encrypt($row->id), 'status' => encrypt(2)]).'" class="btn btn-danger btn-sm"><i class="fa fa-power-off"></i></a>';
+                        return $btn;
+                    }else{
+                        $btn .='<a href="'.route('admin.notice_status', ['id' => encrypt($row->id), 'status' => encrypt(1)]).'" class="btn btn-success btn-sm"><i class="fa fa-check"></i></a>';
+                        return $btn;
+                    }
+                 return $btn;
+            })
+            ->rawColumns(['description', 'action'])
             ->make(true);
     }
 
@@ -100,5 +122,10 @@ class AdminDashboardController extends Controller
         }else{
             return redirect()->back()->with('error', 'Something Went Wrong!');
         }
+    }
+
+    public function feedBack()
+    {
+        return view('admin.feedback');
     }
 }

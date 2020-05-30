@@ -99,12 +99,13 @@
         })
 
         //CutOFF Table
+        var i = 1;
         var table = $('#cutOff_list').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route('admin.ajax.cutOff_list') }}",
             columns: [
-                {data: 'id', name: 'id',searchable: true},
+                { "render": function(data, type, full, meta) {return i++;}},
                 {data: 'cutoff', name: 'cutoff',searchable: true},
                 {data: 'action', name: 'action' ,searchable: true},                 
             ]

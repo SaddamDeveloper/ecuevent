@@ -118,6 +118,9 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/my/notice/list', 'AdminDashboardController@getNoticeList')->name('admin.ajax.notice_list');
     Route::get('/view/notice/{id}', 'AdminDashboardController@viewNotice')->name('admin.notice_view');
     Route::get('/status/notice/{id}/{status}', 'AdminDashboardController@noticeStatus')->name('admin.notice_status');
+
+    // Complaint/Feedback
+    Route::get('/all/feedback', 'AdminDashboardController@feedBack')->name('admin.feedback');
     
 });
 
@@ -184,4 +187,5 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/member/feedback', 'MemberDashboardController@feedBack')->name('member.feedback');
     Route::post('/store/complaint','MemberDashboardController@storeComplaint')->name('member.store_complaint');
     Route::post('ck-editor-image-upload','MemberDashboardController@ckEditorImageUpload')->name('member.ck_editor_image_upload');
+    Route::get('/my/feedback/list', 'MemberDashboardController@getFeedbackList')->name('admin.ajax.feedback_list');
 }); 

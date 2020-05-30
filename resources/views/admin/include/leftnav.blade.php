@@ -58,6 +58,8 @@
                 <li><a href="{{route('admin.mem_pair_cutoff')}}">Common Pair CutOFF</a></li>
               </ul>
             </li>
+            <li><a href="{{route('admin.feedback')}}"><i class="fa fa-comments"></i> All Complaints/ Feedbacks</a>
+            </li>
           </ul>
         </div>
       </div>

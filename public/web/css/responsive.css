@@ -438,7 +438,7 @@
     }
 
     .navbar-brand > img {
-        height: 42px;
+        height: auto;
     }
 
     .navbar-header .top-link {
@@ -566,7 +566,6 @@
     .header-right-part ul li.cart-icon {
         position: absolute;
         right: 0;
-        top: 0;
         padding-bottom: 27px !important;
     }
 
@@ -786,11 +785,14 @@
     }
 
     .navbar-toggle {
-        color: #fff;
-        margin-top: 20px;
+        color: #0074cd;
+        margin-top: 12px;
         margin-right: -12px;
         height: 45px;
         width: 45px;
+        background-color: #dedede;
+        border: 1px solid #0074cd;
+        z-index: 999;
     }
 
     /*.perellex-delail .perellex-subtitle {
@@ -1081,11 +1083,10 @@
 
     .footer-static-block .title {
         margin-bottom: 15px;
-        font-size: 20px;
+        font-size: 18px;
     }
 
     .footer-static-block .footer-block-contant {
-        display:none;
         margin-bottom: 20px;
     }
 
@@ -1161,7 +1162,7 @@
         margin-bottom: 0;
     }
 }
-@media (max-width: 767px) {	
+@media (max-width: 768px) {	
 
     .column-20per {
         width: 100%;
@@ -1317,11 +1318,11 @@
 	
 	/* Header */
     .header-right-part {
-        padding: 0 70px 0 0;
+        padding: 0;
     }
 
     .header-right-part ul li.mobile-view-search {
-        width: 90%;
+        width: 60%;
     }
 
     .header-right-part .header-right-text, .header-right-part .header-price {
@@ -1331,6 +1332,40 @@
     /*.header-right-part .cart-icon > a span {
         background-position: -44px -276px !important;
     }*/
+
+    .navbar-header .navbar-brand {
+        padding: 0;
+        width: 55%;
+    }
+
+    .navbar-brand > img {
+        height: auto;
+        width: 20%!important;
+        float: right;
+    }
+
+    .search-box {
+        display: flex;
+    }
+
+    .header-right-part ul li.cart-icon {
+        position: absolute;
+        left: 0;
+        padding-bottom: 0 !important;
+        top: -60px;
+    }
+
+    .header-right-part ul li select {
+        padding: 4px 24px 4px 5px;
+    }
+
+    .header-right-part ul li {
+        padding: 0 10px 3px;
+    }
+
+    .header-right-part ul li.content {
+        float: left;
+    }
 
 	/* Content */
     .inner-banner .banner-detail h1 {
@@ -1634,22 +1669,13 @@
         display: inline-block;
     }
 
-    .footer-inner {
-        padding: 20px 25px 0;
-    }
-
-    .footer-bottom.top {
-        padding-bottom: 20px;
-        padding-top: 30px;
-    }
-
     .footer-bottom .btn-color {
         top: -2px;
         right: 190px;
     }
 
     .copy-right {
-        padding: 15px 0;
+        padding: 0;
     }
 	
 }
@@ -1687,8 +1713,9 @@
         padding: 0 0 20px;
     }*/
 
-    .header-right-part ul li.cart-icon {
-        padding-bottom: 27px !important;
+    .header-right-part ul li.cart-icon {        
+        bottom: 0;
+        left: 0;
     }
 
     .header-right-part ul li.mobile-view-search {
@@ -1696,7 +1723,7 @@
     }
 
     .search-box {
-        display: inline-block;
+        display: flex;
         width: 100%;
     }
 
@@ -1841,6 +1868,10 @@
     .product-detail-tab .nav-tabs > li {
         float: none;
     }
+    
+    select{
+        padding: 4px 24px 4px 10px;
+    }
 
     .product-detail-tab .nav > li > a {
         padding: 10px;
@@ -1894,19 +1925,22 @@
     }
 }
 
-@media (max-width: 419px) {
+@media (max-width: 425px) {
     
     .product-listing .col-xs-6, .product-slider-main .col-xs-6 {
-        width: 100%;
+        width: 50%;
     }
 
 	/* Header */
     .navbar-brand > img {
-        height: 30px;
+        height: auto;
+        width: 40%!important;
+        float: right;
     }
 
     .navbar-header .navbar-brand {
-        padding: 25px 0;
+        padding: 0;
+        width: 65%;
     }
 
     .header-right-link > ul > li:hover {
@@ -1917,12 +1951,18 @@
         top: -67px;
     }
 
+    .header-right-part ul li.content {
+        padding-right: 0;
+        float: left;
+    }
+
     .header-right-part ul li.mobile-view-search {
-        width: 75%;
+        width: 100%;
+        padding-bottom: 5px;
     }
 
     .header-right-part ul li {
-        padding: 0 20px 20px 0;
+        padding: 0;
     }
 
     /*.inner-banner {
@@ -2065,5 +2105,16 @@
 
     .footer-bottom .btn-color {
         right: 0;
+    }
+    .header-right-part {
+        padding: 0;
+    }
+    .category-bar ul li {
+        display: block;
+        width: 33%;
+        float: left;
+    }
+    .category-bar ul li a {
+        font-size: 16px;
     }
 }

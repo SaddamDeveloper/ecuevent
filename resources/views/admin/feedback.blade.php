@@ -11,7 +11,7 @@
                     <div class="x_panel">
     
                         <div class="x_title">
-                            <h2>Important Notice</h2>
+                            <h2>Feedback/Complaint</h2>
                             <div class="clearfix"></div>
                         </div>
                     <div>
