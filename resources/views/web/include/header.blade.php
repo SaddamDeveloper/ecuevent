@@ -89,12 +89,26 @@
                         </form>
                       </div>
                     </li>
+                    @if(Auth::guard('web')->user())
+                    <li class="content">
+                      <a href="{{ route('web.logout') }}" class="content-link" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
+                        Logout
+                      </a>     
+                      <form id="frm-logout" action="{{ route('web.logout') }}" method="POST" style="display: none;">
+                          {{ csrf_field() }}
+                      </form>
+                    </li>
+                    @else
                     <li class="content">
                       <a href="{{route('web.login')}}" class="content-link">Login</a>
                     </li>
                     <li class="content">
                       <a href="{{route('web.register')}}" class="content-link">Register</a>
                     </li>
+                    <li class="content">
+                      <a href="{{route('member.login')}}" class="content-link">APM Login</a>
+                    </li>
+                    @endif
                     <li class="language">
                       <select name="" id="">
                         <option>EN</option>
@@ -203,7 +217,7 @@
                   </div>
                 </div>
               </li>
-              <li class="level"><a href="{{route('member.login')}}" class="page-scroll">Vendor Login</a></li>
+              <li class="level"><a href="#" class="page-scroll">Vendor Registration</a></li>
               <li class="level"><a href="shop.html" class="page-scroll">Contact Us</a></li>
                <!--  <li class="level"><a href="shop.html" class="page-scroll">Today's Deals</a></li>
               <li class="level dropdown">

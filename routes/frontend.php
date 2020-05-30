@@ -16,12 +16,14 @@ Route::get('/', function () {
     return view('web.index');
 })->name('web.index');
 
-// ========== Login =========
-Route::get('/Login', function () {
-    return view('web.login');
-})->name('web.login');
-
 // ========== Register =========
-Route::get('/Register', function () {
-    return view('web.register');
-})->name('web.register');
+Route::group(['prefix'=>'web', 'namespace'=> 'Web'],function(){
+    // Register
+    Route::get('/register', 'UsersController@registerForm')->name('web.register');
+    Route::post('/add/user', 'UsersController@addUser')->name('web.add_user');
+    
+    // Login
+    Route::get('/login', 'UsersController@loginForm')->name('web.login');
+    Route::post('/do/login', 'UsersController@doLogin')->name('web.do_login');
+    Route::post('/logout', 'UsersController@logout')->name('web.logout');
+});

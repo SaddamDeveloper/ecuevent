@@ -24,7 +24,6 @@
                     </div>
                     <div>
                         <div class="x_content">
-                       
                             {{ Form::open(['method' => 'post','route'=>'member.add_new_member']) }}
                             <div class="well" style="overflow: auto">
                                 <div class="form-row mb-10 mb-2">

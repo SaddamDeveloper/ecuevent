@@ -23,7 +23,12 @@
       </div>
     </div>
     <!-- BANNER END -->
-    
+    @if (Session::has('message'))
+    <div class="alert alert-success" >{{ Session::get('message') }}</div>
+    @endif
+    @if (Session::has('error'))
+        <div class="alert alert-danger">{{ Session::get('error') }}</div>
+    @endif
     <!-- CONTAIN START -->
     <section class="container">
       <div class="checkout-section ptb-30">
@@ -31,7 +36,7 @@
           <div class="col-xs-12">
             <div class="row">
               <div class="col-lg-6 col-md-8 col-sm-8 col-lg-offset-3 col-sm-offset-2 creditial-block">
-                <form class="main-form full">
+                {{ Form::open(['method' => 'post','route'=>'web.add_user', 'class' => 'main-form full']) }}
                   <div class="row">
                     <div class="col-xs-12 mb-20">
                       <div class="heading-part heading-bg">
@@ -41,31 +46,56 @@
                     <div class="col-xs-12">
                       <div class="input-box">
                         <label for="f-name">First Name</label>
-                        <input type="text" id="f-name" required="" placeholder="First Name">
+                        <input type="text" id="first_name" name="first_name" value="{{old('first_name')}}" placeholder="First Name">
+                        @if($errors->has('first_name'))
+                          <span class="invalid-feedback" role="alert" style="color:red">
+                              <strong>{{ $errors->first('first_name') }}</strong>
+                          </span>
+                        @enderror
                       </div>
                     </div>
                     <div class="col-xs-12">
                       <div class="input-box">
                         <label for="l-name">Last Name</label>
-                        <input type="text" id="l-name" required="" placeholder="Last Name">
+                        <input type="text" id="last_name" name="last_name" value="{{old('last_name')}}" placeholder="Last Name">
+                        @if($errors->has('last_name'))
+                          <span class="invalid-feedback" role="alert" style="color:red">
+                              <strong>{{ $errors->first('last_name') }}</strong>
+                          </span>
+                        @enderror
                       </div>
                     </div>
                     <div class="col-xs-12">
                       <div class="input-box">
                         <label for="login-email">Email address</label>
-                        <input id="login-email" type="email" required="" placeholder="Email Address">
+                        <input id="login-email" type="email" name="email" value="{{old('email')}}" placeholder="Email Address">
+                        @if($errors->has('email'))
+                          <span class="invalid-feedback" role="alert" style="color:red">
+                              <strong>{{ $errors->first('email') }}</strong>
+                          </span>
+                        @enderror
                       </div>
                     </div>
                     <div class="col-xs-12">
                       <div class="input-box">
                         <label for="login-pass">Password</label>
-                        <input id="login-pass" type="password" required="" placeholder="Enter your Password">
+                        <input id="login-pass" type="password" name="password" placeholder="Enter your Password">
+                        @if($errors->has('password'))
+                          <span class="invalid-feedback" role="alert" style="color:red">
+                              <strong>{{ $errors->first('password') }}</strong>
+                          </span>
+                        @enderror
                       </div>
                     </div>
                     <div class="col-xs-12">
                       <div class="input-box">
-                        <label for="re-enter-pass">Re-enter Password</label>
-                        <input id="re-enter-pass" type="password" required="" placeholder="Re-enter your Password">
+                        <label for="password_confirmation">Re-enter Password</label>
+                        <input id="password_confirmation" type="password" name="password_confirmation" placeholder="Re-enter your Password">
+                        @if($errors->has('password_confirmations'))
+                          <span class="invalid-feedback" role="alert" style="color:red">
+                              <strong>{{ $errors->first('password_confirmations') }}</strong>
+                          </span>
+                        @enderror
                       </div>
                     </div>
                     <div class="col-xs-12">

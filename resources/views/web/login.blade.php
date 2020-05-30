@@ -23,15 +23,20 @@
       </div>
     </div>
     <!-- BANNER END --> 
-
     <!-- CONTAIN START -->
     <section class="container">
       <div class="checkout-section ptb-30">
         <div class="row">
           <div class="col-xs-12">
             <div class="row">
+              @if (Session::has('message'))
+              <div class="alert alert-success" >{{ Session::get('message') }}</div>
+              @endif
+              @if (Session::has('error'))
+                  <div class="alert alert-danger">{{ Session::get('error') }}</div>
+              @endif
               <div class="col-lg-6 col-md-8 col-sm-8 col-lg-offset-3 col-sm-offset-2 creditial-block">
-                <form class="main-form full">
+                {{ Form::open(['method' => 'post','route'=>'web.do_login', 'class' => 'main-form full']) }}
                   <div class="row">
                     <div class="col-xs-12 mb-20">
                       <div class="heading-part heading-bg">
@@ -41,13 +46,13 @@
                     <div class="col-xs-12">
                       <div class="input-box">
                         <label for="login-email">Email address</label>
-                        <input id="login-email" type="email" required="" placeholder="Email Address">
+                        <input id="email" type="email" name="email" value="{{old('email')}}" required="" placeholder="Email Address">
                       </div>
                     </div>
                     <div class="col-xs-12">
                       <div class="input-box">
-                        <label for="login-pass">Password</label>
-                        <input id="login-pass" type="password" required="" placeholder="Enter your Password">
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" required="" placeholder="Enter your Password">
                       </div>
                     </div>
                     <div class="col-xs-12">

@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2",
         "ckeditor/ckeditor": "^4.14",
+        "darryldecode/cart": "^4.1",
         "fideloper/proxy": "^4.0",
         "intervention/image": "^2.5",
         "laravel/framework": "^6.2",
