@@ -27,3 +27,14 @@ Route::group(['prefix'=>'web', 'namespace'=> 'Web'],function(){
     Route::post('/do/login', 'UsersController@doLogin')->name('web.do_login');
     Route::post('/logout', 'UsersController@logout')->name('web.logout');
 });
+
+// ========== Product =========
+Route::get('/Product-List', function () {
+    return view('web.product.product-list');
+})->name('web.product.product-list');
+
+// ========== Product-Detail =========
+Route::get('/Product-Detail', function () {
+    return view('web.product.product-detail');
+})->name('web.product.product-detail');
+>>>>>>> update

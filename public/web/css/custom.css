@@ -1815,7 +1815,7 @@ span.sub-btn, span.sub-btn:hover {
 .product-image {
     position: relative;
     overflow: hidden;
-    background: #000;
+    background: #fff;
 }
 
 .product-image img {
