@@ -11,8 +11,8 @@
                     <div class="x_panel">
     
                         <div class="x_title">
-                            <h2>Category List</h2>
-                            <a href="{{route('admin.add_shopping_category')}}" class="btn btn-primary pull-right">Add New Category</a>
+                            <h2>Slider List</h2>
+                            <a href="{{route('admin.add_slider')}}" class="btn btn-primary pull-right">Add New Slider</a>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -26,13 +26,15 @@
                     </div>
                         <div>
                             <div class="x_content">
-                                <table id="category_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                <table id="slider_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                     <thead>
                                       <tr>
                                         <th>Sl. No</th>
-                                        <th>Category Name</th>
-                                        <th>Parent ID</th>
-                                        <th>Registered At</th>
+                                        <th>Slider Name</th>
+                                        <th>Slider Image</th>
+                                        <th>Offer</th>
+                                        <th>Banner Title</th>
+                                        <th>Banner Sub Title</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                       </tr>
@@ -44,7 +46,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="col-md-2"></div> --}}
         </div>
 </div>
 <!-- /page content -->
@@ -53,23 +54,25 @@
 @section('script')
  <script type="text/javascript">
      $(function () {
-        var table = $('#category_list').DataTable({
+        var table = $('#slider_list').DataTable({
             processing: true,
             serverSide: true,
             iDisplayLength: 50,
-            ajax: "{{ route('admin.shoppingCategoryList') }}",
+            ajax: "{{ route('admin.shopping_slider_list') }}",
             columns: [
                 {data: 'id', name: 'id',searchable: true},
-                {data: 'name', name: 'name',searchable: true},
-                {data: 'parent_id', name: 'parent_id' ,searchable: true}, 
-                {data: 'created_at', name: 'created_at' ,searchable: true}, 
+                {data: 'slider_name', name: 'slider_name',searchable: true},
+                {data: 'slider_image', name: 'slider_image' ,searchable: true}, 
+                {data: 'offer', name: 'offer' ,searchable: true}, 
+                {data: 'banner_title', name: 'banner_title' ,searchable: true}, 
+                {data: 'banner_subtitle', name: 'banner_subtitle' ,searchable: true}, 
                 {data: 'status', name: 'status', render:function(data, type, row){
                       if (row.status == '1') {
                         return "<label class='label label-success rounded'>Enabled</label>"
                       }else{
                         return "<label class='label label-warning rounded'>Disbaled</label>"
                       }                        
-                    }},
+                    }},                 
                 {data: 'action', name: 'action' ,searchable: true},                 
             ]
         });
@@ -77,3 +80,6 @@
     });
  </script>
 @endsection
+
+
+

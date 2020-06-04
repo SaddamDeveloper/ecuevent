@@ -38,7 +38,12 @@
               </ul>
             </li>
 
-            <li><a href="{{route('member.mem_epin_list_form')}}"><i class="fa fa-ticket"></i> My EPIN</a>
+            <li><a><i class="fa fa-ticket"></i> EPIN Manage<span class="fa fa-chevron-down"></span></a>
+              <ul class="nav child_menu">
+                <li><a href="{{route('member.mem_epin_list_form')}}"> My Epin</a></li>
+                <li><a href="{{route('member.epin_request')}}"> Epin Request</a></li>
+                <li><a href="{{route('member.epin_transfer')}}"> Epin Transfer</a></li>
+              </ul>
             </li>
            
             <li><a href="{{route('member.mem_commission_list_form')}}"><i class="fa fa-percent"></i> Commission History</a>
@@ -61,24 +66,5 @@
       </div>
       <!-- /sidebar menu -->
 
-      <!-- /menu footer buttons -->
-      <div class="sidebar-footer hidden-small">
-        <a data-toggle="tooltip" data-placement="top" title="Settings">
-          <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-          <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="Lock">
-          <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="Logout" href="{{ route('member.logout') }}" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
-          <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-        </a>
-        <form id="frm-logout" action="{{ route('member.logout') }}" method="POST" style="display: none;">
-            {{ csrf_field() }}
-        </form>
-      </div>
-      <!-- /menu footer buttons -->
     </div>
   </div>

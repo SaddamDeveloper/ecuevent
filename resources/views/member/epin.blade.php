@@ -26,8 +26,6 @@
                     </div>
                         <div>
                             <div class="x_content">
-                                {{-- <a href="{{route('admin.mem_add_epin_form')}}" class="btn btn-primary">Add New EPIN</a> --}}
-                                {{-- <a href="{{route('admin.mem_allot_epin_form')}}" class="btn btn-primary">Allot EPIN</a> --}}
                             </div>
                         </div>
                         <div>

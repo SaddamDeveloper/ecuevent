@@ -22,10 +22,6 @@ class MemberRegistrationController extends Controller
             'mobile' => 'required|numeric:10',
             'gender' => 'required',
             'dob' => 'required',
-            'relation' => 'required',
-            'n_name' => 'required',
-            'n_mobile' => 'required|numeric:10',
-            'n_address' => 'required',
             'state' => 'required',
             'city' => 'required',
             'pin' => 'required|numeric'
@@ -41,12 +37,6 @@ class MemberRegistrationController extends Controller
         $mobile = $request->input('mobile');
         $gender = $request->input('gender');
         $dob = $request->input('dob');
-
-        // Nominee Details
-        $relation = $request->input('relation');
-        $n_name = $request->input('n_name');
-        $n_mobile = $request->input('n_mobile');
-        $n_address = $request->input('n_address');
         $state = $request->input('state');
         $city = $request->input('city');
         $pin = $request->input('pin');
@@ -66,10 +56,6 @@ class MemberRegistrationController extends Controller
                                     'dob' => $dob,
                                     'sponsorID' => $sponsorID,
                                     'lag' => $lag,
-                                    'relation' => $relation,
-                                    'n_name' => $n_name,
-                                    'n_mobile' => $n_mobile,
-                                    'n_address' => $n_address,
                                     'state' => $state,
                                     'city' => $city,
                                     'pin' => $pin
@@ -90,10 +76,6 @@ class MemberRegistrationController extends Controller
                                     'dob' => $dob,
                                     'sponsorID' => $sponsorID,
                                     'lag' => $lag,
-                                    'relation' => $relation,
-                                    'n_name' => $n_name,
-                                    'n_mobile' => $n_mobile,
-                                    'n_address' => $n_address,
                                     'state' => $state,
                                     'city' => $city,
                                     'pin' => $pin
@@ -114,10 +96,6 @@ class MemberRegistrationController extends Controller
                                     'dob' => $dob,
                                     'sponsorID' => $sponsorID,
                                     'lag' => $lag,
-                                    'relation' => $relation,
-                                    'n_name' => $n_name,
-                                    'n_mobile' => $n_mobile,
-                                    'n_address' => $n_address,
                                     'state' => $state,
                                     'city' => $city,
                                     'pin' => $pin
@@ -180,14 +158,15 @@ class MemberRegistrationController extends Controller
     }
 
     public function epinSubmit(Request $request){
-        $validatedData = $request->validate([
-            'epin' => 'required|exists:epin',
-            'terms' =>  'required'
-        ]);
-
-        if(DB::table('epin')->where('epin', '=', $request->input('epin'))->where('status', 2)->where('alloted_to', Auth::user()->id)->count() > 0){
+        if($request->input('epin')){
+            $this->validate($request, [
+                'epin' => 'required|exists:epin',
+                'terms' =>  'required'
+            ]);
+        }
+        $skip = $request->input('skip');
+        if(DB::table('epin')->where('epin', '=', $request->input('epin'))->where('status', 2)->where('alloted_to', Auth::user()->id)->count() > 0 || $skip == 2){
             if(Session::has('member_data') && !empty(Session::get('member_data'))) {
-            
                 // Member Data
                 $members = Session::get('member_data');
                 $members['epin'] = $request->input('epin');
@@ -199,19 +178,16 @@ class MemberRegistrationController extends Controller
                 $password = Hash::make($mobile);
                 $gender = $members['gender'];
                 $dob = $members['dob'];
-                $status = 1;
-                $epin = $members['epin'];
+                $skip == 2 ? $status = 2 : $status = 1;
+                $skip == 2 ? $epin=null : $epin = $members['epin'];
                 $members['terms'] = $request->input('terms');
                 $lag = $members['lag']; 
-                $relation = $members['relation'];
-                $n_name = $members['n_name'];
-                $n_mobile = $members['n_mobile'];
-                $n_address = $members['n_address'];
                 $state = $members['state'];
                 $city = $members['city'];
                 $pin = $members['pin'];
                 $registered_by = Auth::user()->name;
-                    // Product Data
+                
+                // Product Data
                 $products = Session::get('product_data');
                 $productName = $products['product_name'];
                 $price = $products['price'];
@@ -219,8 +195,7 @@ class MemberRegistrationController extends Controller
                 $image2 = $products['image2'];
                 try {
                     DB::transaction(function () use($members,$fullName,$email,$password,$mobile,$gender,$dob,$status,
-                    $epin,$lag,$relation,$n_name,$n_mobile,$n_address,$state,$city,$pin,$registered_by,$productName,$price,
-                    $image1,$image2,&$member_insert) {
+                    $epin,$lag,$state,$city,$pin,$registered_by,$productName,$price,$image1,$image2,&$member_insert) {
                         $member_insert = DB::table('members')
                         ->insertGetId([
                             'name' => $fullName,
@@ -231,10 +206,6 @@ class MemberRegistrationController extends Controller
                             'dob' => $dob,
                             'status' => $status,
                             'epin' => $epin,
-                            'nominee_relation' => $relation,
-                            'nominee_name' => $n_name,
-                            'nominee_mobile' => $n_mobile,
-                            'nominee_address' => $n_address,
                             'state' => $state,
                             'city' => $city,
                             'pin' => $pin,

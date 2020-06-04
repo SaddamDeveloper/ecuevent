@@ -32,7 +32,7 @@
                                     </div>
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                         <label for="add_epin">{{__('Add EPIN')}}</label>
-                                        <input type="text" name="epin" id="epin" class="form-control" placeholder="Add EPIN Number" required>
+                                        <input type="text" name="epin" id="epin" class="form-control" placeholder="Add EPIN Number">
                                         <div id="myDiv">
                                             <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
                                         </div>
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                             <div class="form-group submitBtn">
-                               
+                                <button type="submit" name="skip" value="2" class="btn btn-default pull-right">Skip</button>
                             </div>
                             {{ Form::close() }}
     

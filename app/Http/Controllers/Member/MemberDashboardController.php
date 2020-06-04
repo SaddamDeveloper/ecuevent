@@ -234,7 +234,7 @@ class MemberDashboardController extends Controller
                 $lft_members = $row->left_id;
                 if (!empty($lft_members)) {
                     $lft_details =  DB::table('tree')
-                   ->select('members.name as u_name','members.id as u_id', 'members.member_id as member_id')
+                   ->select('members.name as u_name','members.id as u_id', 'members.member_id as member_id', 'members.epin')
                    ->join('members','members.id','=','tree.user_id')
                    ->where('tree.id',$lft_members)
                    ->first();
@@ -242,7 +242,11 @@ class MemberDashboardController extends Controller
                    if ($row->user_id == $lft_details->u_id) {
                         $lft_member.=" (Self)";
                     }else{
-                        $lft_member.=" (".$lft_details->u_name.")";
+                        if($lft_details->epin){
+                            $lft_member.=" (".$lft_details->u_name.")";
+                        }else{
+                            $lft_member.=" (".$lft_details->u_name.") <button class='btn btn-success'>VIEW</button>";
+                        }
                    }
                    return $lft_member;
                 }
@@ -252,7 +256,7 @@ class MemberDashboardController extends Controller
                
                 if (!empty($rht_members)) {
                     $rht_details =  DB::table('tree')
-                    ->select('members.name as u_name','members.id as u_id', 'members.member_id as member_id')
+                    ->select('members.name as u_name','members.id as u_id', 'members.member_id as member_id', 'members.epin')
                    ->join('members','members.id','=','tree.user_id')
                    ->where('tree.id',$rht_members)
                    ->first();
@@ -260,7 +264,11 @@ class MemberDashboardController extends Controller
                    if ($row->user_id == $rht_details->u_id) {
                         $rht_member.=" (Self)";
                     }else{
-                        $rht_member.=" (".$rht_details->u_name.")";
+                        if($rht_details->epin){
+                            $rht_member.=" (".$rht_details->u_name.")";
+                        }else{
+                            $rht_member.=" (".$rht_details->u_name.") <button class='btn btn-success'>VIEW</button>";
+                        }
                     }
                     return $rht_member;
                 }

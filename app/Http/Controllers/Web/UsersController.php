@@ -7,11 +7,20 @@ use Illuminate\Http\Request;
 use App\User;
 use Hash;
 use Auth;
+use App\Model\ShoppingSlider;
+use App\Model\ShoppingProduct;
 class UsersController extends Controller
 {
     public function __construct()
     {
         $this->middleware('guest:web')->except('logout');
+    }
+
+    public function index()
+    {
+        $sliders = ShoppingSlider::limit(6)->get();
+        $products = ShoppingProduct::where('status', 1)->limit(8)->get();
+        return view('web.index', compact('sliders', 'products'));
     }
 
     public function registerForm()

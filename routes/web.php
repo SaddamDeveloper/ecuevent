@@ -92,6 +92,16 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
      * Shopping Product List Control
      */
 
+    //  Slider
+    Route::get('/shopping/slider', 'ShoppingProductController@shoppingSlider')->name('admin.shopping_slider');
+    Route::get('/shopping/slider/add', 'ShoppingProductController@addShoppingSlider')->name('admin.add_slider');
+    Route::get('/shopping/slider/list', 'ShoppingProductController@ShoppingSliderList')->name('admin.shopping_slider_list');
+    Route::post('/shopping/slider/store', 'ShoppingProductController@storeShoppingSlider')->name('admin.store_shopping_slider');
+    Route::get('/shopping/slider/status/{sId}/{status}', 'ShoppingProductController@ShoppingSliderStatus')->name('admin.shopping_slider_status');
+    Route::get('/shopping/slider/edit/{id}', 'ShoppingProductController@ShoppingSliderEdit')->name('admin.shopping_slider_edit');
+    Route::post('/shopping/slider/update', 'ShoppingProductController@ShoppingSliderUpdate')->name('admin.update_shopping_slider');
+
+
     //Shopping Product
     Route::get('/shopping/product', 'ShoppingProductController@shoppingProduct')->name('admin.shopping_product');
     Route::get('/shopping/product/add', 'ShoppingProductController@addShoppingProduct')->name('admin.add_shopping_product');
@@ -138,6 +148,11 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/add/finish/{finish_page_token}', 'MemberDashboardController@finishPage')->name('member.finish_page');
     Route::get('/my/epin/', 'MemberEpinController@memberEpinListForm')->name('member.mem_epin_list_form');
     Route::get('/my/epin/list', 'MemberEpinController@memberGetEpinList')->name('member.ajax.my_epin_list');
+    Route::get('/my/epin/request/form', 'MemberEpinController@memberRequestForm')->name('member.epin_request');
+    Route::post('/my/epin/request', 'MemberEpinController@memberRequest')->name('member.store_epin_requests');
+    Route::get('/my/epin/request/list', 'MemberEpinController@epinRequestList')->name('member.ajax.epin_request_list');
+    Route::get('/my/epin/transfer/form', 'MemberEpinController@memberTransferForm')->name('member.epin_transfer');
+
     Route::get('/my/downline/', 'MemberDashboardController@memberDownlineListForm')->name('member.mem_downline_list_form');
     Route::get('/my/downline/list', 'MemberDashboardController@memberGetDownlineList')->name('member.ajax.my_downline_list');
     Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');

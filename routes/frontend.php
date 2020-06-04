@@ -12,9 +12,7 @@
 */
 
 // ========== Index =========
-Route::get('/', function () {
-    return view('web.index');
-})->name('web.index');
+Route::get('/', 'Web\UsersController@index')->name('web.index');
 
 // ========== Register =========
 Route::group(['prefix'=>'web', 'namespace'=> 'Web'],function(){

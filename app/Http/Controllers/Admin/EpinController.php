@@ -89,4 +89,6 @@ class EpinController extends Controller
            $epin = $string . $random_num . $epin_insert;
            return $epin;
     }
+
+    
 }

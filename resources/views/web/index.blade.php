@@ -12,36 +12,25 @@
     <section>
       <div class="banner">
         <div class="main-banner">
-          <div class="banner-1"> 
-            <img src="{{asset('web/images/banner1.jpg')}}" alt="Streetwear"> 
-            <div class="banner-detail">
-              <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6"></div>
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                  <div class="banner-detail-inner">
-                    <span class="offer">Hot Offer</span>
-                    <h1 class="banner-title">Introducing Backpack</h1>
-                    <h1 class="banner-subtitle">Get Your Backpack</h1>
+          @if(isset($sliders) && !empty($sliders))
+            @foreach($sliders as $slider)
+            <div class="banner-1"> 
+              <img src="{{asset('shopping/slider/'.$slider->slider_image)}}" alt="Streetwear"> 
+              <div class="banner-detail">
+                <div class="row">
+                  <div class="col-md-6 col-sm-6 col-xs-6"></div>
+                  <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="banner-detail-inner">
+                      <span class="offer">{{$slider->offer}}</span>
+                      <h1 class="banner-title">{{$slider->banner_title}}</h1>
+                      <h1 class="banner-subtitle">{{$slider->banner_subtitle}}</h1>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="banner-1"> 
-            <img src="{{asset('web/images/banner2.jpg')}}" alt="Streetwear">
-            <div class="banner-detail">
-              <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6"></div>
-                <div class="col-md-6 col-sm-6 col-xs-6">
-                  <div class="banner-detail-inner">
-                    <span class="offer">Hot Offer</span>
-                    <h1 class="banner-title">Stylish Ladies Bag</h1>
-                    <h1 class="banner-subtitle">Powering Ladies</h1>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            @endforeach
+          @endif
         </div>
       </div>
     </section>
@@ -77,180 +66,184 @@
                     <ul>
                       <li>
                         <div id="data-step1" class="items-step1 selected product-slider-main position-r" data-temp="tabdata">
-                          <div class="col-md-3 col-xs-6 plr-20 mb-20">
-                            <div class="product-item">
-                              <div class="product-image">
-                                <a href="product-page.html">
-                                  <img src="{{asset('web/images/1.jpg')}}" alt="Streetwear">
-                                </a>
-                                <div class="product-detail-inner">
-                                  <div class="detail-inner-left align-center">
-                                    <ul>
-                                      <li class="pro-cart-icon">
-                                        <form>
-                                          <button title="Add to Cart"><span></span></button>
-                                        </form>
-                                      </li>
-                                    </ul>
+                          @if(isset($products) && !empty($products))
+                            @foreach ($products as $product)
+                            <div class="col-md-3 col-xs-6 plr-20 mb-20">
+                              <div class="product-item">
+                                <div class="product-image">
+                                  <a href="product-page.html">
+                                    <img src="{{asset('shopping/product/'.$product->main_image)}}" alt="Streetwear">
+                                  </a>
+                                  <div class="product-detail-inner">
+                                    <div class="detail-inner-left align-center">
+                                      <ul>
+                                        <li class="pro-cart-icon">
+                                          <form>
+                                            <button title="Add to Cart"><span></span></button>
+                                          </form>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="product-item-details">
+                                  <div class="product-item-name">
+                                    <a href="product-page.html">{{$product->name}}</a>
+                                  </div>
+                                  <div class="price-box">
+                                    <span class="price">₹{{number_format($product->price, 2)}}</span>
+                                    <del class="price old-price">₹{{number_format($product->mrp, 2)}}</del>
                                   </div>
                                 </div>
                               </div>
-                              <div class="product-item-details">
-                                <div class="product-item-name">
-                                  <a href="product-page.html">Ecu Stylish Backpack</a>
-                                </div>
-                                <div class="price-box">
-                                  <span class="price">₹450.00</span>
-                                  <del class="price old-price">₹650.00</del>
-                                </div>
-                              </div>
                             </div>
-                          </div>
-                          <div class="col-md-3 col-xs-6 plr-20 mb-20">
-                            <div class="product-item">
-                              <div class="product-image">
-                                <a href="product-page.html">
-                                  <img src="{{asset('web/images/2.jpg')}}" alt="Streetwear">
-                                </a>
-                                <div class="product-detail-inner">
-                                  <div class="detail-inner-left align-center">
-                                    <ul>
-                                      <li class="pro-cart-icon">
-                                        <form>
-                                          <button title="Add to Cart"><span></span></button>
-                                        </form>
-                                      </li>
-                                    </ul>
+                            {{-- <div class="col-md-3 col-xs-6 plr-20 mb-20">
+                              <div class="product-item">
+                                <div class="product-image">
+                                  <a href="product-page.html">
+                                    <img src="{{asset('web/images/2.jpg')}}" alt="Streetwear">
+                                  </a>
+                                  <div class="product-detail-inner">
+                                    <div class="detail-inner-left align-center">
+                                      <ul>
+                                        <li class="pro-cart-icon">
+                                          <form>
+                                            <button title="Add to Cart"><span></span></button>
+                                          </form>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="product-item-details">
+                                  <div class="product-item-name">
+                                    <a href="product-page.html">Ecu Stylish Backpack</a>
+                                  </div>
+                                  <div class="price-box">
+                                    <span class="price">₹550.00</span>
+                                    <del class="price old-price">₹750.00</del>
                                   </div>
                                 </div>
                               </div>
-                              <div class="product-item-details">
-                                <div class="product-item-name">
-                                  <a href="product-page.html">Ecu Stylish Backpack</a>
-                                </div>
-                                <div class="price-box">
-                                  <span class="price">₹750.00</span>
-                                  <del class="price old-price">₹550.00</del>
-                                </div>
-                              </div>
                             </div>
-                          </div>
-                          <div class="col-md-3 col-xs-6 plr-20 mb-20">
-                            <div class="product-item">
-                              <div class="product-image">
-                                <a href="product-page.html">
-                                  <img src="{{asset('web/images/3.jpg')}}" alt="Streetwear">
-                                </a>
-                                <div class="product-detail-inner">
-                                  <div class="detail-inner-left align-center">
-                                    <ul>
-                                      <li class="pro-cart-icon">
-                                        <form>
-                                          <button title="Add to Cart"><span></span></button>
-                                        </form>
-                                      </li>
-                                    </ul>
+                            <div class="col-md-3 col-xs-6 plr-20 mb-20">
+                              <div class="product-item">
+                                <div class="product-image">
+                                  <a href="product-page.html">
+                                    <img src="{{asset('web/images/3.jpg')}}" alt="Streetwear">
+                                  </a>
+                                  <div class="product-detail-inner">
+                                    <div class="detail-inner-left align-center">
+                                      <ul>
+                                        <li class="pro-cart-icon">
+                                          <form>
+                                            <button title="Add to Cart"><span></span></button>
+                                          </form>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="product-item-details">
+                                  <div class="product-item-name">
+                                    <a href="product-page.html">Ecu Stylish Backpack</a>
+                                  </div>
+                                  <div class="price-box">
+                                    <span class="price">₹296.00</span>
+                                    <del class="price old-price">₹500.00</del>
                                   </div>
                                 </div>
                               </div>
-                              <div class="product-item-details">
-                                <div class="product-item-name">
-                                  <a href="product-page.html">Ecu Stylish Backpack</a>
-                                </div>
-                                <div class="price-box">
-                                  <span class="price">₹296.00</span>
-                                  <del class="price old-price">₹500.00</del>
-                                </div>
-                              </div>
                             </div>
-                          </div>
-                          <div class="col-md-3 col-xs-6 plr-20 mb-20">
-                            <div class="product-item">
-                              <div class="product-image">
-                                <a href="product-page.html">
-                                  <img src="{{asset('web/images/4.jpg')}}" alt="Streetwear">
-                                </a>
-                                <div class="product-detail-inner">
-                                  <div class="detail-inner-left align-center">
-                                    <ul>
-                                      <li class="pro-cart-icon">
-                                        <form>
-                                          <button title="Add to Cart"><span></span></button>
-                                        </form>
-                                      </li>
-                                    </ul>
+                            <div class="col-md-3 col-xs-6 plr-20 mb-20">
+                              <div class="product-item">
+                                <div class="product-image">
+                                  <a href="product-page.html">
+                                    <img src="{{asset('web/images/4.jpg')}}" alt="Streetwear">
+                                  </a>
+                                  <div class="product-detail-inner">
+                                    <div class="detail-inner-left align-center">
+                                      <ul>
+                                        <li class="pro-cart-icon">
+                                          <form>
+                                            <button title="Add to Cart"><span></span></button>
+                                          </form>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="product-item-details">
+                                  <div class="product-item-name">
+                                    <a href="product-page.html">Ecu Stylish Backpack</a>
+                                  </div>
+                                  <div class="price-box">
+                                    <span class="price">₹330.00</span>
+                                    <del class="price old-price">₹550.00</del>
                                   </div>
                                 </div>
                               </div>
-                              <div class="product-item-details">
-                                <div class="product-item-name">
-                                  <a href="product-page.html">Ecu Stylish Backpack</a>
-                                </div>
-                                <div class="price-box">
-                                  <span class="price">₹330.00</span>
-                                  <del class="price old-price">₹550.00</del>
-                                </div>
-                              </div>
                             </div>
-                          </div>
-                          <div class="col-md-3 col-xs-6 plr-20 mb-20">
-                            <div class="product-item">
-                              <div class="product-image">
-                                <a href="product-page.html">
-                                  <img src="{{asset('web/images/5.jpg')}}" alt="Streetwear">
-                                </a>
-                                <div class="product-detail-inner">
-                                  <div class="detail-inner-left align-center">
-                                    <ul>
-                                      <li class="pro-cart-icon">
-                                        <form>
-                                          <button title="Add to Cart"><span></span></button>
-                                        </form>
-                                      </li>
-                                    </ul>
+                            <div class="col-md-3 col-xs-6 plr-20 mb-20">
+                              <div class="product-item">
+                                <div class="product-image">
+                                  <a href="product-page.html">
+                                    <img src="{{asset('web/images/5.jpg')}}" alt="Streetwear">
+                                  </a>
+                                  <div class="product-detail-inner">
+                                    <div class="detail-inner-left align-center">
+                                      <ul>
+                                        <li class="pro-cart-icon">
+                                          <form>
+                                            <button title="Add to Cart"><span></span></button>
+                                          </form>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="product-item-details">
+                                  <div class="product-item-name">
+                                    <a href="product-page.html">Ecu Stylish Backpack</a>
+                                  </div>
+                                  <div class="price-box">
+                                    <span class="price">₹90.00</span>
+                                    <del class="price old-price">₹120.00</del>
                                   </div>
                                 </div>
                               </div>
-                              <div class="product-item-details">
-                                <div class="product-item-name">
-                                  <a href="product-page.html">Ecu Stylish Backpack</a>
-                                </div>
-                                <div class="price-box">
-                                  <span class="price">₹90.00</span>
-                                  <del class="price old-price">₹120.00</del>
-                                </div>
-                              </div>
                             </div>
-                          </div>
-                          <div class="col-md-3 col-xs-6 plr-20 mb-20">
-                            <div class="product-item">
-                              <div class="product-image">
-                                <a href="product-page.html">
-                                  <img src="{{asset('web/images/6.jpg')}}" alt="Streetwear">
-                                </a>
-                                <div class="product-detail-inner">
-                                  <div class="detail-inner-left align-center">
-                                    <ul>
-                                      <li class="pro-cart-icon">
-                                        <form>
-                                          <button title="Add to Cart"><span></span></button>
-                                        </form>
-                                      </li>
-                                    </ul>
+                            <div class="col-md-3 col-xs-6 plr-20 mb-20">
+                              <div class="product-item">
+                                <div class="product-image">
+                                  <a href="product-page.html">
+                                    <img src="{{asset('web/images/6.jpg')}}" alt="Streetwear">
+                                  </a>
+                                  <div class="product-detail-inner">
+                                    <div class="detail-inner-left align-center">
+                                      <ul>
+                                        <li class="pro-cart-icon">
+                                          <form>
+                                            <button title="Add to Cart"><span></span></button>
+                                          </form>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="product-item-details">
+                                  <div class="product-item-name">
+                                    <a href="product-page.html">Ecu Wallet</a>
+                                  </div>
+                                  <div class="price-box">
+                                    <span class="price">₹250.00</span>
+                                    <del class="price old-price">₹400.00</del>
                                   </div>
                                 </div>
                               </div>
-                              <div class="product-item-details">
-                                <div class="product-item-name">
-                                  <a href="product-page.html">Ecu Wallet</a>
-                                </div>
-                                <div class="price-box">
-                                  <span class="price">₹250.00</span>
-                                  <del class="price old-price">₹400.00</del>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                            </div> --}}
+                            @endforeach
+                          @endif
                         </div>
                       </li>
                       <li>

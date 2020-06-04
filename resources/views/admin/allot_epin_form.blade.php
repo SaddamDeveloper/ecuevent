@@ -21,37 +21,49 @@
                          @if (Session::has('error'))
                             <div class="alert alert-danger">{{ Session::get('error') }}</div>
                          @endif
-    
                     </div>
                         <div>
                             <div class="x_content">
-                           
-                         {{ Form::open(['method' => 'post','route'=>'admin.mem_allot_epin']) }}
-                            <div class="well" style="overflow: auto">
-                                <div class="form-row mb-10">
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                      <label for="name">User ID:</label>
-                                      <input type="text" class="form-control" name="searchMember" id="searchMember" value="{{old('user_id')}}"  placeholder="Search User ID">
-                                    </div>                     
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                        <div id="myDiv">
-                                            <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
+                                {{ Form::open(['method' => 'post','route'=>'admin.mem_allot_epin']) }}
+                                    <div class="well" style="overflow: auto">
+                                        <div class="form-row mb-10">
+                                            <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
+                                            <label for="name">User ID:</label>
+                                            <input type="text" class="form-control" name="searchMember" id="searchMember" value="{{old('user_id')}}"  placeholder="Search User ID">
+                                            </div>                     
+                                            <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
+                                                <div id="myDiv">
+                                                    <img id="loading-image" src="{{asset('production/images/ajax-loader.gif')}}" style="display:none;"/>
+                                                </div>
+                                                <div id="search_data">
+                                                    @if($errors->has('epin'))
+                                                    <span class="invalid-feedback" role="alert" style="color:red">
+                                                        <strong>{{ $errors->first('epin') }}</strong>
+                                                    </span>
+                                                    @enderror
+                                                </div>
+                                            </div>                     
                                         </div>
-                                        <div id="search_data">
-                                            @if($errors->has('epin'))
-                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('epin') }}</strong>
-                                            </span>
-                                            @enderror
-                                        </div>
-                                    </div>                     
-                                </div>
-                            </div>
+                                    </div>
 
-                            <div class="form-group">    	            	
-                                {{ Form::submit('Allot Epin', array('class'=>'btn btn-success pull-right')) }}  
+                                <div class="form-group">    	            	
+                                    {{ Form::submit('Allot Epin', array('class'=>'btn btn-success pull-right')) }}  
                                 </div>
                                 {{ Form::close() }}
+                            </div>
+                            <div class="x_content">
+                                <table id="epin_request" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                  <thead>
+                                    <tr>
+                                      <th>Sl. No</th>
+                                      <th>EPIN Requests</th>
+                                      <th>Status</th>
+                                      <th>Created At</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>                       
+                                  </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -105,7 +117,6 @@
         });
     </script>
 @endsection
-
 @section('css')
     <style>
         #searchMember{

@@ -31,6 +31,7 @@
                         <th class="column-title">Member Name</th>
                         <th class="column-title">Document Verify</th>
                         <th class="column-title">Document Status</th>
+                        <th class="column-title">Status</th>
                     </tr>
                 </thead>
 
@@ -63,6 +64,13 @@
                                 <label class="label label-warning">NOT UPLOADED</label>
                               @endif
                             </td>
+                            <td>
+                              @if($members->status == 1)  
+                                <button class="btn btn-success">Active</button>
+                              @else
+                                <button class="btn btn-danger">Deactive</button>
+                              @endif
+                            </td>  
                         </tr>
                     @endforeach
                     @else

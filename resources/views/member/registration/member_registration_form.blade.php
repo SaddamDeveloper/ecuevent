@@ -123,48 +123,6 @@
                                         @enderror
                                     </div>
                                 </div>
-                            </div>
-                            <div class="well" style="overflow: auto">
-                                <div class="form-row mb-3">
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                      <label for="relation">Nominee Relation*</label>
-                                      <input type="text" class="form-control" name="relation" value="{{old('relation')}}"  placeholder="Enter Nominee Relation" >
-                                        @if($errors->has('relation'))
-                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('relation') }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                      <label for="n_name">Nominee Name*</label>
-                                      <input type="text" class="form-control" name="n_name" value="{{old('n_name')}}"  placeholder="Enter Nominee Name" >
-                                        @if($errors->has('n_name'))
-                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('n_name') }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                      <label for="n_mobile">Nominee Mobile*</label>
-                                      <input type="text" class="form-control" name="n_mobile" value="{{old('n_mobile')}}" placeholder="Enter Nominee Mobile" >
-                                        @if($errors->has('n_mobile'))
-                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('n_mobile') }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-row mb-3">
-                                    <div class="col-md-12 col-sm-12 col-xs-12 mb-3">
-                                      <label for="n_adress">Nominee Address*</label>
-                                        <textarea name="n_address" class="form-control" placeholder="Enter Nominee Address">{{old('n_address')}}</textarea>
-                                      @if($errors->has('n_address'))
-                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('n_address') }}</strong>
-                                            </span>
-                                        @enderror
-                                    </div>
-                                </div>
                                 <div class="form-row mb-3">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                         <label for="state">State*</label>
