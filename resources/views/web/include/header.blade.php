@@ -133,7 +133,7 @@
         <div class="container"> 
           <div id="menu" class="navbar-collapse collapse left-side align-center" >
             <ul class="nav navbar-nav">
-              <li class="level"><a href="shop.html" class="page-scroll">Home </a></li>
+              <li class="level"><a href="{{route('web.index')}}" class="page-scroll">Home </a></li>
               <li class="level">                
                 <span class="opener plus"></span>
                 <a class="page-scroll">About Us </a>
@@ -217,152 +217,8 @@
                   </div>
                 </div>
               </li>
-              <li class="level"><a href="#" class="page-scroll">Vendor Registration</a></li>
+              <li class="level"><a href="{{route('member.login')}}" class="page-scroll">Vendor Login</a></li>
               <li class="level"><a href="shop.html" class="page-scroll">Contact Us</a></li>
-               <!--  <li class="level"><a href="shop.html" class="page-scroll">Today's Deals</a></li>
-              <li class="level dropdown">
-                <span class="opener plus"></span>
-                <a href="shop.html" class="page-scroll">Women</a>
-                <div class="megamenu mobile-sub-menu">
-                  <div class="megamenu-inner-top">
-                    <ul class="sub-menu-level1">
-                      <li class="level2">
-                        <a href="shop.html"><span>Women Clothings</span></a>
-                        <ul class="sub-menu-level2">
-                          <li class="level3"><a href="shop.html">Dresses</a></li>
-                          <li class="level3"><a href="shop.html">Sport Jeans</a></li>
-                          <li class="level3"><a href="shop.html">Skirts</a></li>
-                          <li class="level3"><a href="shop.html">Tops</a></li>
-                          <li class="level3"><a href="shop.html">Sleepwear</a></li>
-                          <li class="level3"><a href="shop.html">Jeans</a></li>
-                        </ul>
-                      </li>
-                      <li class="level2">
-                        <a href="shop.html"><span>Women Fashion</span></a>
-                        <ul class="sub-menu-level2 ">
-                          <li class="level3"><a href="shop.html">Blazer & Coat</a></li>
-                          <li class="level3"><a href="shop.html">Sport Shoes</a></li>
-                          <li class="level3"><a href="shop.html">Phone Cases</a></li>
-                          <li class="level3"><a href="shop.html">Trousers</a></li>
-                          <li class="level3"><a href="shop.html">Purse</a></li>
-                          <li class="level3"><a href="shop.html">Wallets</a></li>
-                        </ul>
-                      </li>
-                      <li class="level2">
-                        <a href="shop.html"><span>Women Fashion</span></a>
-                        <ul class="sub-menu-level2 ">
-                          <li class="level3"><a href="shop.html">Blazer & Coat</a></li>
-                          <li class="level3"><a href="shop.html">Sport Shoes</a></li>
-                          <li class="level3"><a href="shop.html">Phone Cases</a></li>
-                          <li class="level3"><a href="shop.html">Trousers</a></li>
-                          <li class="level3"><a href="shop.html">Purse</a></li>
-                          <li class="level3"><a href="shop.html">Wallets</a></li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="megamenu-inner-bottom mt-20 visible-lg visible-md">
-                    <a href="shop.html">
-                      <img src="{{asset('images/drop_banner2.jpg" alt="Streetwear">
-                    </a>
-                  </div>
-                </div>
-              </li>
-              <li class="level dropdown">
-                <span class="opener plus"></span>
-                <a href="shop.html" class="page-scroll">Men</a>
-                <div class="megamenu full mobile-sub-menu">
-                  <div class="megamenu-inner">
-                    <div class="megamenu-inner-top">
-                      <div class="row">
-                        <div class="col-md-3 level2">
-                          <a href="shop.html"><span>Men Fashion</span></a>
-                          <ul class="sub-menu-level2 ">
-                            <li class="level3"><a href="shop.html">Blazer & Coat</a></li>
-                            <li class="level3"><a href="shop.html">Sport Shoes</a></li>
-                            <li class="level3"><a href="shop.html">Phone Cases</a></li>
-                            <li class="level3"><a href="shop.html">Trousers</a></li>
-                            <li class="level3"><a href="shop.html">Purse</a></li>
-                            <li class="level3"><a href="shop.html">Wallets</a></li>
-                          </ul>
-                        </div>
-                        <div class="col-md-3 level2">
-                          <a href="shop.html"><span>Juniors kid</span></a>
-                          <ul class="sub-menu-level2 ">
-                            <li class="level3"><a href="shop.html">Blazer & Coat</a></li>
-                            <li class="level3"><a href="shop.html">Sport Shoes</a></li>
-                            <li class="level3"><a href="shop.html">Phone Cases</a></li>
-                            <li class="level3"><a href="shop.html">Trousers</a></li>
-                            <li class="level3"><a href="shop.html">Purse</a></li>
-                            <li class="level3"><a href="shop.html">Wallets</a></li>
-                          </ul>
-                        </div>
-                        <div class="col-md-3 level2">
-                          <a href="shop.html"><span>Men Clothings</span></a>
-                          <ul class="sub-menu-level2 ">
-                            <li class="level3"><a href="shop.html">Blazer & Coat</a></li>
-                            <li class="level3"><a href="shop.html">Chinos & Trousers</a></li>
-                            <li class="level3"><a href="shop.html">Underwear</a></li>
-                            <li class="level3"><a href="shop.html">Trousers</a></li>
-                            <li class="level3"><a href="shop.html">Purse</a></li>
-                            <li class="level3"><a href="shop.html">Wallets</a></li>
-                          </ul>
-                        </div>
-                        <div class="col-md-3 level2 visible-lg visible-md">
-                          <a href="shop.html">
-                            <img src="{{asset('images/drop_banner.jpg" alt="Streetwear">
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li class="level"><a href="shop.html" class="page-scroll">Juniors</a></li>
-              <li class="level dropdown">
-                <span class="opener plus"></span>
-                <a href="shop.html" class="page-scroll">Kids</a>
-                <div class="megamenu mobile-sub-menu">
-                  <div class="megamenu-inner-top">
-                    <ul class="sub-menu-level1">
-                      <li class="level2">
-                        <a href="shop.html"><span>Kids Fashion</span></a>
-                        <ul class="sub-menu-level2 ">
-                          <li class="level3"><a href="shop.html">Blazer & Coat</a></li>
-                          <li class="level3"><a href="shop.html">Sport Shoes</a></li>
-                          <li class="level3"><a href="shop.html">Phone Cases</a></li>
-                          <li class="level3"><a href="shop.html">Trousers</a></li>
-                          <li class="level3"><a href="shop.html">Purse</a></li>
-                          <li class="level3"><a href="shop.html">Wallets</a></li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-              <li class="level"><a href="shop.html" class="page-scroll">Baby</a></li>
-              <li class="level"><a href="shop.html" class="page-scroll">Cloths</a></li>
-              <li class="level dropdown">
-                <span class="opener plus"></span>
-                <a class="page-scroll">Pages</a>
-                <div class="megamenu mobile-sub-menu">
-                  <div class="megamenu-inner-top">
-                    <ul class="sub-menu-level1">
-                      <li class="level2">
-                        <ul class="sub-menu-level2 ">
-                          <li class="level3"><a href="about.html">About Us</a></li>
-                          <li class="level3"><a href="account.html">Account</a></li>
-                          <li class="level3"><a href="checkout.html">Checkout</a></li>
-                          <li class="level3"><a href="contact.html">Contact</a></li>
-                          <li class="level3"><a href="404.html">404 Error</a></li>
-                          <li class="level3"><a href="blog.html">Blog</a></li>
-                          <li class="level3"><a href="single-blog.html">Single Blog</a></li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li> -->
             </ul>
           </div>
         </div>

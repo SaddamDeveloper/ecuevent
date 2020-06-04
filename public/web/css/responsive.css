@@ -456,7 +456,7 @@
     }
 
     .navbar-nav > li > a {
-        color: #fff;
+        color: #1f1f1f;
         padding: 8px 18px;
         font-size: 14px;
         font-weight: 400;
@@ -483,7 +483,7 @@
     }
 
     .navbar-collapse {
-        background: none repeat scroll 0 0 #1a1a1a;
+        background: none repeat scroll 0 0 #dedede;
         bottom: 0;
         border-bottom: 0;
         display: inline-block !important;

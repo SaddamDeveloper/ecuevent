@@ -103,7 +103,7 @@ $(function() {
           itemsDesktopSmall : [991, 3],
           itemsTablet : [768, 2],
           itemsTabletSmall : false,
-          itemsMobile : [419, 1]
+          itemsMobile : [419, 2]
         });
       /* ----- pro_cat_slider End  ------ */
 
