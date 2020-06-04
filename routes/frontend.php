@@ -37,4 +37,3 @@ Route::get('/Product-List', function () {
 Route::get('/Product-Detail', function () {
     return view('web.product.product-detail');
 })->name('web.product.product-detail');
->>>>>>> update
