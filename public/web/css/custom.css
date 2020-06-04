@@ -783,7 +783,7 @@ header {
 .header-right-part {
     position: relative;
     /*margin: 29px 0 0;*/
-    padding: 0 0 0 40px;
+    padding: 0;
 }
 
 .category-dropdown {
@@ -4404,4 +4404,7 @@ ul.tagcloud li a:hover {
 .creditial-block {
     background: #005da573;
     padding: 20px;
+}
+.header-right-part.fts-11 ul li {
+    font-size: 11px;
 }

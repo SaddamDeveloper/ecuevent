@@ -72,7 +72,7 @@
                 </div>
               </div>
               <div class="col-md-3 col-sm-12">
-                <div class="header-right-part right-side float-none-sm">
+                <div class="header-right-part right-side float-none-sm fts-11">
                   <ul>
                     <li class="mobile-view-search visible-sm visible-xs">
                       <div class="header_search_toggle mobile-view">
