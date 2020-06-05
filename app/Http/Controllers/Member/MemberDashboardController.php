@@ -110,7 +110,7 @@ class MemberDashboardController extends Controller
         if (Session::has('product_page_token') && !empty(Session::get('product_page_token'))) {
             $session_token = Session::get('product_page_token');
             if ( $session_token == $token) {
-                $products = DB::table('member_product')->take(3)->get();
+                $products = DB::table('member_product')->take(9)->get();
                 return view('member.registration.product_page', compact('products'));
             } else {
                 abort(404);
@@ -118,7 +118,6 @@ class MemberDashboardController extends Controller
         }else{
             abort(404);
         }
-       
     }
 
     public function kycPage($token, $user_id){

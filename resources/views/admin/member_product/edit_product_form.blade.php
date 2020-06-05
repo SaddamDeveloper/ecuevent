@@ -48,13 +48,7 @@
                                                             <strong>{{ $errors->first('price') }}</strong>
                                                         </span>
                                                     @enderror
-                                                </div>              
-                                            </div>
-                                        </div>
-
-                
-                                        <div class="well" style="overflow: auto" id="image_div">
-                                            <div class="form-row mb-10">
+                                                </div>
                                                 <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                                     <label for="size">Image</label>
                                                     <input type="file" name="image1" value="{{$member->image1}}" class="form-control">
@@ -64,21 +58,8 @@
                                                         </span>
                                                     @enderror
                                                 </div>
-                                                <div>
+                                                <div class="pull-right">
                                                     <img src="{{ asset('member/product/thumb/'.$member->image1.'') }}" height="100px">
-                                                </div>
-                                                
-                                                <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                                        <label for="size">Image</label>
-                                                        <input type="file" name="image2" value="{{$member->image2}}" class="form-control">
-                                                        @if($errors->has('image2'))
-                                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                                <strong>{{ $errors->first('image2') }}</strong>
-                                                            </span>
-                                                        @enderror
-                                                </div>
-                                                <div>
-                                                    <img src="{{ asset('member/product/thumb/'.$member->image2.'') }}" height="100px">
                                                 </div>
                                             </div>
                                         </div>

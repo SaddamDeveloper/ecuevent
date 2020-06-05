@@ -4275,6 +4275,8 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 .productsction .productcontent .singleproduct img.fstchld {
     border: 1px solid red;
     margin-bottom: 20px;
+    height: 200px;
+    width: 200px;
 }
 .bottomcontent h5{
     display: table;

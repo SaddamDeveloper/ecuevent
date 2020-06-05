@@ -41,16 +41,14 @@
                                                     <div class="col-md-4 singleproduct">
                                                         <label>
                                                             <input type="radio" name="product" value="{{$product->id}}">
-                                                            {{-- <input type="hidden" name="productName" value="{{$product->name}}"> --}}
                                                             <h5>{{$product->name}}</h5>
                                                             <img src="{{asset('member/product/thumb/'.$product->image1)}}" name="image1" alt="" class="fstchld">
-                                                            <img src="{{asset('member/product/thumb/'.$product->image2)}}" name="image2" alt="" class="sndimg">
+                                                           <h5>
+                                                                ₹ {{$product->price}}
+                                                           </h5>
                                                         </label>
                                                     </div>
                                                     @endforeach
-                                                    <div class="col-md-12 bottomcontent">
-                                                        <h5>{{__('Rs. 2999/ only (include GST)')}}</h5>
-                                                    </div>
                                                 </div>
                                             </div>
                                             @else

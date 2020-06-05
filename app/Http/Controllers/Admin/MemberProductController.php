@@ -26,7 +26,6 @@ class MemberProductController extends Controller
             'name' => 'required',
             'price' => 'required',
             'image1' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'image2' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]); 
 
         $name = $request->input('name');
@@ -38,18 +37,11 @@ class MemberProductController extends Controller
             $image1_array = $request->file('image1');
             $image1 = $this->imageInsert($image1_array, $request, 1);
         }
-        if($request->hasfile('image2'))
-        {
-            $image2_array = $request->file('image2');
-            $image2 = $this->imageInsert($image2_array, $request, 2);
-        }
-
         $product_insert = DB::table('member_product')
                         ->insertGetId([
                             'name' => $name,
                             'price' => $price,
                             'image1' => $image1,
-                            'image2' => $image2,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                         ]);
 
@@ -146,57 +138,7 @@ class MemberProductController extends Controller
                     } 
             }
         }
-        if($request->hasfile('image2'))
-        {
-            $this->validate($request, [
-                'image2' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                ]);
-            $image2_array = $request->file('image2');
-            $image2 = $this->imageInsert($image2_array, $request, 2);
-
-            // Check wheather image is in DB
-            $checkImage = DB::table('member_product')->where('id', $id)->first();
-            if($checkImage->image2){
-                //Delete
-                $image_path_thumb = "/public/member/product/thumb/".$checkImage->image;  
-                $image_path_original = "/public/member/product/".$checkImage->image;  
-                if(File::exists($image_path_thumb)) {
-                    File::delete($image_path_thumb);
-                }
-                if(File::exists($image_path_original)){
-                    File::delete($image_path_original);
-                }
-
-                //Update
-                $image_update = DB::table('member_product')
-                ->where('id', $id)
-                ->update([
-                    'image2' => $image2,
-                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                ]);   
-
-                if($image_update){
-                        return redirect()->back()->with('message','Product Updated Successfully!');
-                    }else{
-                        return redirect()->back()->with('error','Something Went Wrong Please Try Again');
-                    } 
-            }else{
-                    //Update
-                    $image_update = DB::table('member_product')
-                    ->where('id', $id)
-                    ->update([
-                        'image2' => $image2,
-                        'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                    ]);   
-                
-                if($image_update){
-                        return redirect()->back()->with('message','Product Updated Successfully!');
-                    }else{
-                        return redirect()->back()->with('error','Something Went Wrong Please Try Again');
-                    } 
-            }
-        }
-
+        
         $product_update = DB::table('member_product')
         ->where('id', $id)
         ->update([

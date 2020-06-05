@@ -34,7 +34,6 @@
                                                 <th class="column-title">Name</th>
                                                 <th class="column-title">Price</th>
                                                 <th class="column-title">Image1</th>
-                                                <th class="column-title">Image2</th>
                                                 <th class="column-title">Action</th>
                                             </tr>
                                         </thead>
@@ -51,7 +50,6 @@
                                                     <td class=" ">{{ $tabledata->name }}</td>
                                                     <td>{{ number_format($tabledata->price, 2)}}</td>
                                                     <td><img src="{{ asset('member/product/thumb/'.$tabledata->image1.'') }}" height="80px"></td>
-                                                    <td><img src="{{ asset('member/product/thumb/'.$tabledata->image2.'') }}" height="80px"></td>
                                                     <td class=" ">
                                                         <a href="{{route('admin.edit_member_product',['id' => encrypt($tabledata->id)])}}" class="btn btn-warning">Edit</a>
                                                         <a href="{{ route('admin.delete_member_product',['id' => encrypt($tabledata->id)]) }}" class="btn btn-danger">Delete</a>

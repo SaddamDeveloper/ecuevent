@@ -41,19 +41,13 @@
                                     </div>              
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="name">Product Price</label>
-                                      <input type="text" class="form-control" name="price" value="{{old('price')}}"  placeholder="Enter Product Price" >
+                                      <input type="number" class="form-control" name="price" value="{{old('price')}}"  placeholder="Enter Product Price" >
                                         @if($errors->has('name'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('name') }}</strong>
                                             </span>
                                         @enderror
-                                    </div>              
-                                </div>
-                            </div>
-
-    
-                           <div class="well" style="overflow: auto" id="image_div">
-                                <div class="form-row mb-10">
+                                    </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                         <label for="size">Image</label>
                                         <input type="file" name="image1" value="{{old('image1')}}" class="form-control">
@@ -62,22 +56,11 @@
                                                 <strong>{{ $errors->first('image1') }}</strong>
                                             </span>
                                         @enderror
-            
-                                    </div>
-                                    
-                                    <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                            <label for="size">Image</label>
-                                            <input type="file" name="image2" value="{{old('image2')}}"  class="form-control">
-                                            @if($errors->has('image2'))
-                                                <span class="invalid-feedback" role="alert" style="color:red">
-                                                    <strong>{{ $errors->first('image2') }}</strong>
-                                                </span>
-                                            @enderror
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">    	            	
-                                {{ Form::submit('Submit', array('class'=>'btn btn-success')) }}  
+                                {{ Form::submit('Submit', array('class'=>'btn btn-success pull-right')) }}  
                             </div>
                                 {{ Form::close() }}
     
