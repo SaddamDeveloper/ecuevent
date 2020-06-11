@@ -12,16 +12,15 @@ class CommissionHistoryController extends Controller
         $query = DB::table('commission_history')
         ->leftjoin('members', 'commission_history.user_id', '=', 'members.id')
         ->select('commission_history.*', 'members.name as user_name')
-        ->where('commission_history.status', 1)
         ->where('members.id', Auth::user()->id);
         return datatables()->of($query->get())
             ->addIndexColumn()
             ->addColumn('amount', function($row){
                 if($row->amount == '0.00'){
-                    $amt = '<span class="label label-warning">'.$row->amount.'</span>';
+                    $amt = '<span class="label label-warning">'.number_format($row->amount, 2).'</span>';
                     return $amt;
                 }else{
-                    $amt = '<span class="label label-success">'.$row->amount.'</span>';
+                    $amt = '<span class="label label-success">'.number_format($row->amount, 2).'</span>';
                     return $amt;
                 }
                 return $amt;

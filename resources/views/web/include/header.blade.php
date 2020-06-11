@@ -217,7 +217,6 @@
                   </div>
                 </div>
               </li>
-              <li class="level"><a href="{{route('member.login')}}" class="page-scroll">Vendor Login</a></li>
               <li class="level"><a href="shop.html" class="page-scroll">Contact Us</a></li>
             </ul>
           </div>

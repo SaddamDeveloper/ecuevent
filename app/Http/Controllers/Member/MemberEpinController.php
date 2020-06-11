@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use DB;
 use Auth;
 use App\EpinRequest;
+use Carbon\Carbon;
 class MemberEpinController extends Controller
 {
     public function memberEpinListForm(){
@@ -66,6 +67,44 @@ class MemberEpinController extends Controller
 
     public function memberTransferForm()
     {
-        return view('member.epin_transfer');
+       $parrents = DB::select(DB::raw("SELECT * FROM (SELECT * FROM tree
+            ORDER BY user_id) items_sorted,
+           (SELECT @iv := :user_id) initialisation
+           WHERE find_in_set(parent_id, @iv)
+           AND length(@iv := concat(@iv, ',', id))"),
+            array(
+                'user_id' => Auth::user()->id,
+            ));
+        $members = DB::table('tree')
+            ->select('members.name', 'members.id')
+            ->join('members', 'tree.user_id', '=', 'members.id')
+            ->get();
+        return view('member.epin_transfer', compact('members'));
+    }
+
+    public function memberEpinTransfer(Request $request)
+    {
+        $this->validate($request, [
+            'howEpin'       => 'required',
+            'downlineUser'  => 'required',
+        ]);
+        $howEpin = $request->input('howEpin');
+        $downlineUser = $request->input('downlineUser');
+        // Fetch EPIN List 
+        $epin = DB::table('epin')->where('alloted_to', Auth::user()->id)->where('status', 2)->count();
+        if($howEpin < $epin){
+            $allocate_to = DB::table('epin')
+                ->where('alloted_to', Auth::user()->id)
+                ->where('status', 2)
+                ->take($howEpin)
+                ->update([
+                    'alloted_to' => $downlineUser,
+                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);
+            $member_name = DB::table('members')->where('id', $downlineUser)->value('name');
+            return redirect()->back()->with('message', $howEpin.' EPIN is successfully transfered to '.$member_name.' !');
+        }else{
+            return redirect()->back()->with('error','Sorry! '.$howEpin.' EPIN is not available!');
+        }
     }
 }

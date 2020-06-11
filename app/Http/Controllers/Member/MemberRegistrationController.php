@@ -11,7 +11,7 @@ use Hash;
 use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 use File;
-
+use App\AdminWallet;
 class MemberRegistrationController extends Controller
 {
     public function addNewMember(Request $request){
@@ -279,7 +279,6 @@ class MemberRegistrationController extends Controller
                                 ]);
                         
                         // Fetch All Parent of Current Registered node
-
                         $parrents = DB::select( DB::raw("SELECT * FROM (
                             SELECT @pv:=(
                                 SELECT parent_id FROM tree WHERE id = @pv
@@ -447,7 +446,7 @@ class MemberRegistrationController extends Controller
                 ->where('id',$parent)
                 ->first();
 
-            //***************check chield node is in left or right*******************
+            //***************check child node is in left or right*******************
             if ($fetch_parent->left_id == $child){
                 //Check Left count already had previous value + 1
                 $update_left_count = DB::table('tree')
@@ -547,12 +546,53 @@ class MemberRegistrationController extends Controller
             
             //Fetch Matching Income
             $matching_income = DB::table('matching_income')->first();
-            // Business Logic
-            $earning = ($price * $matching_income->income)/100;
+
+            // Member Commission Logic
+            if($left > 1){
+                $pairPrice = DB::table('tree')
+                    ->select('member_joining_order.price', 'member_joining_order.user_id')
+                    ->join('member_joining_order', 'tree.right_id', '=', 'member_joining_order.user_id')
+                    ->where('tree.right_id', $fetch_user->right_id)
+                    ->first();
+            }elseif($right > 1) {
+                $pairPrice = DB::table('tree')
+                    ->select('member_joining_order.price', 'member_joining_order.user_id')
+                    ->join('member_joining_order', 'tree.left_id', '=', 'member_joining_order.user_id')
+                    ->where('tree.left_id', $fetch_user->left_id)
+                    ->first();
+            }
+            
+            // 15% Commision
+            $earning1 = (3200 * $matching_income->income)/100;
+            
+            // Admin Commission Fetch
+            $adminCommissionFetch = DB::table('admin_commissions')->first();
+            $adminCommission = ($earning1 * $adminCommissionFetch->commission)/100;
+            $earning2 = $earning1 - $adminCommission;
+
+            // Admin Wallet Insert
+            $admin_wallet_insert = DB::table('admin_wallets') 
+            ->where('role', '1')
+            ->update([
+                'amount' => DB::raw("`amount`+".($adminCommission)),
+                ]);
+
+            // TDS Commission Fetch
+            $tdsCommissionFetch = DB::table('admin_tds')->first();
+            $tdsCommission = ($earning2 * $tdsCommissionFetch->tds)/100;
+            $earning3 = $earning2 - $tdsCommission;
+
+            // Admin TDS Insert
+            $admin_tds_insert = DB::table('admin_tdses') 
+            ->where('role', '1')
+            ->update([
+                'tds' => DB::raw("`tds`+".($tdsCommission)),
+            ]);
+
             $wallet_insert = DB::table('wallet') 
             ->where('user_id', $fetch_user->user_id)
             ->update([
-                'amount' => DB::raw("`amount`+".($earning)),
+                'amount' => DB::raw("`amount`+".($earning3)),
                 ]);
             //Fetch Wallet
             $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_user->user_id)->first();
@@ -561,8 +601,8 @@ class MemberRegistrationController extends Controller
                 ->insertGetId([
                     'user_id' => $fetch_user->user_id,
                     'pair_number' => ($fetch_user->total_pair+1),
-                    'amount' => $earning,
-                    'comment' => $earning.' income of pair number '.($fetch_user->total_pair+1).' is generated! ',
+                    'amount' => $earning3,
+                    'comment' => $earning3.' income of pair number '.($fetch_user->total_pair+1).' is generated! ',
                     'status' => 1,
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
@@ -572,9 +612,9 @@ class MemberRegistrationController extends Controller
                         'wallet_id' =>  $fetch_wallet->id,
                         'user_id'   => $fetch_user->user_id,
                         'transaction_type'  =>  1,
-                        'amount' => $earning,
+                        'amount' => $earning3,
                         'total_amount'  => $fetch_wallet->amount,
-                        'comment'   => $earning.' income of pair number '.($fetch_user->total_pair+1).' is generated! ',
+                        'comment'   => $earning3.' income of pair number '.($fetch_user->total_pair+1).' is generated! ',
                         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                     ]);
         }
@@ -624,7 +664,7 @@ class MemberRegistrationController extends Controller
 
     public function commisionWithPositive($parent,$left, $right, $price){
 
-        //INsert Comission Data
+        //Insert Comission Data
         $update_left_right_count = DB::table('tree')
         ->where('id', $parent)
         ->update([
@@ -635,33 +675,58 @@ class MemberRegistrationController extends Controller
        
         //Fetch User with Node ID
         $fetch_tree = DB::table('tree')
-        ->where('id', $parent)
-        ->first();        
+            ->where('id', $parent)
+            ->first();        
 
         //Fetch Matching Income
         $matching_income = DB::table('matching_income')->first();
-        // Business Logic
-        $earning = ($price * $matching_income->income)/100;
+      
+        // Member Commission Logic
+        // 15% Commision
+        $earning1 = ("3200" * $matching_income->income)/100;
+        // Admin Commission Fetch
+        $adminCommissionFetch = DB::table('admin_commissions')->first();
+        $adminCommission = ($earning1 * $adminCommissionFetch->commission)/100;
+        $earning2 = $earning1 - $adminCommission;
+        
+        // Admin Wallet Insert
+        $admin_wallet_insert = DB::table('admin_wallets') 
+            ->where('role', '1')
+            ->update([
+                'amount' => DB::raw("`amount`+".($adminCommission)),
+            ]);
+
+        // TDS Commission Fetch
+        $tdsCommissionFetch = DB::table('admin_tds')->first();
+        $tdsCommission = ($earning2 * $tdsCommissionFetch->tds)/100;
+        $earning = $earning2 - $tdsCommission;
+
+        // Admin TDS Insert
+        $admin_tds_insert = DB::table('admin_tdses') 
+        ->where('role', '1')
+        ->update([
+            'tds' => DB::raw("`tds`+".($tdsCommission)),
+        ]);
 
         // Wallet Insert
         $wallet_insert = DB::table('wallet') 
-        ->where('user_id', $fetch_tree->user_id)
-        ->update([
-            'amount' => DB::raw("`amount`+".($earning)),
+            ->where('user_id', $fetch_tree->user_id)
+            ->update([
+                'amount' => DB::raw("`amount`+".($earning)),
             ]);
 
         //Fetch Wallet
         $fetch_wallet = DB::table('wallet')->where('user_id', $fetch_tree->user_id)->first();
         
         $credit_commision = DB::table('commission_history')
-        ->insertGetId([
-            'user_id' => $fetch_tree->user_id,
-            'pair_number' => ($fetch_tree->total_pair+1),
-            'amount' => $earning,
-            'comment' => $earning.' income of pair number '.($fetch_tree->total_pair+1).' is generated! ',
-            'status' => 1,
-            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-            ]);
+            ->insertGetId([
+                'user_id' => $fetch_tree->user_id,
+                'pair_number' => ($fetch_tree->total_pair+1),
+                'amount' => $earning,
+                'comment' => $earning.' income of pair number '.($fetch_tree->total_pair+1).' is generated! ',
+                'status' => 1,
+                'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);
 
         if($credit_commision){
             $credit_commision_to_wallet = DB::table('wallet_history')
@@ -687,6 +752,7 @@ class MemberRegistrationController extends Controller
             'right_count' => DB::raw("`right_count`-".($right)),
             'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
         ]);
+
         //Fetch User with Node ID
         $fetch_tree = DB::table('tree')
         ->where('id', $parent)
@@ -726,7 +792,7 @@ class MemberRegistrationController extends Controller
             'epin' => $epin,
             'product_name' => $productName,
             'image1' => $image1,
-            'image1' => $image1,
+            'price' => $price,
             'order_status' => 1,
             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
         ]);

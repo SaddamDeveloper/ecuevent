@@ -11,7 +11,7 @@
                     <div class="x_panel">
     
                         <div class="x_title">
-                            <h2>EPIN Transfer(UNDER CONSTRUCTION)</h2>
+                            <h2>EPIN Transfer</h2>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -26,7 +26,7 @@
                         <div>
                             <div class="x_content">
                                 <div class="well">
-                                {{ Form::open(['method' => 'post','route'=>'member.store_epin_requests']) }}
+                                {{ Form::open(['method' => 'post','route'=>'member.store_epin_transfer']) }}
                                     <div class="form-row mb-10 row">
                                         <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                             <input type="number" name="howEpin" class="form-control" placeholder="How many EPIN you will transfer?">
@@ -37,16 +37,27 @@
                                             @enderror
                                         </div>
                                         <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                            <select name="downlineUser">
-                                                <option value=""></option>
+                                            <select name="downlineUser" class="form-control">
+                                                <option value="" selected disabled>--Select Member--</option>
+                                                @if(isset($members) && !empty($members))
+                                                    @foreach ($members as $key => $member)
+                                                        @if ($loop->first) @continue @endif
+                                                        <option value="{{$member->id}}">{{$member->name}}</option>
+                                                    @endforeach
+                                                @endif
                                             </select>
-                                        </div>
-                                        <div class="col-md-6 col-sm-12 col-xs-12 mb-3">
-                                            {{ Form::submit('Add', array('class'=>'btn btn-success')) }}  
+                                            @if($errors->has('downlineUser'))
+                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                                <strong>{{ $errors->first('downlineUser') }}</strong>
+                                            </span>
+                                        @enderror
                                         </div>
                                     </div>
-                                {{ Form::close() }}
                                 </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 mb-3">
+                                    {{ Form::submit('Transfer', array('class'=>'btn btn-success pull-right')) }}  
+                                </div>
+                                {{ Form::close() }}
                             </div>
                         </div>
                         <div>

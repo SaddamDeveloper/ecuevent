@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use DB;
 use Carbon\Carbon;
+use App\EpinRequest;
 class EpinAllotController extends Controller
 {
     public function memAllotEpinForm(){
@@ -68,5 +69,37 @@ class EpinAllotController extends Controller
                 ]);
         }
         return redirect()->back()->with('message', ''.$epin_total.' EPIN is alloted successfully to '.$member_data_fetch->name.'');
+    }
+
+    public function epinRequestsLists()
+    {
+        return datatables()->of(EpinRequest::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
+        ->addColumn('action', function($row){
+            if($row->status == '1'){
+                $action = '<a href="'.route('admin.epin_req_status', ['sId' => encrypt($row->id), 'status'=> encrypt(2)]).'" class="btn btn-success">Solve</a>';
+            }else{
+                $action = '<a href="#" class="btn btn-danger" disabled>Solved</a>';
+            }
+            return $action;
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+    }
+
+    public function epinRequestStatus($aId, $statusId)
+    {
+        try {
+            $id = decrypt($aId);
+            $sId = decrypt($statusId);
+        }catch(DecryptException $e) {
+            return redirect()->back();
+        }
+        $update = EpinRequest::where('id', $id)->update(array('status' => $sId));
+        if($update){
+            return redirect()->back()->with('message','Updated Successfully');
+        }else {
+            return redirect()->back()->with('error', 'Something Went Wrong Please Try Again');
+        }
     }
 }

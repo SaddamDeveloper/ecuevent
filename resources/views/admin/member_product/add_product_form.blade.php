@@ -31,8 +31,8 @@
                             <div class="well" style="overflow: auto">
                                 <div class="form-row mb-10">
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
-                                      <label for="name">Product name</label>
-                                      <input type="text" class="form-control" name="name" value="{{old('name')}}"  placeholder="Enter Product name">
+                                      <label for="name">Product Package Name</label>
+                                      <input type="text" class="form-control" name="name" value="{{old('name')}}"  placeholder="Enter Product Package Name">
                                         @if($errors->has('name'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('name') }}</strong>
@@ -41,12 +41,8 @@
                                     </div>              
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                       <label for="name">Product Price</label>
-                                      <input type="number" class="form-control" name="price" value="{{old('price')}}"  placeholder="Enter Product Price" >
-                                        @if($errors->has('name'))
-                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                <strong>{{ $errors->first('name') }}</strong>
-                                            </span>
-                                        @enderror
+                                      <input type="number" class="form-control" value="3200.00" readonly disabled>
+                                      <input type="hidden" name="price" value="3200">
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                         <label for="size">Image</label>

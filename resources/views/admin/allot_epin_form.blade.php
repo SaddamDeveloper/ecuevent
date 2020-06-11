@@ -57,8 +57,10 @@
                                     <tr>
                                       <th>Sl. No</th>
                                       <th>EPIN Requests</th>
+                                      <th>Added By</th>
+                                      <th>Date</th>
                                       <th>Status</th>
-                                      <th>Created At</th>
+                                      <th>Action</th>
                                     </tr>
                                   </thead>
                                   <tbody>                       
@@ -114,6 +116,29 @@
                     searchMember(query);
                 }
             });
+
+        });
+        $(function () {
+        var i = 1;
+        var table = $('#epin_request').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('admin.ajax.epin_requests_lists') }}",
+            columns: [
+                { "render": function(data, type, full, meta) {return i++;}},
+                {data: 'epin_request', name: 'epin_request',searchable: true},
+                {data: 'added_by', name: 'added_by',searchable: true},
+                {data: 'created_at', name: 'created_at',searchable: true},
+                {data: 'status', name: 'status', render:function(data, type, row){
+                    if (row.status == '1') {
+                    return "<button class='btn btn-danger rounded'>Not Solved</a>"
+                    }else{
+                    return "<button class='btn btn-warning rounded' disabled>Solved</a>"
+                    }                        
+                }},              
+                {data: 'action', name: 'action',searchable: true},
+            ]
+        });
         });
     </script>
 @endsection

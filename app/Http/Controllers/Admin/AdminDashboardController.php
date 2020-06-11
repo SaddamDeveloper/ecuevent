@@ -8,6 +8,10 @@ use DB;
 use Carbon\Carbon;
 use App\ImportantNotice;
 use Illuminate\Support\Str;
+use App\AdminCommission;
+use App\AdminTds;
+use App\AdminWallet;
+use App\AdminTdses;
 class AdminDashboardController extends Controller
 {
     public function index(){
@@ -19,8 +23,11 @@ class AdminDashboardController extends Controller
             ->orderBy('id','desc')
             ->limit(10)
             ->get();
+
+        $admin_wallet_bal = AdminWallet::value('amount');
+        $admin_tds = AdminTdses::value('tds');
         // dd($latest_members);
-        return view('admin.dashboard', compact('total_members', 'total_products', 'total_member_wallet_balance', 'latest_members'));
+        return view('admin.dashboard', compact('total_members', 'total_products', 'total_member_wallet_balance', 'latest_members', 'admin_wallet_bal', 'admin_tds'));
     }
 
     public function importantNoticePage()
@@ -105,5 +112,45 @@ class AdminDashboardController extends Controller
     public function feedBack()
     {
         return view('admin.feedback');
+    }
+
+    public function adminCommission()
+    {
+        $admin = AdminCommission::first();
+        return view('admin.commission', compact('admin'));
+    }
+
+    public function storeCommission(Request $request)
+    {
+        $this->validate($request, [
+            'commission'   => 'required|numeric'
+        ]);
+
+        $adminCommission = DB::table('admin_commissions')
+            ->update([
+                'commission' => $request->input('commission'),
+            ]);
+
+        return redirect()->back()->with('message','Inserted Successfully');
+    }
+    
+    public function adminTds()
+    {
+        $tds = AdminTds::first();
+        return view('admin.tds', compact('tds'));
+    }
+
+    public function storeTds(Request $request)
+    {
+        $this->validate($request, [
+            'tds'   => 'required|numeric'
+        ]);
+
+        $adminTds = DB::table('admin_tds')
+            ->update([
+                'tds' => $request->input('tds'),
+            ]);
+
+        return redirect()->back()->with('message','Inserted Successfully');
     }
 }

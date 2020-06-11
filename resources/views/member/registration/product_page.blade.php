@@ -58,6 +58,7 @@
                                                 </div>
                                             </div>
                                             @endif
+                                        {{ $products->links() }}
                                         </div>
                                     </div> 
                                 </div>
@@ -76,10 +77,5 @@
     <!-- /page content -->
 @endsection
 
-@section('script')
-    <script>
-        
-    </script>
-@endsection
 
 

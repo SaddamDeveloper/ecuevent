@@ -57,6 +57,8 @@
                 <li><a href="{{route('admin.mem_matching_income')}}">Member Matching Income</a></li>
                 <li><a href="{{route('admin.mem_pair_timing')}}">Common Pair timing</a></li>
                 <li><a href="{{route('admin.mem_pair_cutoff')}}">Common Pair CutOFF</a></li>
+                <li><a href="{{route('admin.mem_commission')}}">Admin Commission</a></li>
+                <li><a href="{{route('admin.mem_tds')}}">TDS</a></li>
               </ul>
             </li>
             <li><a href="{{route('admin.feedback')}}"><i class="fa fa-comments"></i> All Complaints/ Feedbacks</a>

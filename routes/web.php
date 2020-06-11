@@ -33,6 +33,8 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/allot/epin', 'EpinAllotController@memAllotEpinForm')->name('admin.mem_allot_epin_form');
     Route::get('/search/memberID', 'EpinAllotController@searchMemberID')->name('member.search_member_id');
     Route::post('/add/new/allot/epin', 'EpinAllotController@memAllotEpin')->name('admin.mem_allot_epin');
+    Route::get('/epin/requests/list', 'EpinAllotController@epinRequestsLists')->name('admin.ajax.epin_requests_lists');
+    Route::get('/epin/requests/status/{sId}/{status}', 'EpinAllotController@epinRequestStatus')->name('admin.epin_req_status');
     
     /***
      * Member Macthing Income Control
@@ -45,7 +47,7 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
      */
     Route::get('/pair/timing', 'PairCutoffController@memPairTiming')->name('admin.mem_pair_timing');
     Route::post('/add/pair/timing', 'PairCutoffController@memAddPairTiming')->name('admin.mem_add_pair_timing');
-
+    
     Route::get('/pair/cuttoff', 'PairCutoffController@memPairCutoff')->name('admin.mem_pair_cutoff');
     Route::post('/add/pair/cutoff', 'PairCutoffController@memAddPairCutoff')->name('admin.mem_add_pair_cut_off');
     Route::get('/ajax/pair/cutoff', 'PairCutoffController@memAjaxPairCutoff')->name('admin.ajax.cutOff_list');
@@ -53,6 +55,15 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::post('/update/pair/cutoff', 'PairCutoffController@memUpdatePairCutoff')->name('admin.mem_update_pair_cut_off');
     Route::get('/delete/pair/cutoff/{id}', 'PairCutoffController@memDeletePairCutoff')->name('admin.delete.mem_pair_cutoff');
     
+    // Admin Commission
+    Route::get('/admin/commission', 'AdminDashboardController@adminCommission')->name('admin.mem_commission');
+    Route::post('/add/commission', 'AdminDashboardController@storeCommission')->name('admin.store_commission');
+
+    // TDS
+    Route::get('/admin/tds', 'AdminDashboardController@adminTds')->name('admin.mem_tds');
+    Route::post('/add/tds', 'AdminDashboardController@storeTds')->name('admin.store_tds');
+
+
     /***
      * Member Prdouct Control
      */
@@ -152,6 +163,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::post('/my/epin/request', 'MemberEpinController@memberRequest')->name('member.store_epin_requests');
     Route::get('/my/epin/request/list', 'MemberEpinController@epinRequestList')->name('member.ajax.epin_request_list');
     Route::get('/my/epin/transfer/form', 'MemberEpinController@memberTransferForm')->name('member.epin_transfer');
+    Route::post('/my/epin/transfer', 'MemberEpinController@memberEpinTransfer')->name('member.store_epin_transfer');
 
     Route::get('/my/downline/', 'MemberDashboardController@memberDownlineListForm')->name('member.mem_downline_list_form');
     Route::get('/my/downline/list', 'MemberDashboardController@memberGetDownlineList')->name('member.ajax.my_downline_list');

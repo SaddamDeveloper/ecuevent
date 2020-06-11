@@ -24,7 +24,6 @@ class MemberProductController extends Controller
     public function memAddNewProduct(Request $request){
         $validatedData = $request->validate([
             'name' => 'required',
-            'price' => 'required',
             'image1' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]); 
 
@@ -46,7 +45,6 @@ class MemberProductController extends Controller
                         ]);
 
         if($product_insert){
-            
             return redirect()->back()->with('message','Product Added Successfully');
         }else{
              return redirect()->back()->with('error','Something Went Wrong Please Try Again');

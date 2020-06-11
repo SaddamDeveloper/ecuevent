@@ -110,7 +110,7 @@ class MemberDashboardController extends Controller
         if (Session::has('product_page_token') && !empty(Session::get('product_page_token'))) {
             $session_token = Session::get('product_page_token');
             if ( $session_token == $token) {
-                $products = DB::table('member_product')->take(9)->get();
+                $products = DB::table('member_product')->paginate(9);
                 return view('member.registration.product_page', compact('products'));
             } else {
                 abort(404);
@@ -316,7 +316,6 @@ class MemberDashboardController extends Controller
 
     public function memberTree($rank=null, $user_id=null){
         
-       
         if (!empty($user_id)) {
             try{
                 $user_id = decrypt($user_id);
@@ -326,7 +325,6 @@ class MemberDashboardController extends Controller
         }else{
             $user_id = Auth::guard('member')->id();
         }
-        
         if (empty($rank)) {
             $rank = 0;
         }
@@ -360,7 +358,7 @@ class MemberDashboardController extends Controller
                         $first_level_node = DB::table('tree')
                         ->select('tree.*', 'members.name', 'members.member_id')
                         ->join('members', 'tree.user_id', '=', 'members.id')
-                        ->where('user_id', $first->id)
+                        ->where('tree.user_id', $first->id)
                         ->first();
                         $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'">'.$first_level_node->name.'
                             <div class="info">
@@ -373,7 +371,7 @@ class MemberDashboardController extends Controller
                         $first_level_node = DB::table('tree')
                         ->select('tree.*', 'members.name', 'members.member_id')
                         ->join('members', 'tree.user_id', '=', 'members.id')
-                        ->where('user_id', $first->id)
+                        ->where('tree.user_id', $first->id)
                         ->first();
                         $html.='<a href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'">'.$first_level_node->name.'
                             <div class="info">
@@ -398,7 +396,7 @@ class MemberDashboardController extends Controller
                                 $second_level_node = DB::table('tree')
                                 ->select('tree.*', 'members.name', 'members.member_id')
                                 ->join('members', 'tree.user_id', '=', 'members.id')
-                                ->where('user_id', $second->id)
+                                ->where('tree.user_id', $second->id)
                                 ->first();
                                 $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'">'.$second_level_node->name.'
                                             <div class="info">
@@ -411,7 +409,7 @@ class MemberDashboardController extends Controller
                                 $second_level_node = DB::table('tree')
                                 ->select('tree.*', 'members.name', 'members.member_id')
                                 ->join('members', 'tree.user_id', '=', 'members.id')
-                                ->where('user_id', $second->id)
+                                ->where('tree.user_id', $second->id)
                                 ->first();
                                 $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'">'.$second_level_node->name.'
                                     <div class="info">
@@ -438,7 +436,7 @@ class MemberDashboardController extends Controller
                                         $third_level_node = DB::table('tree')
                                         ->select('tree.*', 'members.name', 'members.member_id')
                                         ->join('members', 'tree.user_id', '=', 'members.id')
-                                        ->where('user_id', $third->id)
+                                        ->where('tree.user_id', $third->id)
                                         ->first();
                                         $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'">'.$third_level_node->name.'
                                             <div class="info">
@@ -451,7 +449,7 @@ class MemberDashboardController extends Controller
                                         $third_level_node = DB::table('tree')
                                         ->select('tree.*', 'members.name', 'members.member_id')
                                         ->join('members', 'tree.user_id', '=', 'members.id')
-                                        ->where('user_id', $third->id)
+                                        ->where('tree.user_id', $third->id)
                                         ->first();
                                         $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'">'.$third_level_node->name.'
                                             <div class="info">
@@ -474,7 +472,7 @@ class MemberDashboardController extends Controller
                                                 $fourth_level_node = DB::table('tree')
                                                 ->select('tree.*', 'members.name', 'members.member_id')
                                                 ->join('members', 'tree.user_id', '=', 'members.id')
-                                                ->where('user_id', $fourth->id)
+                                                ->where('tree.user_id', $fourth->id)
                                                 ->first();
                                                 $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'">'.$fourth_level_node->name.'
                                                     <div class="info">
@@ -487,7 +485,7 @@ class MemberDashboardController extends Controller
                                                 $fourth_level_node = DB::table('tree')
                                                 ->select('tree.*', 'members.name', 'members.member_id')
                                                 ->join('members', 'tree.user_id', '=', 'members.id')
-                                                ->where('user_id', $fourth->id)
+                                                ->where('tree.user_id', $fourth->id)
                                                 ->first();
                                                 $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'">'.$fourth_level_node->name.'
                                                 <div class="info">
@@ -511,7 +509,7 @@ class MemberDashboardController extends Controller
                                                         $fifth_level_node = DB::table('tree')
                                                         ->select('tree.*', 'members.name', 'members.member_id')
                                                         ->join('members', 'tree.user_id', '=', 'members.id')
-                                                        ->where('user_id', $fifth->id)
+                                                        ->where('tree.user_id', $fifth->id)
                                                         ->first();
                                                         $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'">'.$fifth_level_node->name.'
                                                             <div class="info">
@@ -524,7 +522,7 @@ class MemberDashboardController extends Controller
                                                         $fifth_level_node = DB::table('tree')
                                                         ->select('tree.*', 'members.name', 'members.member_id')
                                                         ->join('members', 'tree.user_id', '=', 'members.id')
-                                                        ->where('user_id', $fifth->id)
+                                                        ->where('tree.user_id', $fifth->id)
                                                         ->first();
                                                         $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'">'.$fifth_level_node->name.'
                                                         <div class="info">
