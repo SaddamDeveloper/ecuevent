@@ -240,7 +240,6 @@ class MemberRegistrationController extends Controller
                             'registered_by' => Auth::user()->id,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
-                        
                         if($lag == 1){
                             $tree_update = DB::table('tree')
                                 ->where('id', $fetch_tree->id)
@@ -430,7 +429,6 @@ class MemberRegistrationController extends Controller
         Image::make($image)
         ->resize(300, 400)
         ->save($thumb_path);
-
         return $image_name;
     }
 

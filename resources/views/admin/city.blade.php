@@ -98,5 +98,5 @@
             
         });
      </script>
- @endsection
+@endsection
 
